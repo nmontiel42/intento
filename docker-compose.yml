@@ -1,0 +1,33 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    depends_on:
+      - backend
+  
+  # Cambiar nombre network
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-network
+    command: ["npm", "start"]
+
+networks:
+  app-network:
+    driver: bridge
