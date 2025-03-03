@@ -1,5 +1,5 @@
 // Importamos la librería Fastify
-const Fastify = require('fastify');
+import Fastify from 'fastify';
 
 // Creamos el servidor Fastify
 const fastify = Fastify();

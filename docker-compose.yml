@@ -26,7 +26,6 @@ services:
       - ./backend:/app
     networks:
       - app-network
-    command: ["npm", "start"]
 
 networks:
   app-network:
