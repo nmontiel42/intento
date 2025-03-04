@@ -2,29 +2,53 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>My App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi SPA</title>
   </head>
   <body>
-    <h1>Hello, world!</h1>
-    <p>Inicia sesion</p>
-    <input
-        type="email"
-        id="email"
-        name="email"
-        placeholder="Tu correo"
-        required
-    />
-    <input
-        type="password"
-        id="password"
-        name="password"
-        placeholder="Tu contraseña"
-        required
-    />
-    <button id="login">Iniciar sesion</button>
+    <div id="app">
+      <!-- Vista de Registro -->
+      <div id="registerView">
+        <h1>Registro de Usuario</h1>
+        <form id="registerForm">
+          <input type="email" id="email" name="email" placeholder="Tu correo" required />
+          <input type="text" id="username" name="username" placeholder="Tu nombre de usuario" required />
+          <input type="password" id="password" name="password" placeholder="Tu contraseña" required />
+          <button type="submit">Registrar</button>
+        </form>
+        <button id="goToLogin">¿Ya tienes cuenta? Inicia sesión</button>
+      </div>
+
+      <!-- Vista de Login (oculta inicialmente) -->
+      <div id="loginView" style="display:none;">
+        <h1>Iniciar Sesión</h1>
+        <form id="loginForm">
+          <input type="email" id="loginEmail" name="loginEmail" placeholder="Tu correo" required />
+          <input type="password" id="loginPassword" name="loginPassword" placeholder="Tu contraseña" required />
+          <button type="submit">Iniciar sesión</button>
+        </form>
+        <button id="goToRegister">¿No tienes cuenta? Regístrate</button>
+      </div>
+
+      <!-- Vista de Home (oculta inicialmente) -->
+      <div id="homeView" style="display:none;">
+        <h1>Bienvenido, <span id="userName"></span>!</h1>
+        <p>¡Te has registrado exitosamente o has iniciado sesión!</p>
+        
+        <button id="logoutBtn">Cerrar sesión</button>
+
+        <div id="confirmModal" style="display:none;">
+          <div id="modalContent">
+            <h2>¿Qué deseas hacer?</h2>
+            <button id="logoutOnlyBtn">Cerrar sesión</button>
+            <button id="deleteAccountBtn">Eliminar cuenta</button>
+            <button id="cancelBtn">Cancelar</button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <script src="app.js"></script>
   </body>
 </html>
