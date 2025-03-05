@@ -19,7 +19,16 @@ export default async function (fastify, options) {
             // Cifrado de la contraseña con bcrypt antes de guardar
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = await createUser({ username, email, password: hashedPassword });
-            reply.send(newUser); // Devuelve la respuesta con el usuario
+
+            console.log('Usuario creado:', newUser); // 👀 Verificar que `username` está presente
+
+            const token = fastify.jwt.sign({ userId: newUser.id });
+
+            reply.send({
+                message: 'Usuario registrado exitosamente',
+                token,
+                user: newUser // Asegurar que `user` es lo que enviamos
+            }); // Devuelve la respuesta con el usuario
         } catch (error) {
             console.error('Error en el registro:', error);
             reply.status(500).send({ error: 'Error al registrar el usuario' });
@@ -66,17 +75,26 @@ export default async function (fastify, options) {
         }
     });
 
-    fastify.delete('/delete-account', { preHandler: [fastify.authenticate] }, async (request, reply) => {
-        const username = request.userId; // Si usas username, usa esto
-        console.log('Eliminando cuenta para el usuario:', username);
+    fastify.delete('/delete-account', { preHandler: fastify.authenticate }, async (req, reply) => {
+        const { username } = req.body; // Obtener el username del body
+        console.log('Intentando eliminar usuario con username:', username);
 
-        try {
-            await deleteUserByUsername(username);  // Usa deleteUserByUsername si usas username
-            reply.send({ message: 'Cuenta eliminada' });
-        } catch (error) {
-            console.error('Error al eliminar la cuenta:', error);
-            reply.status(500).send({ error: 'Error al eliminar la cuenta' });
+        if (!username) {
+            return reply.status(400).send({ error: 'Username no proporcionado' });
         }
+
+        db.run('DELETE FROM users WHERE username = ?', [username], function (err) {
+            if (err) {
+                console.error('Error al eliminar la cuenta:', err);
+                return reply.status(500).send({ error: 'Error al eliminar la cuenta' });
+            }
+            if (this.changes === 0) {
+                console.log('No se encontró el usuario:', username);
+                return reply.status(404).send({ error: 'No se encontró el usuario' });
+            }
+            console.log(`Usuario con username ${username} eliminado correctamente.`);
+            reply.send({ message: 'Cuenta eliminada correctamente' });
+        });
     });
 
 }

@@ -50,17 +50,21 @@ registerForm.addEventListener('submit', async (event) => {
     });
 
     if (response.ok) {
-      // Si el registro es exitoso, mostramos la vista de home
-      const data = await response.json();  // Suponiendo que devuelves un mensaje de éxito
+      const data = await response.json();
+      console.log('Respuesta del backend al registrar:', data);
+      console.log('Token almacenado tras registro:', data.token);
 
-      // Cambiar a la vista de inicio
+      if (!data.token) {
+        alert('Error: el backend no devolvió un token');
+        return;
+      }
+
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
       registerView.style.display = 'none';
       homeView.style.display = 'block';
-      userName.textContent = data.username; // Mostrar nombre de usuario
-
-      // Guardar los datos del usuario y el token en localStorage
-      localStorage.setItem('authToken', data.token); // Suponiendo que el backend envíe un token
-      localStorage.setItem('user', JSON.stringify(data));
+      userName.textContent = data.user.username;
     } else {
       alert('Error en el registro. Intenta nuevamente.');
     }
@@ -129,32 +133,38 @@ logoutOnlyBtn.addEventListener('click', () => {
 
 // Lógica para eliminar cuenta
 deleteAccountBtn.addEventListener('click', async () => {
-    const token = localStorage.getItem('authToken');
-    console.log('Token recuperado:', token); // Verifica que el token no sea null o undefined
-    
-    const response = await fetch('http://localhost:3000/delete-account', {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,  // Pasamos el token para verificar la identidad
-      },
-    });
-  
-    if (response.ok) {
-      alert('Cuenta eliminada');
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
-      homeView.style.display = 'none';
-      loginView.style.display = 'block';
-      registerView.style.display = 'none';
-    } else {
-      alert('Hubo un error al eliminar la cuenta');
-    }
-  
-    confirmModal.style.display = 'none';
+  const token = localStorage.getItem('authToken');
+  const user = JSON.parse(localStorage.getItem('user') || '{}'); // Recuperar los datos del usuario
+  console.log('Token recuperado:', token);
+  console.log('Usuario a eliminar:', user);
+
+  const response = await fetch('http://localhost:3000/delete-account', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ username: user.username }), // Enviar el username
   });
+
+  if (response.ok) {
+    alert('Cuenta eliminada');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    homeView.style.display = 'none';
+    loginView.style.display = 'none';
+    registerView.style.display = 'block';
+  } else {
+    alert('Hubo un error al eliminar la cuenta');
+  }
+
+  confirmModal.style.display = 'none';
+});
   
 
 // Lógica para cancelar y cerrar el modal
 cancelBtn.addEventListener('click', () => {
   confirmModal.style.display = 'none'; // Cerrar el modal
 });
+
+console.log('Frontend inicializado');
