@@ -2,6 +2,8 @@
 const registerView = document.getElementById('registerView');
 const loginView = document.getElementById('loginView');
 const homeView = document.getElementById('homeView');
+
+// Seleccionamos el elemento para mostrar el nombre de usuario
 const userName = document.getElementById('userName');
 
 // Seleccionamos los formularios
@@ -51,8 +53,8 @@ registerForm.addEventListener('submit', async (event) => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Respuesta del backend al registrar:', data);
-      console.log('Token almacenado tras registro:', data.token);
+      //console.log('Respuesta del backend al registrar:', data);
+      //console.log('Token almacenado tras registro:', data.token);
 
       if (!data.token) {
         alert('Error: el backend no devolvió un token');
@@ -135,8 +137,8 @@ logoutOnlyBtn.addEventListener('click', () => {
 deleteAccountBtn.addEventListener('click', async () => {
   const token = localStorage.getItem('authToken');
   const user = JSON.parse(localStorage.getItem('user') || '{}'); // Recuperar los datos del usuario
-  console.log('Token recuperado:', token);
-  console.log('Usuario a eliminar:', user);
+  //console.log('Token recuperado:', token);
+  //console.log('Usuario a eliminar:', user);
 
   const response = await fetch('http://localhost:3000/delete-account', {
     method: 'DELETE',
@@ -161,10 +163,7 @@ deleteAccountBtn.addEventListener('click', async () => {
   confirmModal.style.display = 'none';
 });
   
-
 // Lógica para cancelar y cerrar el modal
 cancelBtn.addEventListener('click', () => {
   confirmModal.style.display = 'none'; // Cerrar el modal
 });
-
-console.log('Frontend inicializado');
