@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import authRoutes from './auth.js';
 
 dotenv.config();
-console.log('JWT_SECRET:', process.env.JWT_SECRET);
+//console.log('JWT_SECRET:', process.env.JWT_SECRET);
 
 // Creamos el servidor Fastify
 const fastify = Fastify();
@@ -28,7 +28,6 @@ fastify.register(jwt, {
 
 fastify.register(authRoutes);
 
-// Decorador para verificar el JWT
 // Decorador para verificar el JWT
 fastify.decorate('authenticate', async (req, res) => {
   try {

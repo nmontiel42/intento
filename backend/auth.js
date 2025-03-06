@@ -1,15 +1,14 @@
 // auth.js
 import db from './src/database.js';  // Importamos la base de datos
-import { createUser } from './src/database.js';  // Importamos las funciones de la base de datos
+import { createUser } from './models/userModel.js';  // Importamos las funciones de la base de datos
 import bcrypt from 'bcryptjs';
-import { deleteUserByUsername } from './controllers/authController.js';
 
 export default async function (fastify, options) {
     // Ruta para registrar un nuevo usuario
     fastify.post('/register', async (request, reply) => {
         const { username, email, password } = request.body;
 
-        console.log('Datos del cuerpo:', request.body);
+        //console.log('Datos del cuerpo:', request.body);
 
         if (!username || !email || !password) {
             return reply.status(400).send({ error: 'Faltan datos obligatorios' });
@@ -20,7 +19,7 @@ export default async function (fastify, options) {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = await createUser({ username, email, password: hashedPassword });
 
-            console.log('Usuario creado:', newUser); // 👀 Verificar que `username` está presente
+            //console.log('Usuario creado:', newUser); // 👀 Verificar que `username` está presente
 
             const token = fastify.jwt.sign({ userId: newUser.id });
 
@@ -28,7 +27,7 @@ export default async function (fastify, options) {
                 message: 'Usuario registrado exitosamente',
                 token,
                 user: newUser // Asegurar que `user` es lo que enviamos
-            }); // Devuelve la respuesta con el usuario
+            });
         } catch (error) {
             console.error('Error en el registro:', error);
             reply.status(500).send({ error: 'Error al registrar el usuario' });
@@ -98,20 +97,6 @@ export default async function (fastify, options) {
     });
 
 }
-
-export function checkUserExists(userId) {
-    return new Promise((resolve, reject) => {
-        db.get(
-            'SELECT * FROM users WHERE id = ?',
-            [userId],
-            (err, row) => {
-                if (err) reject(err);
-                else resolve(row);
-            }
-        );
-    });
-}
-
 
 // Función para obtener un usuario por su correo electrónico
 async function getUserByEmail(email) {
