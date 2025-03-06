@@ -8,8 +8,6 @@ services:
       - "8080:80"
     networks:
       - app-network
-    volumes:
-      - ./frontend:/usr/share/nginx/html
     depends_on:
       - backend
   

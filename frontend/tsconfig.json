@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "outDir": "./dist",       // Asegúrate de que esta ruta sea correcta
+    "rootDir": "./src",       // Asegúrate de que esta ruta sea correcta
+    "strict": true,
+    "esModuleInterop": true,
+    "lib": ["es6", "dom"]
+  },
+  "include": [
+    "src/**/*.ts"             // Asegúrate de que esta ruta incluya todos los archivos .ts
+  ]
+}
