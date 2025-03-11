@@ -8,12 +8,14 @@ COPY package*.json ./
 RUN npm install
 # Copiar el código fuente
 COPY . .
+# Ejecutar el comando de Tailwind CSS
+RUN npx @tailwindcss/cli -i ./css/style.css -o ./dist/output.css
 # Compilar TypeScript a JavaScript
 RUN npm run build
+
 # Etapa 2: Configurar nginx para servir la aplicación
 FROM nginx:alpine
 # Copiar los archivos compilados desde la etapa de construcción
-# Ajusta la ruta "/app/dist" según donde se generen tus archivos compilados
 COPY --from=build /app /usr/share/nginx/html
 # Exponer el puerto 80
 EXPOSE 80

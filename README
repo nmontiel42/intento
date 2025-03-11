@@ -1,5 +1,4 @@
 TO DO:
  
-    -Cambiar app.js a .ts
-    -Comprobar que sirve y que no (done)
-    -Ordenar backend (done)
+    -Comprobar google sign-in (backend)
+    -Editar inicio de sesion y home (front)

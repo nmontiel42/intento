@@ -2,6 +2,8 @@
 import db from './src/database.js';  // Importamos la base de datos
 import { createUser } from './models/userModel.js';  // Importamos las funciones de la base de datos
 import bcrypt from 'bcryptjs';
+/* import { OAuth2Client } from 'google-auth-library';
+import jwt from 'jsonwebtoken'; */
 
 export default async function (fastify, options) {
     // Ruta para registrar un nuevo usuario
@@ -63,6 +65,7 @@ export default async function (fastify, options) {
         }
     });
 
+
     fastify.get('/users', async (request, reply) => {
         try {
             // Obtener todos los usuarios
@@ -73,6 +76,47 @@ export default async function (fastify, options) {
             reply.status(500).send({ error: 'Error al obtener los usuarios' });
         }
     });
+    
+    /* const client = new OAuth2Client('47485993219-l224civ56stpoq1ab56grmau695t0s9b.apps.googleusercontent.com'); // Reemplaza con tu client_id
+    
+    fastify.post('/google-login', async (request, reply) => {
+        const { token } = request.body;
+    
+        try {
+            // Verificar el token con Google
+            const googleResponse = await client.verifyIdToken({
+                idToken: token,
+                audience: '47485993219-l224civ56stpoq1ab56grmau695t0s9b.apps.googleusercontent.com' // Debe ser el mismo que tu client_id
+            });
+    
+            const googleData = googleResponse.getPayload();
+    
+            if (!googleData.email) {
+                return reply.code(401).send({ error: "Invalid Google token" });
+            }
+    
+            // Aquí generamos un token JWT para la sesión del usuario
+            const jwtToken = jwt.sign(
+                { id: googleData.sub, email: googleData.email },
+                'JWTsecretKey123', // Reemplaza con tu clave secreta
+                { expiresIn: '1h' } // Opcional: la duración del token
+            );
+    
+            // Enviar el token y los datos del usuario
+            return reply.send({
+                token: jwtToken,
+                user: {
+                    id: googleData.sub,
+                    email: googleData.email,
+                    username: googleData.email.split('@')[0] // Puedes usar algo más específico si lo deseas
+                }
+            });
+        } catch (error) {
+            console.error("Google Auth Error:", error);
+            return reply.code(500).send({ error: "Server error" });
+        }
+    }); */
+    
 
     fastify.delete('/delete-account', { preHandler: fastify.authenticate }, async (req, reply) => {
         const { username } = req.body; // Obtener el username del body

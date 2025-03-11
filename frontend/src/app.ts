@@ -162,3 +162,48 @@ deleteAccountBtn.addEventListener('click', async () => {
 cancelBtn.addEventListener('click', () => {
   confirmModal.style.display = 'none'; // Cerrar el modal
 });
+
+// Manejo del login con Google
+/* async function handleGoogleLogin(response: any) {
+  try {
+      const googleToken = response.credential; // Obtener el token de Google
+
+      // Verificar que el token de Google es válido
+      if (!googleToken) {
+          alert("Google token is missing.");
+          return;
+      }
+
+      // Enviar el token al backend para validarlo
+      const backendResponse = await fetch('http://localhost:3000/google-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: googleToken }),
+      });
+
+      const data = await backendResponse.json();
+
+      console.log('Backend response:', data);
+
+      if (!data.token) {
+          alert("Error: Google authentication failed");
+          return;
+      }
+
+      // Guardar el usuario en localStorage
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Mostrar la vista de inicio y actualizar el nombre de usuario
+      loginView.style.display = 'none';
+      homeView.style.display = 'block';
+      userName.textContent = data.user.username;
+
+      alert("Google Sign-in successful!");
+  } catch (error) {
+      console.error("Google Login Error:", error);
+      alert("Error al iniciar sesión con Google.");
+  }
+} */
+
+
