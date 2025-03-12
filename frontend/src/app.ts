@@ -164,10 +164,9 @@ cancelBtn.addEventListener('click', () => {
 });
 
 // Manejo del login con Google
-/* async function handleGoogleLogin(response: any) {
+async function handleGoogleLogin(response: any) {
   try {
       const googleToken = response.credential; // Obtener el token de Google
-
       // Verificar que el token de Google es válido
       if (!googleToken) {
           alert("Google token is missing.");
@@ -194,8 +193,10 @@ cancelBtn.addEventListener('click', () => {
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
+
       // Mostrar la vista de inicio y actualizar el nombre de usuario
       loginView.style.display = 'none';
+      registerView.style.display = 'none';
       homeView.style.display = 'block';
       userName.textContent = data.user.username;
 
@@ -204,6 +205,6 @@ cancelBtn.addEventListener('click', () => {
       console.error("Google Login Error:", error);
       alert("Error al iniciar sesión con Google.");
   }
-} */
+}
 
 
