@@ -4,6 +4,7 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import dotenv from 'dotenv';
 import authRoutes from './auth.js';
+import fastifyWebsocket from '@fastify/websocket';
 
 dotenv.config();
 //console.log('JWT_SECRET:', process.env.JWT_SECRET);
@@ -58,6 +59,10 @@ fastify.decorate('authenticate', async (req, res) => {
     res.send(err);
   }
 });
+
+/*-------------------LIVE CHAT-------------------*/
+
+/*-------------------LIVE CHAT END-------------------*/
 
 // Configuración de las rutas
 fastify.get('/', async (request, reply) => {
