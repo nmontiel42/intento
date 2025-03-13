@@ -43,7 +43,7 @@ registerForm.addEventListener('submit', async (event: Event) => {
 
   try {
     // Enviamos la solicitud POST al backend para registrar el usuario
-    const response = await fetch('http://localhost:3000/register', {
+    const response = await fetch('https://localhost:3000/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ loginForm.addEventListener('submit', async (event: Event) => {
 
   try {
     // Enviamos la solicitud POST al backend para iniciar sesión
-    const response = await fetch('http://localhost:3000/login', {
+    const response = await fetch('https://localhost:3000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ deleteAccountBtn.addEventListener('click', async () => {
   const token = localStorage.getItem('authToken');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  const response = await fetch('http://localhost:3000/delete-account', {
+  const response = await fetch('https://localhost:3000/delete-account', {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ async function handleGoogleLogin(response: any) {
       }
 
       // Enviar el token al backend para validarlo
-      const backendResponse = await fetch('http://localhost:3000/google-login', {
+      const backendResponse = await fetch('https://localhost:3000/google-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token: googleToken }),

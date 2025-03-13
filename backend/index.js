@@ -41,7 +41,7 @@ fastify.addHook('onSend', (request, reply, payload, done) => {
     "default-src 'self'; " +
     "script-src 'self' https://accounts.google.com/gsi/ 'unsafe-inline'; " +
     "frame-src https://accounts.google.com/gsi/; " +
-    "connect-src 'self' https://accounts.google.com/gsi/ http://localhost:3000; " +
+    "connect-src 'self' https://accounts.google.com/gsi/ https://localhost:3000; " +
     "img-src 'self' https://accounts.google.com data:; " +
     "style-src 'self' 'unsafe-inline' https://accounts.google.com;"
   );
