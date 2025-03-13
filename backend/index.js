@@ -13,7 +13,7 @@ const fastify = Fastify();
 
 // Registro de plugins
 fastify.register(cors, {
-  origin: 'http://localhost:8080',
+  origin: 'https://localhost:8080',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -24,6 +24,26 @@ fastify.register(jwt, {
   sign: {
     expiresIn: '1d',
   },
+});
+
+// Añadir hook para establecer cabeceras de seguridad
+fastify.addHook('onSend', (request, reply, payload, done) => {
+  // Configurar Content-Security-Policy para permitir Google Sign-In
+  reply.header('Content-Security-Policy', 
+    "default-src 'self'; " +
+    "script-src 'self' https://accounts.google.com/gsi/ 'unsafe-inline'; " +
+    "frame-src https://accounts.google.com/gsi/; " +
+    "connect-src 'self' https://accounts.google.com/gsi/ http://localhost:3000; " +
+    "img-src 'self' https://accounts.google.com data:; " +
+    "style-src 'self' 'unsafe-inline' https://accounts.google.com;"
+  );
+  
+  // Otras cabeceras de seguridad útiles
+  reply.header('X-Content-Type-Options', 'nosniff');
+  reply.header('X-Frame-Options', 'DENY');
+  reply.header('X-XSS-Protection', '1; mode=block');
+  
+  done();
 });
 
 fastify.register(authRoutes);

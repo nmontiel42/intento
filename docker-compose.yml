@@ -5,7 +5,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      #- "8080:80"
+      - "8080:443" #modificado
     networks:
       - app-network
     depends_on:

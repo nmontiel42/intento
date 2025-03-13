@@ -4,6 +4,10 @@ import { createUser } from './models/userModel.js';  // Importamos las funciones
 import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { hash } from 'crypto';
+
+dotenv.config();
 
 export default async function (fastify, options) {
     // Ruta para registrar un nuevo usuario
@@ -77,7 +81,7 @@ export default async function (fastify, options) {
         }
     });
     
-    const client = new OAuth2Client('47485993219-f593c5ggoadg3igoc5rvijuiuic84ej3.apps.googleusercontent.com'); // Reemplaza con tu client_id
+    const client = new OAuth2Client(process.env.GOOGLE_ID); // Reemplaza con tu client_id
     
     fastify.post('/google-login', async (request, reply) => {
         const { token } = request.body;
@@ -86,7 +90,7 @@ export default async function (fastify, options) {
             // Verificar el token con Google
             const googleResponse = await client.verifyIdToken({
                 idToken: token,
-                audience: '47485993219-f593c5ggoadg3igoc5rvijuiuic84ej3.apps.googleusercontent.com' // Debe ser el mismo que tu client_id
+                audience: process.env.GOOGLE_ID // Debe ser el mismo que tu client_id
             });
     
             const googleData = googleResponse.getPayload();
@@ -102,8 +106,11 @@ export default async function (fastify, options) {
                 isNewUser = true;
                 const username = googleData.name;
                 const email = googleData.email;
-                const password = 'GOOGLE_AUTH'; // Se puede usar otro valor si se desea
-                user = await createUser({ username, email, password });
+                const password = generateRandomPassword(); // Se puede usar otro valor si se desea
+                console.log('Contraseña generada:', password);
+                const hashedPassword = await bcrypt.hash(password, 10);
+                console.log('hashedPassword: ', hashedPassword);
+                user = await createUser({ username, email, password: hashedPassword });
             }
 
             // Aquí generamos un token JWT para la sesión del usuario
@@ -147,6 +154,15 @@ export default async function (fastify, options) {
         });
     });
 
+}
+
+function generateRandomPassword(length = 12) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
 }
 
 // Función para obtener un usuario por su correo electrónico

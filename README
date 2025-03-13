@@ -1,5 +1,7 @@
 TO DO:
- 
-    -Comprobar google sign-in (backend)
     -Editar inicio de sesion y home (front)
     -Agregar Pong3D
+
+WARNINGS Y ERRORES:
+
+    -Feature Policy: Skipping unsupported feature name “identity-credentials-get”. client:263:248 (Es interno del sign-in de gogle)
