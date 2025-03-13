@@ -5,12 +5,19 @@ import jwt from '@fastify/jwt';
 import dotenv from 'dotenv';
 import authRoutes from './auth.js';
 import fastifyWebsocket from '@fastify/websocket';
+import https from 'https';
+import fs from 'fs';
 
 dotenv.config();
 //console.log('JWT_SECRET:', process.env.JWT_SECRET);
 
 // Creamos el servidor Fastify
-const fastify = Fastify();
+const fastify = Fastify({
+	https: {
+	  key: fs.readFileSync('/app/certs/nginx-selfsigned.key'),
+	  cert: fs.readFileSync('/app/certs/nginx-selfsigned.crt'),
+	}
+});
 
 // Registro de plugins
 fastify.register(cors, {
