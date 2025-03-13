@@ -2,6 +2,7 @@
 const registerView = document.getElementById('registerView') as HTMLElement;
 const loginView = document.getElementById('loginView') as HTMLElement;
 const homeView = document.getElementById('homeView') as HTMLElement;
+const usernameView = document.getElementById('usernameView') as HTMLElement;
 
 // Seleccionamos el elemento para mostrar el nombre de usuario
 const userName = document.getElementById('userName') as HTMLElement;
@@ -20,6 +21,8 @@ const confirmModal = document.getElementById('confirmModal') as HTMLElement;
 const cancelBtn = document.getElementById('cancelBtn') as HTMLButtonElement;
 const logoutOnlyBtn = document.getElementById('logoutOnlyBtn') as HTMLButtonElement;
 const deleteAccountBtn = document.getElementById('deleteAccountBtn') as HTMLButtonElement;
+
+const submitUsername = document.getElementById('submitUsername') as HTMLButtonElement;
 
 // Manejadores de eventos para cambiar entre vistas
 goToLoginButton.addEventListener('click', () => {
@@ -135,6 +138,9 @@ deleteAccountBtn.addEventListener('click', async () => {
   const token = localStorage.getItem('authToken');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
+  console.log('User:', user);
+  console.log('Token:', token);
+
   const response = await fetch('http://localhost:3000/delete-account', {
     method: 'DELETE',
     headers: {
@@ -190,15 +196,14 @@ async function handleGoogleLogin(response: any) {
       }
 
       // Guardar el usuario en localStorage
+      localStorage.setItem('googleToken', googleToken);
       localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
 
       // Mostrar la vista de inicio y actualizar el nombre de usuario
       loginView.style.display = 'none';
       registerView.style.display = 'none';
-      homeView.style.display = 'block';
-      userName.textContent = data.user.username;
+      homeView.style.display = 'none';
+      usernameView.style.display = 'block';
 
       alert("Google Sign-in successful!");
   } catch (error) {
@@ -207,4 +212,40 @@ async function handleGoogleLogin(response: any) {
   }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const usernameForm = document.getElementById('usernameForm') as HTMLFormElement;
 
+  usernameForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    console.log("LE HE DADO A GUARDAR");
+
+    const username = (document.getElementById('usernameInput') as HTMLInputElement).value;
+    const token = localStorage.getItem('googleToken');
+
+    if (!token) {
+      alert('No auth token found');
+      return;
+    }
+
+    const response = await fetch('http://localhost:3000/google-username', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ username, token }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      usernameView.style.display = 'none';
+      homeView.style.display = 'block';
+      userName.textContent = data.user.username;
+    } else {
+      alert('Error al guardar el nombre de usuario');
+    }
+  });
+});

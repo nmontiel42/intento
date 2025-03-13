@@ -1,6 +1,10 @@
 TO DO:
     -Editar inicio de sesion y home (front)
     -Agregar Pong3D
+    -Problema nombre usuario google (nombre duplicado)
+    -Reset password
+    -Comprobar error
+    -Comprobar si usuario ya existe (no pide username)
 
 WARNINGS Y ERRORES:
 
