@@ -195,22 +195,33 @@ async function handleGoogleLogin(response: any) {
           return;
       }
 
-      // Guardar el usuario en localStorage
       localStorage.setItem('googleToken', googleToken);
       localStorage.setItem('authToken', data.token);
 
-      // Mostrar la vista de inicio y actualizar el nombre de usuario
-      loginView.style.display = 'none';
-      registerView.style.display = 'none';
-      homeView.style.display = 'none';
-      usernameView.style.display = 'block';
+      // Comprobar si el usuario ya existe (puedes usar el campo data.userExists o algo similar)
+      if (data.userExists) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        loginView.style.display = 'none';
+        registerView.style.display = 'none';
+        homeView.style.display = 'block';
+        usernameView.style.display = 'none';
+        userName.textContent = data.user.username;
 
-      alert("Google Sign-in successful!");
+        alert("Google Sign-in successful!");
+      } else {
+        loginView.style.display = 'none';
+        registerView.style.display = 'none';
+        homeView.style.display = 'none';
+        usernameView.style.display = 'block';
+
+        alert("Google Sign-in successful! Please set your username.");
+      }
   } catch (error) {
       console.error("Google Login Error:", error);
       alert("Error al iniciar sesión con Google.");
   }
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const usernameForm = document.getElementById('usernameForm') as HTMLFormElement;
