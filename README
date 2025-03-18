@@ -1,9 +1,10 @@
 TO DO:
     -Editar inicio de sesion y home (front)
+    -Agregar cambio idioma
     -Agregar Pong3D
     -Reset password
-    -Comprobar error
 
 WARNINGS Y ERRORES:
 
     -Feature Policy: Skipping unsupported feature name “identity-credentials-get”. client:263:248 (Es interno del sign-in de gogle)
+    -Error de Cors en el login de google (puede que se arregle al poner htttps en back)

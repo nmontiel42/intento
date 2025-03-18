@@ -25,9 +25,11 @@ const deleteAccountBtn = document.getElementById('deleteAccountBtn') as HTMLButt
 const submitUsername = document.getElementById('submitUsername') as HTMLButtonElement;
 
 // Manejadores de eventos para cambiar entre vistas
-goToLoginButton.addEventListener('click', () => {
-  registerView.style.display = 'none';
-  loginView.style.display = 'block';
+document.addEventListener("DOMContentLoaded", () => {
+  goToLoginButton.addEventListener('click', () => {
+    registerView.style.display = 'none';
+    loginView.style.display = 'block';
+  });
 });
 
 goToRegisterButton.addEventListener('click', () => {

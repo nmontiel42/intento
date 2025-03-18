@@ -5,7 +5,6 @@ import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { hash } from 'crypto';
 
 dotenv.config();
 
@@ -104,7 +103,7 @@ export default async function (fastify, options) {
             if (existingUser) {
                 const jwtToken = jwt.sign(
                     { id: googleData.sub, email: googleData.email },
-                    'JWTsecretKey123', // Reemplázalo con una clave segura
+                    process.env.JWT_SECRET, // Reemplázalo con una clave segura
                     { expiresIn: '1h' }
                 );
 
@@ -122,7 +121,7 @@ export default async function (fastify, options) {
             } else {
                 const jwtToken = jwt.sign(
                     { id: googleData.sub, email: googleData.email },
-                    'JWTsecretKey123', // Reemplázalo con una clave segura
+                    process.env.JWT_SECRET, // Reemplázalo con una clave segura
                     { expiresIn: '1h' }
                 );
 
@@ -180,7 +179,7 @@ export default async function (fastify, options) {
             // Aquí generamos un token JWT para la sesión del usuario
             const jwtToken = jwt.sign(
                 { id: googleData.sub, email: googleData.email },
-                'JWTsecretKey123', // Reemplaza con tu clave secreta
+                process.env.JWT_SECRET, // Reemplaza con tu clave secreta
                 { expiresIn: '1h' } // Opcional: la duración del token
             );
 

@@ -56,6 +56,7 @@
     display: flex;
     margin: 25px 0;
     position: relative;
+    justify-content: center;
 }
 
 .paddle {
@@ -176,7 +177,12 @@
 }
 
 /*---- Boton Login ----*/
-  
+
+#changeToLogin {
+    display: flex;
+    flex-direction: column;
+}
+
 #theresAccount {
     font-size: 9px;
     margin-top: 20px;
@@ -190,9 +196,9 @@
     background-color: #BE36CD;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
-    padding: 10px 20px;
+    padding: 10px 10px;
     font-family: 'Press Start 2P', cursive;
-    font-size: 12px;
+    font-size: 10px;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
