@@ -140,14 +140,10 @@ deleteAccountBtn.addEventListener('click', async () => {
   const token = localStorage.getItem('authToken');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-<<<<<<< HEAD
-  const response = await fetch('https://localhost:3000/delete-account', {
-=======
   console.log('User:', user);
   console.log('Token:', token);
 
   const response = await fetch('http://localhost:3000/delete-account', {
->>>>>>> main
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
