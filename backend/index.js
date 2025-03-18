@@ -70,6 +70,78 @@ fastify.decorate('authenticate', async (req, res) => {
 });
 
 /*-------------------LIVE CHAT-------------------*/
+fastify.register(fastifyWebsocket);
+
+const chatClients = new Set();
+
+fastify.register(async function (fastify) {
+  fastify.get('/chat', { websocket: true }, (connection, req) => {
+    let user = null;
+
+	connection.socket.on("message", (rawMessage) => {
+		try {
+		  const data = JSON.parse(rawMessage);
+		  console.log('Recibido mensaje:', data);
+	  
+		  if (data.type === "auth") {
+			// Verificar el token recibido
+			try {
+			  // Verificar que el token recibido es válido
+			  const decoded = fastify.jwt.verify(data.token);
+			  
+			  // Verificar que el token decodificado coincida con el token almacenado en el objeto `user`
+			  if (decoded.token !== user.token) {
+				console.error("Los tokens no coinciden.");
+				connection.socket.close();
+				return;
+			  }
+			  
+			  // Si los tokens coinciden, asignamos el usuario decodificado
+			  user = decoded.user;
+			  console.log("Usuario autenticado:", user);
+			} catch (err) {
+			  console.error("Error al verificar el token:", err);
+			  connection.socket.close();
+			  return;
+			}
+	  
+		  } else if (data.type === "message" && user) {
+			// Enviar mensaje a todos los clientes conectados
+			const chatMessage = JSON.stringify({ type: "message", user, message: data.message });
+	  
+			for (const client of chatClients) {
+			  if (client.socket.readyState === WebSocket.OPEN) {
+				console.log("Enviando mensaje al cliente:", client.socket.readyState);
+				try {
+				  client.socket.send(chatMessage);
+				} catch (sendError) {
+				  console.error("Error al enviar mensaje:", sendError);
+				  chatClients.delete(client);
+				}
+			  } else {
+				console.log("Conexión cerrada o no abierta, eliminando cliente", client.socket.readyState);
+				chatClients.delete(client);
+			  }
+			}
+		  }
+		} catch (err) {
+		  console.error("Error en WebSocket:", err);
+		}
+	  });	  
+
+    chatClients.add(connection);
+
+    connection.socket.on("close", () => {
+      chatClients.delete(connection);
+    });
+
+    // Manejo de errores en WebSocket
+    connection.socket.on('error', (err) => {
+      console.error("Error en WebSocket:", err);
+      chatClients.delete(connection);
+    });
+  });
+});
 
 /*-------------------LIVE CHAT END-------------------*/
 
