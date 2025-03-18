@@ -3,6 +3,7 @@
 @import './Login.css';
 @import './Home.css';
 @import './Username.css';
+@import './Game.css';
 
 body {
     background-color: #000;

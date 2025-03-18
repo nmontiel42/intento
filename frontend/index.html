@@ -121,7 +121,7 @@
 
     <!-- Chat -->
 
-    <div id="liveChatContainer"
+    <div id="liveChatContainer" style="display:none;"
       class="fixed bottom-0 right-0 w-120 h-full bg-white shadow-lg flex flex-col border border-gray-300 transition-transform transform">
       <div class="bg-blue-600 text-white p-3 font-semibold flex justify-between items-center" id="chatHeader">
         <span class="text-white text-xl">Live Chat</span>
@@ -139,6 +139,25 @@
     </div>
 
     <!-- Pong -->
+     <!-- Vista del juego Pong -->
+     <div id="gameView" >
+      <h1>¡Bienvenido a PONG!</h1>
+      <p>El juego comenzará en breve...</p>
+
+      <!-- Área del juego -->
+      <div id="gameArea">
+        <div id="pongCanvasContainer">
+          <canvas id="pongCanvas" width="800" height="400"></canvas>
+        </div>
+      </div>
+
+      <!-- Botones de control del juego -->
+      <div id="gameControls">
+        <button id="startGameBtn">Pausar Juego</button>
+        <button id="exitGameBtn">Resetear Juego</button>
+      </div>
+        
+      </div>
 
     
 

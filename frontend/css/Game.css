@@ -1,0 +1,40 @@
+body {
+    font-family: 'Press Start 2P', cursive;
+    background-color: black;
+    color: white;
+    text-align: center;
+  }
+  
+  #gameView {
+    padding: 20px;
+  }
+  
+  #pongCanvas {
+    border: 2px solid white;
+    margin-top: 10px;
+  }
+  
+  #gameControls button {
+    margin: 10px;
+    padding: 10px;
+    background-color: #444;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  #gameControls button:hover {
+    background-color: #666;
+  }
+  
+  .languageButtons {
+    margin-top: 20px;
+  }
+  
+  .version-text {
+    font-size: 12px;
+    margin-top: 20px;
+  }
+  
+
+  
