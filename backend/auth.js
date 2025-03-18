@@ -5,7 +5,6 @@ import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { hash } from 'crypto';
 
 dotenv.config();
 
@@ -80,21 +79,85 @@ export default async function (fastify, options) {
             reply.status(500).send({ error: 'Error al obtener los usuarios' });
         }
     });
-    
+
     const client = new OAuth2Client(process.env.GOOGLE_ID); // Reemplaza con tu client_id
-    
+
     fastify.post('/google-login', async (request, reply) => {
         const { token } = request.body;
-    
+
         try {
             // Verificar el token con Google
             const googleResponse = await client.verifyIdToken({
                 idToken: token,
                 audience: process.env.GOOGLE_ID // Debe ser el mismo que tu client_id
             });
-    
+
             const googleData = googleResponse.getPayload();
-    
+
+            if (!googleData.email) {
+                return reply.code(401).send({ error: "Invalid Google token" });
+            }
+
+            const existingUser = await getUserByEmail(googleData.email);
+
+            if (existingUser) {
+                const jwtToken = jwt.sign(
+                    { id: googleData.sub, email: googleData.email },
+                    process.env.JWT_SECRET, // Reemplázalo con una clave segura
+                    { expiresIn: '1h' }
+                );
+
+                return reply.send({
+                    token: jwtToken,
+                    userExists: true,
+                    user: {
+                        email: googleData.email,
+                        name: googleData.name,
+                        picture: googleData.picture,
+                        locale: googleData.locale,
+                        username: existingUser.username
+                    }
+                });
+            } else {
+                const jwtToken = jwt.sign(
+                    { id: googleData.sub, email: googleData.email },
+                    process.env.JWT_SECRET, // Reemplázalo con una clave segura
+                    { expiresIn: '1h' }
+                );
+
+                return reply.send({
+                    token: jwtToken,
+                    userExists: false,
+                    user: {
+                        email: googleData.email,
+                        name: googleData.name,
+                        picture: googleData.picture,
+                        locale: googleData.locale
+                    }
+                });
+            }
+
+        } catch (error) {
+            console.error("Google Auth Error:", error);
+            return reply.code(500).send({ error: "Server error" });
+        }
+    });
+
+    fastify.post('/google-username', async (request, reply) => {
+
+        console.log('HE LLEGADOOOOOOOOOOOO');
+
+        const { token, username } = request.body; // Desestructurar el username recibido
+
+        console.log('Usuario recibido:', username);
+        try {
+            const googleResponse = await client.verifyIdToken({
+                idToken: token,
+                audience: process.env.GOOGLE_ID
+            });
+
+            const googleData = googleResponse.getPayload();
+
             if (!googleData.email) {
                 return reply.code(401).send({ error: "Invalid Google token" });
             }
@@ -104,19 +167,19 @@ export default async function (fastify, options) {
 
             if (!user) {
                 isNewUser = true;
-                const username = googleData.name;
                 const email = googleData.email;
                 const password = generateRandomPassword(); // Se puede usar otro valor si se desea
                 console.log('Contraseña generada:', password);
                 const hashedPassword = await bcrypt.hash(password, 10);
                 console.log('hashedPassword: ', hashedPassword);
+
+                // Usar el username recibido del frontend
                 user = await createUser({ username, email, password: hashedPassword });
             }
-
             // Aquí generamos un token JWT para la sesión del usuario
             const jwtToken = jwt.sign(
                 { id: googleData.sub, email: googleData.email },
-                'JWTsecretKey123', // Reemplaza con tu clave secreta
+                process.env.JWT_SECRET, // Reemplaza con tu clave secreta
                 { expiresIn: '1h' } // Opcional: la duración del token
             );
 
@@ -130,7 +193,7 @@ export default async function (fastify, options) {
             return reply.code(500).send({ error: "Server error" });
         }
     });
-    
+
 
     fastify.delete('/delete-account', { preHandler: fastify.authenticate }, async (req, reply) => {
         const { username } = req.body; // Obtener el username del body

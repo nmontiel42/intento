@@ -8,5 +8,10 @@ down:
 clean: down
 		@docker system prune -a -f
 
-.PHONY: clean down
+# Levantar solo el contenedor de frontend
+tw:
+	@docker-compose -f docker-compose.yml up frontend
+
+
+.PHONY: clean down tw
 

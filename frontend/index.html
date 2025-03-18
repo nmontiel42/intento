@@ -6,29 +6,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mi SPA</title>
   <link rel="stylesheet" href="/dist/output.css" />
+  <!-- <link href="css/style.css" rel="stylesheet">
+  <link href="css/signIn.css" rel="stylesheet"> -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="public/letra-t.png" sizes="16x16">
 </head>
 
 <body>
-  <div id="app">
+  <div class="scanlines"></div>
 
-    <!-- Vista de Registro -->
-    <div id="registerView">
-      <h1 class="text-red-700">Registro de Usuario</h1>
+    <!-- PAGINA INICIO DE SESION -->
+    <div id="registerView" class="crt">
+
+      <div class="logo">
+        <div class="logo-text">Bienvenido a PONG</div>
+      </div>
+
+      <div class="pong-graphic">
+        <div class="paddle"></div>
+        <div class="ball"></div>
+        <div class="paddle"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 class="neon-subtitle">REGISTRATE PARA JUGAR</h3>
+
       <form id="registerForm">
         <input type="email" id="email" name="email" placeholder="Tu correo" required />
         <input type="text" id="username" name="username" placeholder="Tu nombre de usuario" required />
         <input type="password" id="password" name="password" placeholder="Tu contraseña" required />
-        <button type="submit">Registrar</button>
+        <button id="submit" type="submit">Registrarse</button>
       </form>
-      <h1>¿Ya tienes cuenta?</h1>
-      <button id="goToLogin">Inicia sesión</button>
-      <p>o</p>
 
-      <div id="g_id_onload" data-client_id="47485993219-g44j83f2em6ug69vfdm0o5dljrm84lk0.apps.googleusercontent.com"
-        data-callback="handleGoogleLogin" data-auto_prompt="false">
+      <div class="divider"></div>
+
+      <div id="changeToLogin">
+        <h1 id="theresAccount">¿Ya tienes cuenta?</h1>
+        <button id="goToLogin">Inicia sesión</button>
+        <p class="text-white m-2">o</p>
+
+        <!-- Aquí está el campo de Google Sign-In -->
+        <div id="g_id_onload" data-client_id="47485993219-g44j83f2em6ug69vfdm0o5dljrm84lk0.apps.googleusercontent.com"
+          data-callback="handleGoogleLogin" data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin"
+            data-type="standard"
+            data-shape="square"
+            data-theme="filled_blue"
+            data-text="signin_with"
+            data-size="large"
+            data-logo_alignment="center">
+        </div>
       </div>
-      <div class="g_id_signin" data-type="standard"></div>
+
+      <div class="languageButtons">
+        <button class="lanBtn" id="esBtn">ES</button>
+        <button class="lanBtn" id="enBtn">EN</button>
+        <button class="lanBtn" id="frBtn">FR</button>
+      </div>
+
+      <div class="version-text">v13.3.2025</div>
     </div>
 
 
@@ -44,6 +82,14 @@
       <button id="goToRegister">¿No tienes cuenta? Regístrate</button>
     </div>
 
+    <div id="usernameView" style="display:none;">
+      <h1>¡Hola!</h1>
+      <p>Por favor, completa tu registro.</p>
+      <form id="usernameForm">
+        <input type="text" id="usernameInput" name="usernameInput" placeholder="Tu nombre de usuario" required />
+        <button id="submitUsername" type="submit">Guardar</button>
+      </form>
+    </div>
     
     <!-- Vista de Home (oculta inicialmente) -->
     <div id="homeView" style="display:none;">

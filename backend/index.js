@@ -37,15 +37,21 @@ fastify.register(jwt, {
 // Añadir hook para establecer cabeceras de seguridad
 fastify.addHook('onSend', (request, reply, payload, done) => {
   // Configurar Content-Security-Policy para permitir Google Sign-In
+
+  reply.header('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  reply.header('Cross-Origin-Resource-Policy', 'cross-origin');
   reply.header('Content-Security-Policy', 
     "default-src 'self'; " +
     "script-src 'self' https://accounts.google.com/gsi/ 'unsafe-inline'; " +
     "frame-src https://accounts.google.com/gsi/; " +
+<<<<<<< HEAD
     "connect-src 'self' https://accounts.google.com/gsi/ https://localhost:3000; " +
+=======
+    "connect-src 'self' https://accounts.google.com/gsi/ https://localhost:3000; " + // Cambia a https
+>>>>>>> main
     "img-src 'self' https://accounts.google.com data:; " +
     "style-src 'self' 'unsafe-inline' https://accounts.google.com;"
   );
-  
   // Otras cabeceras de seguridad útiles
   reply.header('X-Content-Type-Options', 'nosniff');
   reply.header('X-Frame-Options', 'DENY');

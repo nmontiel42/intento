@@ -9,10 +9,9 @@ services:
       - "8080:443" #modificado
     networks:
       - app-network
-    depends_on:
-      - backend
   
-  # Cambiar nombre network
+  #depends_on:
+  #    - backend
 
   backend:
     container_name: backend
