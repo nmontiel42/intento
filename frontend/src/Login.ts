@@ -143,7 +143,7 @@ deleteAccountBtn.addEventListener('click', async () => {
   console.log('User:', user);
   console.log('Token:', token);
 
-  const response = await fetch('http://localhost:3000/delete-account', {
+  const response = await fetch('https://localhost:3000/delete-account', {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const response = await fetch('http://localhost:3000/google-username', {
+    const response = await fetch('https://localhost:3000/google-username', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
