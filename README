@@ -1,10 +1,17 @@
 TO DO:
-    -Editar inicio de sesion y home (front)
-    -Agregar cambio idioma
+    -Editar home
+    -Editar username
+    -Cambiar a tailwind
     -Agregar Pong3D
-    -Reset password
+
+    FUNCIONES FRONT:
+        -Agregar cambio idioma
+        -Cambiar username
+        -Establecer foto de perfil
+
+    MAYBE:
+        -Reset password
 
 WARNINGS Y ERRORES:
 
     -Feature Policy: Skipping unsupported feature name “identity-credentials-get”. client:263:248 (Es interno del sign-in de gogle)
-    -Error de Cors en el login de google (puede que se arregle al poner htttps en back)

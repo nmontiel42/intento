@@ -4,10 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mi SPA</title>
+  <title>PONG</title>
   <link rel="stylesheet" href="/dist/output.css" />
-  <!-- <link href="css/style.css" rel="stylesheet">
-  <link href="css/signIn.css" rel="stylesheet"> -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="public/letra-t.png" sizes="16x16">
 </head>
@@ -15,142 +13,136 @@
 <body>
   <div class="scanlines"></div>
 
-    <!-- PAGINA INICIO DE SESION -->
-    <div id="registerView" class="crt">
+  <!-- REGISTER -->
 
-      <div class="logo">
-        <div class="logo-text">Bienvenido a PONG</div>
-      </div>
 
-      <div class="pong-graphic">
-        <div class="paddle"></div>
-        <div class="ball"></div>
-        <div class="paddle"></div>
-      </div>
+  <div id="registerView" class="crt">
 
-      <div class="divider"></div>
-
-      <h3 class="neon-subtitle">REGISTRATE PARA JUGAR</h3>
-
-      <form id="registerForm">
-        <input type="email" id="email" name="email" placeholder="Tu correo" required />
-        <input type="text" id="username" name="username" placeholder="Tu nombre de usuario" required />
-        <input type="password" id="password" name="password" placeholder="Tu contraseña" required />
-        <button id="submit" type="submit">Registrarse</button>
-      </form>
-
-      <div class="divider"></div>
-
-      <div id="changeToLogin">
-        <h1 id="theresAccount">¿Ya tienes cuenta?</h1>
-        <button id="goToLogin">Inicia sesión</button>
-        <p class="text-white m-2">o</p>
-
-        <!-- Aquí está el campo de Google Sign-In -->
-        <div id="g_id_onload" data-client_id="47485993219-g44j83f2em6ug69vfdm0o5dljrm84lk0.apps.googleusercontent.com"
-          data-callback="handleGoogleLogin" data-auto_prompt="false">
-        </div>
-        <div class="g_id_signin"
-            data-type="standard"
-            data-shape="square"
-            data-theme="filled_blue"
-            data-text="signin_with"
-            data-size="large"
-            data-logo_alignment="center">
-        </div>
-      </div>
-
-      <div class="languageButtons">
-        <button class="lanBtn" id="esBtn">ES</button>
-        <button class="lanBtn" id="enBtn">EN</button>
-        <button class="lanBtn" id="frBtn">FR</button>
-      </div>
-
-      <div class="version-text">v13.3.2025</div>
+    <div class="logo">
+      <div class="logo-text">Bienvenido a PONG</div>
     </div>
 
-
-    <!-- Vista de Login (oculta inicialmente) -->
-    <div id="loginView" style="display:none;">
-      <h1>Iniciar Sesión</h1>
-      <form id="loginForm">
-        <input type="email" id="loginEmail" name="loginEmail" placeholder="Tu correo" required />
-        <input type="password" id="loginPassword" name="loginPassword" placeholder="Tu contraseña" required />
-        <button type="submit">Iniciar sesión</button>
-      </form>
-
-      <button id="goToRegister">¿No tienes cuenta? Regístrate</button>
+    <div class="pong-graphic">
+      <div class="paddle"></div>
+      <div class="ball"></div>
+      <div class="paddle"></div>
     </div>
 
-    <div id="usernameView" style="display:none;">
-      <h1>¡Hola!</h1>
-      <p>Por favor, completa tu registro.</p>
-      <form id="usernameForm">
-        <input type="text" id="usernameInput" name="usernameInput" placeholder="Tu nombre de usuario" required />
-        <button id="submitUsername" type="submit">Guardar</button>
-      </form>
-    </div>
-    
-    <!-- Vista de Home (oculta inicialmente) -->
-    <div id="homeView" style="display:none;">
-      <h1>Bienvenido, <span id="userName"></span>!</h1>
-      <p>¡Te has registrado exitosamente o has iniciado sesión!</p>
+    <div class="divider"></div>
 
-      <button id="logoutBtn">Cerrar sesión</button>
+    <h3 class="neon-subtitle">REGISTRATE PARA JUGAR</h3>
 
-      <div id="confirmModal" style="display:none;">
-        <div id="modalContent">
-          <h2>¿Qué deseas hacer?</h2>
-          <button id="logoutOnlyBtn">Cerrar sesión</button>
-          <button id="deleteAccountBtn">Eliminar cuenta</button>
-          <button id="cancelBtn">Cancelar</button>
-        </div>
+    <form id="registerForm">
+      <input type="email" id="email" name="email" placeholder="Tu correo" required />
+      <input type="text" id="username" name="username" placeholder="Tu nombre de usuario" required />
+      <input type="password" id="password" name="password" placeholder="Tu contraseña" required />
+      <button id="submit" type="submit">Registrarse</button>
+    </form>
+
+    <div class="divider"></div>
+
+    <div id="changeToLogin">
+      <h1 id="theresAccount">¿Ya tienes cuenta?</h1>
+      <button id="goToLogin">Inicia sesión</button>
+      <p class="text-white m-2">o</p>
+
+      <div id="g_id_onload" data-client_id="47485993219-g44j83f2em6ug69vfdm0o5dljrm84lk0.apps.googleusercontent.com"
+        data-callback="handleGoogleLogin" data-auto_prompt="false">
       </div>
-
-	  <!-- Live Chat -->
-	  <div id="liveChatContainer" class="fixed bottom-0 right-0 w-120 h-full bg-white shadow-lg flex flex-col border border-gray-300 transition-transform transform">
-		<div class="bg-blue-600 text-white p-3 font-semibold flex justify-between items-center" id="chatHeader">
-		  <span class="text-white text-xl" >Live Chat</span>
-		  <button id="toggleChat" class="text-white text-xl cursor-pointer">−</button>
-		</div>
-		<div id="chatBox" class="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-100">
-		</div>
-		<div id="chatInputContainer" class="flex border-t border-gray-300 p-2">
-		  <input type="text" id="chatInput" placeholder="Escribe un mensaje..." 
-			class="flex-1 border border-gray-300 rounded-l-lg p-2 outline-none focus:ring-2 focus:ring-blue-500" />
-		  <button id="sendChatBtn" class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700">
-			Enviar
-		  </button>
-		</div>
-	  </div>
-	  
-	  <script>
-		const chatContainer = document.getElementById("liveChatContainer");
-		const chatBox = document.getElementById("chatBox");
-		const chatInputContainer = document.getElementById("chatInputContainer");
-		const toggleButton = document.getElementById("toggleChat");
-	  
-		let chatMinimized = false;
-	  
-		toggleButton.addEventListener("click", () => {
-		  if (chatMinimized) {
-			chatContainer.style.height = "100%";  // Restaura altura completa
-			chatBox.style.display = "flex";
-			chatInputContainer.style.display = "flex";
-			toggleButton.textContent = "−"; // Cambia icono
-		  } else {
-			chatContainer.style.height = "50px";  // Solo muestra la cabecera
-			chatBox.style.display = "none";
-			chatInputContainer.style.display = "none";
-			toggleButton.textContent = "+"; // Cambia icono
-		  }
-		  chatMinimized = !chatMinimized;
-		});
-	  </script>
-	  
+      <div class="g_id_signin" data-type="standard" data-shape="square" data-theme="filled_blue" data-text="signin_with"
+        data-size="large" data-logo_alignment="center">
+      </div>
     </div>
+
+    <div class="languageButtons">
+      <button class="lanBtn" id="esBtn">ES</button>
+      <button class="lanBtn" id="enBtn">EN</button>
+      <button class="lanBtn" id="frBtn">FR</button>
+    </div>
+
+    <div class="version-text">v13.3.2025</div>
   </div>
 
+
+  <!-- LOGIN -->
+
+
+  <div id="loginView" style="display:none;">
+    <h1 id="loginTitle">Introduce tus datos</h1>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" name="loginEmail" placeholder="Tu correo" required />
+      <input type="password" id="loginPassword" name="loginPassword" placeholder="Tu contraseña" required />
+      <button id="submitLogin" type="submit">Iniciar sesión</button>
+    </form>
+
+    <div class="divider mb-4 mt-2"></div>
+
+    <div id="g_id_onload" data-client_id="47485993219-g44j83f2em6ug69vfdm0o5dljrm84lk0.apps.googleusercontent.com"
+      data-callback="handleGoogleLogin" data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard" data-shape="square" data-theme="filled_blue" data-text="signin_with"
+      data-size="large" data-logo_alignment="center">
+    </div>
+
+    <button id="goToRegister">¿No tienes cuenta? <u>Regístrate</u></button>
+  </div>
+
+
+  <!-- USERNAME -->
+
+
+  <div id="usernameView" style="display:none;">
+    <h1>¡Hola!</h1>
+    <p>Por favor, completa tu registro.</p>
+    <form id="usernameForm">
+      <input type="text" id="usernameInput" name="usernameInput" placeholder="Tu nombre de usuario" required />
+      <button id="submitUsername" type="submit">Guardar</button>
+    </form>
+  </div>
+
+
+  <!-- HOME -->
+
+
+  <div id="homeView" style="display:none;">
+    <h1>Bienvenido, <span id="userName"></span>!</h1>
+    <p>¡Te has registrado exitosamente o has iniciado sesión!</p>
+
+    <button id="logoutBtn">Cerrar sesión</button>
+
+    <div id="confirmModal" style="display:none;">
+      <div id="modalContent">
+        <h2>¿Qué deseas hacer?</h2>
+        <button id="logoutOnlyBtn">Cerrar sesión</button>
+        <button id="deleteAccountBtn">Eliminar cuenta</button>
+        <button id="cancelBtn">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Chat -->
+
+    <div id="liveChatContainer"
+      class="fixed bottom-0 right-0 w-120 h-full bg-white shadow-lg flex flex-col border border-gray-300 transition-transform transform">
+      <div class="bg-blue-600 text-white p-3 font-semibold flex justify-between items-center" id="chatHeader">
+        <span class="text-white text-xl">Live Chat</span>
+        <button id="toggleChat" class="text-white text-xl cursor-pointer">−</button>
+      </div>
+      <div id="chatBox" class="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-100">
+      </div>
+      <div id="chatInputContainer" class="flex border-t border-gray-300 p-2">
+        <input type="text" id="chatInput" placeholder="Escribe un mensaje..."
+          class="flex-1 border border-gray-300 rounded-l-lg p-2 outline-none focus:ring-2 focus:ring-blue-500" />
+        <button id="sendChatBtn" class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700">
+          Enviar
+        </button>
+      </div>
+    </div>
+
+    <!-- Pong -->
+
+    
+
+  </div>
   <script src="/dist/output.js"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
