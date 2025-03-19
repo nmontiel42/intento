@@ -31,6 +31,14 @@ let ball: Ball;
 let animation: number;
 let player1Score: number = 0;
 let player2Score: number = 0;
+// Nombres de los jugadores
+const player1Name = "Player 1";
+const player2Name = "Player 2";
+const winnerScore = 3; // Puntuación para ganar el juego
+
+let isGamePaused: boolean = true;
+let newGame: boolean = true;
+
 
 // Inicializar las variables del juego
 function initializeGame() {
@@ -57,14 +65,21 @@ function initializeGame() {
       dx: 8,
       dy: 8,
   };
-
   gameLoop(); // Comienza el juego
+  cancelAnimationFrame(animation); // Pausa el juego
 }
 
 // Dibuja las paletas y la pelota en el canvas
 function drawGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
 
+
+   // Dibujar los nombres de los jugadores
+   ctx.font = "24px Arial";
+   ctx.fillStyle = "white";
+   ctx.textAlign = "center";
+   ctx.fillText(player1Name, canvas.width / 4, 20); // Posición del nombre del jugador 1
+   ctx.fillText(player2Name, (canvas.width / 4) * 3, 20); // Posición del nombre del jugador 2
   // Dibujar marcadores
   ctx.font = "30px Arial";
   ctx.fillStyle = "white";
@@ -126,7 +141,59 @@ if (ball.x + ball.radius > rightPaddle.x - paddleCollisionMargin &&
       player1Score++;
       resetBall(); // Resetea la posición de la pelota
   }
+  if(player1Score === winnerScore || player2Score === winnerScore){
+    cancelAnimationFrame(animation); // Detener el bucle del juego
+    showGameResult(); // Mostrar el resultado del juego
+     
+  }
 }
+
+function showGameResult() {
+  isGamePaused = true;
+  let winner = player1Score > player2Score ? player1Name : player2Name;
+  let resultText = winner + " wins!";
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+  ctx.font = "48px Arial";
+  ctx.fillStyle = "white";
+  ctx.textAlign = "center";
+  ctx.fillText(resultText, canvas.width / 2, canvas.height / 2);
+  ctx.font = "24px Arial";
+  ctx.fillText(player1Name + ": " + player1Score + " - " + player2Name + ": " + player2Score, canvas.width / 2, canvas.height / 2 + 50);
+  ctx.font = "16px Arial";
+  resetGameBtn.innerText = "Reiniciar Juego";
+}
+
+// Función para mostrar la cuenta atrás
+function showCountdown(callback: () => void) {
+  let countdown = 3;
+
+  // Función para dibujar el número de la cuenta atrás
+  const drawCountdown = () => {
+      // Limpiar el canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Dibujar el número de la cuenta atrás
+      ctx.font = "48px Arial";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.fillText(countdown.toString(), canvas.width / 2, canvas.height / 2);
+  };
+
+  // Dibujar el primer número inmediatamente
+  drawCountdown();
+
+  const countdownInterval = setInterval(() => {
+      countdown--;
+      if (countdown < 0) {
+          clearInterval(countdownInterval);
+          callback(); // Llamar a la función de inicio del juego
+      } else {
+          drawCountdown();
+      }
+  }, 1000);
+}
+
 
 // Resetea la pelota al centro
 function resetBall() {
@@ -164,9 +231,12 @@ function updatePaddlePositions() {
 
 // Bucle principal del juego
 function gameLoop() {
-  drawGame();
-  moveGameObjects();
-  animation = requestAnimationFrame(gameLoop); // Llama a gameLoop para crear el bucle del juego
+    if (isGamePaused) {
+      return;
+    }
+    drawGame();
+    moveGameObjects();
+    animation = requestAnimationFrame(gameLoop); // Llama a gameLoop para crear el bucle del juego
 }
 
 

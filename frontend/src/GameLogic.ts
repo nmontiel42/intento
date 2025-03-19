@@ -1,11 +1,10 @@
 // gameLogic.ts
 
-let isGamePaused: boolean = false;
 
 
 // Obtener los botones de control
 const startGameBtn = document.getElementById("startGameBtn") as HTMLButtonElement;
-const exitGameBtn = document.getElementById("exitGameBtn") as HTMLButtonElement;
+const resetGameBtn = document.getElementById("resetGameBtn") as HTMLButtonElement;
 
 
 // Lógica para manejar la entrada del teclado (movimiento de las palas)
@@ -58,21 +57,30 @@ startGameBtn.addEventListener("click", () => {
         cancelAnimationFrame(animation); // Pausar el juego
         startGameBtn.innerText = "Reanudar Juego";
     }else{
-        isGamePaused = false;
-        gameLoop();
-        startGameBtn.innerText = "Pausar Juego";
+        if(!newGame){
+            isGamePaused = false;
+            gameLoop();
+            startGameBtn.innerText = "Pausar Juego";
+        }else{
+            isGamePaused = false;
+            newGame = false;
+            showCountdown(() => {
+               gameLoop();
+                 startGameBtn.innerText = "Pausar Juego";
+           }); 
+        }
     }
 });
 
 // Función para resetear el juego
-exitGameBtn.addEventListener("click", () => {
-    resetAll(); // Resetea el juego 
-    //isGamePaused = false;
-    //cancelAnimationFrame(animation); // Pausar el juego
-    //startGameBtn.innerText = "Iniciar Juego";
-    //player1Score = 0;
-    //player2Score = 0;
-    //updateScore();
-    //drawGame();
-    //animation = requestAnimationFrame(gameLoop);
+resetGameBtn.addEventListener("click", () => {
+    resetGameBtn.innerText = "Reiniciar Juego";
+    resetAll(); // Resetea el juego
+    isGamePaused = true;
+    newGame = true;
+    cancelAnimationFrame(animation); // Pausar el juego
+    startGameBtn.innerText = "Iniciar Juego";
+    drawGame();
 });
+
+
