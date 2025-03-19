@@ -18,31 +18,31 @@
 
   <div id="registerView" class="crt">
 
-    <div class="logo">
+    <div class="mb-5 relative" id="logo">
       <div class="logo-text">Bienvenido a PONG</div>
     </div>
 
-    <div class="pong-graphic">
-      <div class="paddle"></div>
-      <div class="ball"></div>
-      <div class="paddle"></div>
+    <div class="flex my-6 relative justify-center" id="pong-graphic">
+      <div id="paddle1" class="w-2.5 h-10 bg-[#BE36CD] shadow-[0_0_10px_#BE36CD]"></div>
+      <div id="ball" class="w-2.5 h-2.5 bg-[#d2d2ea] rounded-full mx-5 shadow-[0_0_10px_#d2d2ea] relative"></div>
+      <div id="paddle2" class="w-2.5 h-10 bg-[#BE36CD] shadow-[0_0_10px_#BE36CD]"></div>
     </div>
 
     <div class="divider"></div>
 
-    <h3 class="neon-subtitle">REGISTRATE PARA JUGAR</h3>
+    <h3 id="neon-subtitle" class="text-xs-custom mt-5 mb-5 text-[#D2D2EA] tracking-wide text-shadow-custom">REGISTRATE PARA JUGAR</h3>
 
     <form id="registerForm">
       <input type="email" id="email" name="email" placeholder="Tu correo" required />
       <input type="text" id="username" name="username" placeholder="Tu nombre de usuario" required />
       <input type="password" id="password" name="password" placeholder="Tu contraseña" required />
-      <button id="submit" type="submit">Registrarse</button>
+      <button class="mb-4" id="submit" type="submit">Registrarse</button>
     </form>
 
     <div class="divider"></div>
 
-    <div id="changeToLogin">
-      <h1 id="theresAccount">¿Ya tienes cuenta?</h1>
+    <div id="changeToLogin" class="flex flex-col">
+      <h1 id="theresAccount" class="text-xs mt-5 mb-5 text-[#D2D2EA] tracking-wide text-shadow-custom">¿Ya tienes cuenta?</h1>
       <button id="goToLogin">Inicia sesión</button>
       <p class="text-white m-2">o</p>
 
@@ -54,13 +54,13 @@
       </div>
     </div>
 
-    <div class="languageButtons">
+    <div id="laguageButtons" class="flex justify-center mt-7.5 gap-4">
       <button class="lanBtn" id="esBtn">ES</button>
       <button class="lanBtn" id="enBtn">EN</button>
       <button class="lanBtn" id="frBtn">FR</button>
     </div>
 
-    <div class="version-text">v13.3.2025</div>
+    <div id="version-text" class="absolute bottom-2.5 right-3.75 text-[10px] text-[rgba(210,210,234,0.5)] shadow-[0_0_2px_rgba(49,142,214,0.3)]">v13.3.2025</div>
   </div>
 
 
@@ -68,7 +68,7 @@
 
 
   <div id="loginView" style="display:none;">
-    <h1 id="loginTitle">Introduce tus datos</h1>
+    <h1 id="loginTitle" class="m-2.5 text-white text-xl">Introduce tus datos</h1>
     <form id="loginForm">
       <input type="email" id="loginEmail" name="loginEmail" placeholder="Tu correo" required />
       <input type="password" id="loginPassword" name="loginPassword" placeholder="Tu contraseña" required />
@@ -84,7 +84,7 @@
       data-size="large" data-logo_alignment="center">
     </div>
 
-    <button id="goToRegister">¿No tienes cuenta? <u>Regístrate</u></button>
+    <button id="goToRegister" class="text-white text-7px mt-5">¿No tienes cuenta? <u class="hover:text-[#BE36CD] cursor-pointer">Regístrate</u></button>
   </div>
 
 
@@ -92,8 +92,8 @@
 
 
   <div id="usernameView" style="display:none;">
-    <h1>¡Hola!</h1>
-    <p>Por favor, completa tu registro.</p>
+    <h1 class="text-white text-xl mb-2">¡Hola!</h1>
+    <p class="text-white text-xs mb-2 flex flex-row">Introduce un nombre de usuario:</p>
     <form id="usernameForm">
       <input type="text" id="usernameInput" name="usernameInput" placeholder="Tu nombre de usuario" required />
       <button id="submitUsername" type="submit">Guardar</button>

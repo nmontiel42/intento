@@ -1,29 +1,5 @@
-#registerView {
-    background-color: rgba(11, 34, 90, 0.85);
-    border: 3px solid #BE36CD;
-    box-shadow:
-        0 0 10px #BE36CD,
-        0 0 20px #318ED6,
-        0 0 40px rgba(49, 142, 214, 0.5);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 30px;
-    text-align: center;
-    position: relative;
-    width: 320px;
-    max-width: 90vw;
-    z-index: 10;
-}
 
 /*---- Logo PONG ----*/
-
-.logo {
-    margin-bottom: 20px;
-    position: relative;
-}
 
 .logo-text {
     font-size: 20px;
@@ -52,28 +28,7 @@
 
 /*---- PONG Graphic ----*/
 
-.pong-graphic {
-    display: flex;
-    margin: 25px 0;
-    position: relative;
-    justify-content: center;
-}
-
-.paddle {
-    width: 10px;
-    height: 40px;
-    background-color: #BE36CD;
-    box-shadow: 0 0 10px #BE36CD;
-}
-
-.ball {
-    width: 10px;
-    height: 10px;
-    background-color: #d2d2ea;
-    border-radius: 50%;
-    margin: 0 20px;
-    box-shadow: 0 0 10px #d2d2ea;
-    position: relative;
+#ball {
     animation: ballMove 2s infinite linear;
 }
 
@@ -82,32 +37,7 @@
     50% { transform: translateX(15px); }
 }
 
-/*---- Formulario ----*/
-
-.neon-subtitle {
-    font-size: 9px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: #D2D2EA;
-    text-shadow: 0 0 5px #318ED6;
-    letter-spacing: 1px;
-}
-
 /*---- Boton Login ----*/
-
-#changeToLogin {
-    display: flex;
-    flex-direction: column;
-}
-
-#theresAccount {
-    font-size: 9px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: #D2D2EA;
-    text-shadow: 0 0 5px #318ED6;
-    letter-spacing: 1px;
-}
 
 #goToLogin {
     background-color: #BE36CD;
@@ -140,13 +70,6 @@
 
 /*---- Botones de Idioma ----*/
 
-.languageButtons {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-    gap: 15px;
-}
-
 .lanBtn {
     width: 30px;
     height: 30px;
@@ -166,15 +89,4 @@
     border-color: #BE36CD;
     box-shadow: 0 0 10px #BE36CD;
     transform: translateY(-2px);
-}
-
-/*---- Version ----*/
-
-.version-text {
-    font-size: 10px;
-    position: absolute;
-    bottom: 10px;
-    right: 15px;
-    color: rgba(210, 210, 234, 0.5);
-    text-shadow: 0 0 2px rgba(49, 142, 214, 0.3);
 }
