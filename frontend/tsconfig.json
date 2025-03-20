@@ -5,7 +5,9 @@
     "outFile": "./dist/output.js",
     "strict": true,
     "esModuleInterop": true,
-    "lib": ["es6", "dom"]
+    "lib": ["es6", "dom"],
+    "resolveJsonModule": true,
+    "moduleResolution": "node"
   },
   "include": ["src/**/*.ts"]
 }
