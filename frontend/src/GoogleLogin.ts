@@ -30,14 +30,23 @@ async function handleGoogleLogin(response: any) {
         // Comprobar si el usuario ya existe (puedes usar el campo data.userExists o algo similar)
         if (data.userExists) {
             localStorage.setItem('user', JSON.stringify(data.user));
+
+            // Cambiar la vista
             loginView.style.display = 'none';
             registerView.style.display = 'none';
             homeView.style.display = 'block';
             usernameView.style.display = 'none';
+
+            // Actualizar el nombre de usuario y la imagen de perfil
             userName.textContent = data.user.username;
+
+            // Usamos una foto por defecto si no existe una imagen de perfil
+            const profilePic = data.user.picture || "public/letra-t.png";
+            userProfile.innerHTML = `<img src="${profilePic}" alt="User profile picture" />`;
 
             alert("Google Sign-in successful!");
         } else {
+            // Si el usuario no existe, pedimos que elija un nombre de usuario
             loginView.style.display = 'none';
             registerView.style.display = 'none';
             homeView.style.display = 'none';
@@ -80,9 +89,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
             localStorage.setItem('user', JSON.stringify(data.user));
 
+            // Cambiar la vista
             usernameView.style.display = 'none';
             homeView.style.display = 'block';
+
+            // Actualizar el nombre de usuario y la imagen de perfil
             userName.textContent = data.user.username;
+
+            // Usamos una foto por defecto si no existe una imagen de perfil
+            const profilePic = data.picture || "public/letra-t.png";
+            userProfile.innerHTML = `<img src="${profilePic}" alt="User profile picture" />`;
         } else {
             alert('Error al guardar el nombre de usuario');
         }

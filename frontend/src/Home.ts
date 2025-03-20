@@ -4,8 +4,12 @@ const confirmModal = document.getElementById('confirmModal') as HTMLElement;
 const cancelBtn = document.getElementById('cancelBtn') as HTMLButtonElement;
 const deleteAccountBtn = document.getElementById('deleteAccountBtn') as HTMLButtonElement;
 
-userProfile.addEventListener('click', () => {
-    confirmModal.style.display = 'block'; // Mostrar modal
+userProfile.addEventListener('click', (event) => {
+    event.stopPropagation(); // Evita que el clic en userProfile se propague al document
+    confirmModal.style.display = 'block';
+    requestAnimationFrame(() => {
+        confirmModal.style.animation = 'fadeIn 0.3s forwards';
+    });
 });
 
 // Lógica para cerrar sesión
@@ -21,8 +25,23 @@ logoutBtn.addEventListener('click', () => {
     confirmModal.style.display = 'none';
 });
 
-cancelBtn.addEventListener('click', () => {
-    confirmModal.style.display = 'none'; // Cerrar el modal
+document.addEventListener('click', (event: MouseEvent) => {
+    if (confirmModal.style.display === 'block') {
+        const target = event.target as HTMLElement;
+        const confirmModal = document.getElementById('confirmModal') as HTMLElement;
+        const userProfile = document.getElementById('userProfile') as HTMLElement;
+
+        // Retrasamos la ejecución del cierre para que no se detecte el mismo clic de apertura
+        setTimeout(() => {
+            if (!confirmModal.contains(target) && target !== userProfile) {
+                confirmModal.style.animation = 'fadeOut 0.3s forwards';
+                confirmModal.addEventListener('animationend', () => {
+                    confirmModal.style.display = 'none';
+                    confirmModal.style.animation = 'none';
+                }, { once: true });
+            }
+        }, 10);
+    }
 });
 
 // Lógica para eliminar cuenta

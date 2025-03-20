@@ -109,33 +109,34 @@
   <!-- HOME -->
 
 
-  <!-- HOME -->
-  <!-- HOME -->
-  <div id="homeView" style="display: none;">
-    <header class="bg-[#BE36CD] w-full p-4 flex justify-between items-center fixed top-0 left-0 z-50">
+  <div id="homeView" style="display: none;" class="z-10">
+    <header class="w-full p-4 flex justify-between items-center fixed top-0 left-0">
       <!-- Título Pong alineado a la izquierda -->
-      <h1 class="text-2xl font-semibold text-white">Pong</h1>
+      <h1 class="text-2xl font-semibold text-white retroPong hover:cursor-default">Pong</h1>
 
       <!-- Contenedor de iconos centrado -->
       <div id="icons" class="flex flex-row space-x-4 flex-grow justify-center">
-        <p>Icono 1</p>
-        <p>Icono 2</p>
-        <p>Icono 3</p>
-        <p>Icono 4</p>
+        <p class="hover:cursor-pointer" id="localPlay">Icono 1</p>
+        <p class="hover:cursor-pointer" id="multiPlay">Icono 2</p>
+        <p class="hover:cursor-pointer" id="tourPlay">Icono 3</p>
+        <p class="hover:cursor-pointer" id="realPlay">Icono 4</p>
       </div>
 
       <!-- Botón Perfil alineado a la derecha -->
-      <button id="userProfile" class="text-white font-semibold text-2xl">Perfil</button>
+      <button id="userProfile" class="text-white font-semibold text-2xl w-12 h-12 rounded-full overflow-hidden border-2 border-white hover:cursor-pointer">
+        <img id="profileImage" src="public/letra-t.png" alt="User profile picture" class="w-full h-full object-cover">
+      </button>
+    
+    
+
     </header>
 
     <!-- Menú Modal -->
-    <div id="confirmModal" style="display:none;">
-      <div id="modalContent" class="absolute top-16 right-5 bg-white shadow-lg rounded-lg w-48 p-4">
-        <h2 class="text-xl font-semibold mb-4 text-black">¿Qué deseas hacer?</h2>
-        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg mb-2 w-full">Cerrar sesión</button>
-        <button id="deleteAccountBtn" class="bg-yellow-500 text-white px-4 py-2 rounded-lg mb-2 w-full">Eliminar
-          cuenta</button>
-        <button id="cancelBtn" class="bg-gray-300 text-black px-4 py-2 rounded-lg w-full">Cancelar</button>
+    <div id="confirmModal" style="display:none;" class="z-10">
+      <div id="modalContent" class="absolute top-16 right-5 bg-white shadow-lg rounded-lg w-45 p-4 z-10">
+        <button id="logoutBtn" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg mb-2 w-full text-xs hover:cursor-pointer hover:scale-105">Cerrar sesión</button>
+        <button id="deleteAccountBtn" class="bg-[#BE36CD] text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105">Eliminar cuenta</button>
+        <button id="optionsBtn" class="bg-[#0b225a] text-white px-4 py-2 rounded-lg w-full text-xs hover:cursor-pointer hover:scale-105">Opciones</button>
       </div>
     </div>
 

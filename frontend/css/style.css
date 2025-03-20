@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import './Register.css';
-@import './Home.css';
+@import './Home/Header.css';
 
 @layer utilities {
     .text-xs-custom {
