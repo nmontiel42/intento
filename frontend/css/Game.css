@@ -9,32 +9,70 @@ body {
     padding: 20px;
   }
   
+  /* Estilo para el canvas del juego */
   #pongCanvas {
-    border: 2px solid white;
-    margin-top: 10px;
+    background-color: rgba(11, 34, 90, 0.85); /* Fondo similar al login */
+    border: 3px solid #BE36CD; /* Borde similar al login */
+    box-shadow:
+        0 0 10px #BE36CD,
+        0 0 20px #318ED6,
+        0 0 40px rgba(49, 142, 214, 0.5); /* Sombra similar al login */
+    border-radius: 10px; /* Bordes redondeados */
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
   }
   
-  #gameControls button {
-    margin: 10px;
-    padding: 10px;
-    background-color: #444;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  #gameControls button:hover {
-    background-color: #666;
-  }
-  
-  .languageButtons {
-    margin-top: 20px;
-  }
-  
-  .version-text {
-    font-size: 12px;
-    margin-top: 20px;
-  }
-  
+  /* Estilo para los textos del juego */
+.gameText {
+  color: white; /* Color de texto similar al login */
+  font-family: 'Press Start 2P', cursive; /* Fuente similar al login */
+  text-align: center;
+}
 
+#gameControls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#pongCanvasContainer {
+  margin: 10px 0;
+}
+
+#startGameBtn, #resetGameBtn {
+  background-color: #BE36CD;
+  border: 2px solid #BE36CD;
+  color: #D2D2EA;
+  padding: 10px 20px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s;
+  box-shadow:
+      0 0 5px #BE36CD,
+      0 0 10px rgba(49, 142, 214, 0.7);
+  z-index: 1;
+  margin: 0 10px; /* Margen entre los botones */
+}
+
+
+/* Estilo para los botones en estado hover */
+#startGameBtn:hover, #resetGameBtn:hover {
+  cursor: pointer;
+  color: #BE36CD;
+}
+
+/* Estilo para los nombres de los jugadores */
+.playerName {
+  color: white; /* Color de texto similar al login */
+  font-family: 'Press Start 2P', cursive; /* Fuente similar al login */
+  font-size: 20px;
+  text-align: center;
+  margin-top: 10px;
+}
   

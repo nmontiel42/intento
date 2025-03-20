@@ -34,11 +34,14 @@ let player2Score: number = 0;
 // Nombres de los jugadores
 const player1Name = "Player 1";
 const player2Name = "Player 2";
-const winnerScore = 3; // Puntuación para ganar el juego
+const winnerScore = 5; // Puntuación para ganar el juego
 
 let isGamePaused: boolean = true;
 let newGame: boolean = true;
 
+// Definir un factor de incremento para la velocidad de la pelota
+const inicialBallSpeed = 6;
+const speedIncrement = 0.01;
 
 // Inicializar las variables del juego
 function initializeGame() {
@@ -62,8 +65,8 @@ function initializeGame() {
       radius: ballRadius,
       x: canvas.width / 2,
       y: canvas.height / 2,
-      dx: 8,
-      dy: 8,
+      dx: 6,
+      dy: 6,
   };
   gameLoop(); // Comienza el juego
   cancelAnimationFrame(animation); // Pausa el juego
@@ -75,19 +78,19 @@ function drawGame() {
 
 
    // Dibujar los nombres de los jugadores
-   ctx.font = "24px Arial";
+   ctx.font = "20px 'Press Start 2P', cursive";
    ctx.fillStyle = "white";
    ctx.textAlign = "center";
-   ctx.fillText(player1Name, canvas.width / 4, 20); // Posición del nombre del jugador 1
-   ctx.fillText(player2Name, (canvas.width / 4) * 3, 20); // Posición del nombre del jugador 2
+   ctx.fillText(player1Name, canvas.width / 4, 35); // Posición del nombre del jugador 1
+   ctx.fillText(player2Name, (canvas.width / 4) * 3, 35); // Posición del nombre del jugador 2
   // Dibujar marcadores
-  ctx.font = "30px Arial";
+  ctx.font = "25px 'Press Start 2P', cursive";
   ctx.fillStyle = "white";
-  ctx.fillText(player1Score.toString(), canvas.width / 4, 50);
-  ctx.fillText(player2Score.toString(), (canvas.width / 4) * 3, 50);
+  ctx.fillText(player1Score.toString(), canvas.width / 4, 80);
+  ctx.fillText(player2Score.toString(), (canvas.width / 4) * 3, 80);
 
   // Dibuja la paleta izquierda
-  ctx.fillStyle = "#FFFFFF";
+  ctx.fillStyle = "#BE36CD";
   ctx.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
 
   // Dibuja la paleta derecha
@@ -104,8 +107,10 @@ function drawGame() {
 // Lógica para mover las palas y la pelota
 function moveGameObjects() {
   // Mover las palas
-  
   updatePaddlePositions();
+
+  // Incrementar la velocidad de la pelota
+  ball.dx += ball.dx > 0 ? speedIncrement : -speedIncrement;
 
   // Mover la pelota
   ball.x += ball.dx;
@@ -117,12 +122,18 @@ function moveGameObjects() {
   }
 
   // Colisiones con las palas
-  const paddleCollisionMargin = 5; // Ajuste para mejorar la detección de colisiones
+  const paddleCollisionMargin = 6; // Ajuste para mejorar la detección de colisiones
 
-if (ball.x - ball.radius < leftPaddle.x + leftPaddle.width + paddleCollisionMargin && 
+  if (ball.x - ball.radius < leftPaddle.x + leftPaddle.width + paddleCollisionMargin && 
     ball.x - ball.radius > leftPaddle.x - paddleCollisionMargin &&
     ball.y > leftPaddle.y - paddleCollisionMargin && ball.y < leftPaddle.y + leftPaddle.height + paddleCollisionMargin) {
     ball.dx = -ball.dx; // Invertir dirección de la pelota en el eje X
+
+    // Calcular la posición relativa del impacto en la paleta
+    const impactPosition = (ball.y - leftPaddle.y) / leftPaddle.height;
+    // Ajustar la velocidad vertical de la pelota
+    ball.dy = 8 * (impactPosition - 0.5); // Ajustar el factor según sea necesario
+
     ball.x = leftPaddle.x + leftPaddle.width + ball.radius; // Ajustar posición de la pelota
 }
 
@@ -130,6 +141,12 @@ if (ball.x + ball.radius > rightPaddle.x - paddleCollisionMargin &&
     ball.x + ball.radius < rightPaddle.x + rightPaddle.width + paddleCollisionMargin &&
     ball.y > rightPaddle.y - paddleCollisionMargin && ball.y < rightPaddle.y + rightPaddle.height + paddleCollisionMargin) {
     ball.dx = -ball.dx; // Invertir dirección de la pelota en el eje X
+
+    // Calcular la posición relativa del impacto en la paleta
+    const impactPosition = (ball.y - rightPaddle.y) / rightPaddle.height;
+    // Ajustar la velocidad vertical de la pelota
+    ball.dy = 8 * (impactPosition - 0.5); // Ajustar el factor según sea necesario
+
     ball.x = rightPaddle.x - ball.radius; // Ajustar posición de la pelota
 }
 
@@ -154,19 +171,24 @@ function showGameResult() {
   let resultText = winner + " wins!";
 
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
-  ctx.font = "48px Arial";
+  ctx.font = "48px 'Press Start 2P', cursive";
   ctx.fillStyle = "white";
   ctx.textAlign = "center";
   ctx.fillText(resultText, canvas.width / 2, canvas.height / 2);
-  ctx.font = "24px Arial";
-  ctx.fillText(player1Name + ": " + player1Score + " - " + player2Name + ": " + player2Score, canvas.width / 2, canvas.height / 2 + 50);
-  ctx.font = "16px Arial";
+  ctx.font = "24px 'Press Start 2P', cursive";
+  ctx.fillText(player1Score + " - " + player2Score, canvas.width / 2, canvas.height / 2 + 50);
+  ctx.font = "16px 'Press Start 2P', cursive";
   resetGameBtn.innerText = "Reiniciar Juego";
+  startGameBtn.style.display = "none";
 }
 
 // Función para mostrar la cuenta atrás
 function showCountdown(callback: () => void) {
   let countdown = 3;
+
+  // Desactivar el botón de reinicio y inicio del juego
+  startGameBtn.disabled = true;
+  resetGameBtn.disabled = true;
 
   // Función para dibujar el número de la cuenta atrás
   const drawCountdown = () => {
@@ -174,7 +196,7 @@ function showCountdown(callback: () => void) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       // Dibujar el número de la cuenta atrás
-      ctx.font = "48px Arial";
+      ctx.font = "48px 'Press Start 2P', cursive";
       ctx.fillStyle = "white";
       ctx.textAlign = "center";
       ctx.fillText(countdown.toString(), canvas.width / 2, canvas.height / 2);
@@ -187,6 +209,8 @@ function showCountdown(callback: () => void) {
       countdown--;
       if (countdown < 0) {
           clearInterval(countdownInterval);
+          startGameBtn.disabled = false; // Reactivar el botón de inicio del juego
+          resetGameBtn.disabled = false; // Reactivar el botón de reinicio
           callback(); // Llamar a la función de inicio del juego
       } else {
           drawCountdown();
@@ -199,7 +223,8 @@ function showCountdown(callback: () => void) {
 function resetBall() {
   ball.x = canvas.width / 2;
   ball.y = canvas.height / 2;
-  ball.dx = -ball.dx; // Invertir la dirección inicial
+  ball.dx = ball.dx < 0 ? inicialBallSpeed : -inicialBallSpeed; // Restablecer la velocidad de la pelota
+  ball.dy = inicialBallSpeed;
 }
 
 function resetAll(){

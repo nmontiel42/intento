@@ -80,6 +80,7 @@ resetGameBtn.addEventListener("click", () => {
     newGame = true;
     cancelAnimationFrame(animation); // Pausar el juego
     startGameBtn.innerText = "Iniciar Juego";
+    startGameBtn.style.display = "block";
     drawGame();
 });
 
