@@ -7,6 +7,7 @@ import authRoutes from './auth.js';
 import fastifyWebsocket from '@fastify/websocket';
 import https from 'https';
 import fs from 'fs';
+import WebSocket from 'ws';
 
 dotenv.config();
 //console.log('JWT_SECRET:', process.env.JWT_SECRET);
@@ -70,77 +71,39 @@ fastify.decorate('authenticate', async (req, res) => {
 });
 
 /*-------------------LIVE CHAT-------------------*/
-fastify.register(fastifyWebsocket);
+const wss = new WebSocket.Server({ server: fastify.server });
 
-const chatClients = new Set();
+wss.on('connection', (ws) => {
+	console.log('Cliente conectado');
 
-fastify.register(async function (fastify) {
-  fastify.get('/chat', { websocket: true }, (connection, req) => {
-    let user = null;
-
-	connection.socket.on("message", (rawMessage) => {
-		try {
-		  const data = JSON.parse(rawMessage);
-		  console.log('Recibido mensaje:', data);
-	  
-		  if (data.type === "auth") {
-			// Verificar el token recibido
-			try {
-			  // Verificar que el token recibido es válido
-			  const decoded = fastify.jwt.verify(data.token);
-			  
-			  // Verificar que el token decodificado coincida con el token almacenado en el objeto `user`
-			  if (decoded.token !== user.token) {
-				console.error("Los tokens no coinciden.");
-				connection.socket.close();
-				return;
-			  }
-			  
-			  // Si los tokens coinciden, asignamos el usuario decodificado
-			  user = decoded.user;
-			  console.log("Usuario autenticado:", user);
-			} catch (err) {
-			  console.error("Error al verificar el token:", err);
-			  connection.socket.close();
-			  return;
-			}
-	  
-		  } else if (data.type === "message" && user) {
-			// Enviar mensaje a todos los clientes conectados
-			const chatMessage = JSON.stringify({ type: "message", user, message: data.message });
-	  
-			for (const client of chatClients) {
-			  if (client.socket.readyState === WebSocket.OPEN) {
-				console.log("Enviando mensaje al cliente:", client.socket.readyState);
-				try {
-				  client.socket.send(chatMessage);
-				} catch (sendError) {
-				  console.error("Error al enviar mensaje:", sendError);
-				  chatClients.delete(client);
-				}
-			  } else {
-				console.log("Conexión cerrada o no abierta, eliminando cliente", client.socket.readyState);
-				chatClients.delete(client);
-			  }
-			}
-		  }
-		} catch (err) {
-		  console.error("Error en WebSocket:", err);
-		}
-	  });	  
-
-    chatClients.add(connection);
-
-    connection.socket.on("close", () => {
-      chatClients.delete(connection);
-    });
-
-    // Manejo de errores en WebSocket
-    connection.socket.on('error', (err) => {
-      console.error("Error en WebSocket:", err);
-      chatClients.delete(connection);
-    });
-  });
+	// Enviar mensaje como JSON cuando el cliente se conecta
+	ws.send(JSON.stringify({ type: 'message', message: '¡Bienvenido al chat!' }));
+  
+	// Recibir mensajes del cliente
+	ws.on('message', (message) => {
+	  console.log('Mensaje recibido:', message);
+  
+	  // Verificar que el mensaje es un JSON válido
+	  try {
+		const parsedMessage = JSON.parse(message);
+		console.log('Mensaje analizado:', parsedMessage);
+  
+		// Responder con un mensaje JSON
+		ws.send(JSON.stringify({ type: 'message', message: `Mensaje recibido: ${parsedMessage.message}` }));
+	  } catch (error) {
+		console.error('Error al analizar el mensaje:', error);
+	  }
+	});
+  
+	// Manejo de cierre de conexión
+	ws.on('close', () => {
+	  console.log('Cliente desconectado');
+	});
+  
+	// Manejo de errores
+	ws.on('error', (error) => {
+	  console.error('Error en WebSocket:', error);
+	});
 });
 
 /*-------------------LIVE CHAT END-------------------*/
