@@ -15,14 +15,10 @@ const loginForm = document.getElementById('loginForm') as HTMLFormElement;
 const goToLoginButton = document.getElementById('goToLogin') as HTMLButtonElement;
 const goToRegisterButton = document.getElementById('goToRegister') as HTMLButtonElement;
 
-// Seleccionamos el botón de Cerrar Sesión y el Modal
-const logoutBtn = document.getElementById('logoutBtn') as HTMLButtonElement;
-const confirmModal = document.getElementById('confirmModal') as HTMLElement;
-const cancelBtn = document.getElementById('cancelBtn') as HTMLButtonElement;
-const logoutOnlyBtn = document.getElementById('logoutOnlyBtn') as HTMLButtonElement;
-const deleteAccountBtn = document.getElementById('deleteAccountBtn') as HTMLButtonElement;
-
 const submitUsername = document.getElementById('submitUsername') as HTMLButtonElement;
+
+// Seleccionamos el elemento de la imagen de perfil
+const profileImage = document.getElementById("profileImage") as HTMLImageElement;
 
 // Manejadores de eventos para cambiar entre vistas
 document.addEventListener("DOMContentLoaded", () => {
@@ -35,6 +31,18 @@ document.addEventListener("DOMContentLoaded", () => {
 goToRegisterButton.addEventListener('click', () => {
   loginView.style.display = 'none';
   registerView.style.display = 'block';
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const userProfile = document.getElementById("userProfile") as HTMLButtonElement;
+
+  // Obtener datos del usuario desde localStorage
+  const userData = localStorage.getItem("user");
+
+  if (userData) {
+    const user = JSON.parse(userData);
+    profileImage.src = user.picture || "public/letra-t.png"; // Aquí se carga la foto de perfil o la por defecto
+  }
 });
 
 // Manejo del formulario de registro
@@ -66,6 +74,9 @@ registerForm.addEventListener('submit', async (event: Event) => {
 
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Actualizamos la imagen de perfil con la foto del usuario o la por defecto
+      profileImage.src = data.user.picture || "public/letra-t.png";
 
       registerView.style.display = 'none';
       homeView.style.display = 'block';
@@ -105,7 +116,10 @@ loginForm.addEventListener('submit', async (event: Event) => {
       homeView.style.display = 'block';
       userName.textContent = data.username;
 
-      // Guardar los datos del usuario y el token en localStorage
+      // Actualizamos la imagen de perfil
+      userProfile.innerHTML = data.picture ? `<img src="${data.picture}" alt="User profile picture" />` : `<img src="public/letra-t.png";" alt="User profile picture" />`;
+
+      // Guardamos los datos del usuario y el token en localStorage
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('user', JSON.stringify(data));
     } else {
@@ -115,57 +129,4 @@ loginForm.addEventListener('submit', async (event: Event) => {
     console.error('Error al iniciar sesión:', error);
     alert('Error al iniciar sesión. Intenta nuevamente.');
   }
-});
-
-// Lógica para mostrar el modal de confirmación de cierre de sesión
-logoutBtn.addEventListener('click', () => {
-  confirmModal.style.display = 'block'; // Mostrar modal
-});
-
-// Lógica para cerrar sesión
-logoutOnlyBtn.addEventListener('click', () => {
-  // Eliminar datos del usuario y token
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('user');
-
-  // Volver a la vista de login o registro
-  homeView.style.display = 'none';
-  loginView.style.display = 'block';
-  registerView.style.display = 'none';
-  confirmModal.style.display = 'none';
-});
-
-cancelBtn.addEventListener('click', () => {
-  confirmModal.style.display = 'none'; // Cerrar el modal
-});
-
-// Lógica para eliminar cuenta
-deleteAccountBtn.addEventListener('click', async () => {
-  const token = localStorage.getItem('authToken');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-  console.log('User:', user);
-  console.log('Token:', token);
-
-  const response = await fetch('https://localhost:3000/delete-account', {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
-    body: JSON.stringify({ username: user.username }),
-  });
-
-  if (response.ok) {
-    alert('Cuenta eliminada');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    homeView.style.display = 'none';
-    loginView.style.display = 'none';
-    registerView.style.display = 'block';
-  } else {
-    alert('Hubo un error al eliminar la cuenta');
-  }
-
-  confirmModal.style.display = 'none';
 });

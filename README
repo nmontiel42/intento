@@ -1,12 +1,10 @@
 TO DO:
-    -Editar home
-    -Editar username
-    -Cambiar a tailwind
+    -arreglar cambio foto (sin google)
+    -Cambiar idioma
     -Agregar Pong3D
     -algo
 
     FUNCIONES FRONT:
-        -Agregar cambio idioma
         -Cambiar username
         -Establecer foto de perfil
 
@@ -16,3 +14,4 @@ TO DO:
 WARNINGS Y ERRORES:
 
     -Feature Policy: Skipping unsupported feature name “identity-credentials-get”. client:263:248 (Es interno del sign-in de gogle)
+    -Error Cross-Origin solo pasa si vas al backend

@@ -1,8 +1,18 @@
 @import "tailwindcss";
 @import './Register.css';
-@import './Login.css';
-@import './Home.css';
-@import './Username.css';
+@import './Home/Header.css';
+
+@layer utilities {
+    .text-xs-custom {
+        font-size: 9px;
+    }
+    .text-shadow-custom {
+        text-shadow: 0 0 5px #318ED6;
+    }
+    .text-7px {
+        font-size: 7px;
+    }
+}
 
 body {
     background-color: #000;
@@ -43,7 +53,6 @@ body::before {
 
 }
 
-
 .divider {
     width: 100%;
     border-top: 2px solid #6b0daa;
@@ -80,9 +89,31 @@ body::before {
     opacity: 0.3;
 }
 
+#registerView,
+#loginView,
+#usernameView {
+    background-color: rgba(11, 34, 90, 0.85);
+    border: 3px solid #BE36CD;
+    box-shadow:
+        0 0 10px #BE36CD,
+        0 0 20px #318ED6,
+        0 0 40px rgba(49, 142, 214, 0.5);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    width: 320px;
+    max-width: 90vw;
+    z-index: 10;
+}
 
 #registerForm,
-#loginForm {
+#loginForm,
+#usernameForm {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -92,7 +123,8 @@ body::before {
 #password,
 #username,
 #loginEmail,
-#loginPassword {
+#loginPassword,
+#usernameInput {
     background-color: transparent;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -105,12 +137,13 @@ body::before {
     box-shadow: 0 0 5px rgba(49, 142, 214, 0.5);
 }
 
-#submit {
+#submit,
+#submitLogin,
+#submitUsername {
     background-color: #BE36CD;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
     padding: 10px 10px;
-    margin-bottom: 25px;
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
     letter-spacing: 1px;
@@ -125,7 +158,9 @@ body::before {
     z-index: 1;
 }
 
-#submit:hover {
+#submit:hover,
+#submitLogin:hover,
+#submitUsername:hover {
     color: #fff;
     box-shadow:
         0 0 10px #BE36CD,

@@ -1,0 +1,89 @@
+header {
+    background-color: rgba(11, 34, 90, 0.85);
+    border-bottom: 3px solid #BE36CD;
+    box-shadow:
+        0 0 10px #BE36CD,
+        0 0 20px #318ED6,
+        0 0 40px rgba(49, 142, 214, 0.5);
+}
+
+/*------- Logo PONG -------*/
+
+.retroPong {
+    text-shadow:
+        0 0 10px #f4eef5,
+        0 0 20px #ffffff,
+        0 0 40px rgba(255, 255, 255, 0.5);
+    animation: pongFlicker 4s infinite alternate;
+}
+
+@keyframes pongFlicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        text-shadow: 
+            0 0 10px #f1f3f4,
+            0 0 20px #e5e9ed,
+            0 0 30px #f0f3f6d2;
+    }
+    20%, 24%, 55% {
+        text-shadow: none;
+    }
+}
+
+/*------- Iconos Paginas -------*/
+
+#localPlay,
+#multiPlay,
+#tourPlay,
+#realPlay {
+    color: white;
+    text-shadow: 2px 2px 0 #BE36CD;
+    transition: transform 0.2s;
+}
+
+#localPlay:hover,
+#multiPlay:hover,
+#tourPlay:hover,
+#realPlay:hover {
+    transform: scale(1.1);
+}
+
+/*------- Perfil -------*/
+
+#userProfile {
+    border: 2px solid #BE36CD;
+    box-shadow: 2px 2px 0 #318ED6;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#userProfile:hover {
+    transform: translateY(-2px) scale(1.1); /* Aumenta el tamaño y rota ligeramente */
+    box-shadow: 4px 4px 0 #318ED6; /* Añade una sombra difusa */
+}
+
+#modalContent {
+    box-shadow:
+        0 0 10px #f4eef5,
+        0 0 20px #ffffff,
+        0 0 40px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
