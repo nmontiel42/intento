@@ -186,7 +186,8 @@ export default async function (fastify, options) {
             return reply.send({
                 message: isNewUser ? 'Usuario registrado exitosamente' : 'Iniciado de sesion exitoso',
                 token: jwtToken,
-                user: user // Asegurar que `user` es lo que enviamos
+                picture: googleData.picture,
+                user: user
             });
         } catch (error) {
             console.error("Google Auth Error:", error);
