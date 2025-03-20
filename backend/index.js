@@ -77,19 +77,16 @@ wss.on('connection', (ws) => {
 	console.log('Cliente conectado');
 
 	// Enviar mensaje como JSON cuando el cliente se conecta
-	ws.send(JSON.stringify({ type: 'message', message: '¡Bienvenido al chat!' }));
+	ws.send(JSON.stringify({ type: 'message', user: "chat" ,message: '¡Bienvenido al chat!' }));
   
 	// Recibir mensajes del cliente
 	ws.on('message', (message) => {
-	  console.log('Mensaje recibido:', message);
-  
-	  // Verificar que el mensaje es un JSON válido
 	  try {
 		const parsedMessage = JSON.parse(message);
 		console.log('Mensaje analizado:', parsedMessage);
   
 		// Responder con un mensaje JSON
-		ws.send(JSON.stringify({ type: 'message', message: `Mensaje recibido: ${parsedMessage.message}` }));
+		ws.send(JSON.stringify({ type: 'message', user: `${parsedMessage.user}`, message: `${parsedMessage.message}` }));
 	  } catch (error) {
 		console.error('Error al analizar el mensaje:', error);
 	  }

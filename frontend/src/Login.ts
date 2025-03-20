@@ -125,6 +125,7 @@ loginForm.addEventListener('submit', async (event: Event) => {
     } else {
       alert('Error en el inicio de sesión. Intenta nuevamente.');
     }
+	connectWebSocket();
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     alert('Error al iniciar sesión. Intenta nuevamente.');
