@@ -9,8 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
    
     let chatMinimized = false;
 
-	//connectWebSocket();
-	
     // Minimizar o maximizar chat
     toggleButton.addEventListener("click", () => {
         if (chatMinimized) {
@@ -28,11 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-window.addEventListener("storage", (event) => {
+/* window.addEventListener("storage", (event) => {
     if (event.key === "user") {
         connectWebSocket();
     }
-});
+}); */
 
 function connectWebSocket()
 {
@@ -54,8 +52,8 @@ function connectWebSocket()
 			if (data.type === "message") {
 				const messageElement = document.createElement("div");
 				messageElement.textContent = `${data.user}: ${data.message}`;
+				messageElement.classList.add("p-2", "bg-gray-200", "rounded", "block", "w-full");
 				chatBox.appendChild(messageElement);
-				messageElement.classList.add("p-2", "bg-gray-200", "rounded", "block");
 				chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll al último mensaje
 			}
 		} catch (err) {
@@ -63,24 +61,40 @@ function connectWebSocket()
 		}
 	};
 
-	sendChatBtn.addEventListener("click", () => {
-		if (socket && chatInput.value.trim()) {
-			const message = {
-				type: "message",
-				user: user.username, // Suponiendo que tienes un campo "username" en el objeto "user"
-				message: chatInput.value.trim(),
-			};
+	//Si hace click envia el mensaje
+	sendChatBtn.addEventListener("click", sendMessage);
 
-			console.log("Enviando mensaje:", message);
-			console.log("Estado WebSocket:", socket.readyState);
-			console.log("WebSocket.OPEN:", WebSocket.OPEN);
+	//Si pulsa Enter envia el mensaje
+	chatInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Evita el salto de línea en el input
+            sendMessage(); // Llama a la función de envío
+        }
+    });
 
-			if (socket.readyState === WebSocket.OPEN) {
-				socket.send(JSON.stringify(message)); // Enviar el mensaje
-				chatInput.value = ""; // Limpiar el campo de entrada
-			} else {
-				console.error("La conexión WebSocket no está abierta.");
-			}
-		}
+	function sendMessage() {
+        if (socket && chatInput.value.trim()) {
+            const message = {
+                type: "message",
+                user: user.username, // Suponiendo que tienes un campo "username" en el objeto "user"
+                message: chatInput.value.trim(),
+            };
+
+            console.log("Enviando mensaje:", message);
+            console.log("Estado WebSocket:", socket.readyState);
+            console.log("WebSocket.OPEN:", WebSocket.OPEN);
+
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify(message)); // Enviar el mensaje
+                chatInput.value = ""; // Limpiar el campo de entrada
+            } else {
+                console.error("La conexión WebSocket no está abierta.");
+            }
+        }
+    }
+
+	logoutBtn.addEventListener("click", () => {
+		chatBox.innerHTML = ""; // Limpia el chat
+		socket.close(); // Cierra la conexión WebSocket
 	});
 }

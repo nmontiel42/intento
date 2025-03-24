@@ -71,10 +71,12 @@ fastify.decorate('authenticate', async (req, res) => {
 });
 
 /*-------------------LIVE CHAT-------------------*/
+const clients = new Set();
 const wss = new WebSocket.Server({ server: fastify.server });
 
 wss.on('connection', (ws) => {
 	console.log('Cliente conectado');
+	clients.add(ws);
 
 	// Enviar mensaje como JSON cuando el cliente se conecta
 	ws.send(JSON.stringify({ type: 'message', user: "chat" ,message: '¡Bienvenido al chat!' }));
@@ -86,7 +88,15 @@ wss.on('connection', (ws) => {
 		console.log('Mensaje analizado:', parsedMessage);
   
 		// Responder con un mensaje JSON
-		ws.send(JSON.stringify({ type: 'message', user: `${parsedMessage.user}`, message: `${parsedMessage.message}` }));
+		for (const client of clients) {
+			if (client.readyState === WebSocket.OPEN) {
+				client.send(JSON.stringify({
+					type: 'message',
+					user: parsedMessage.user,
+					message: parsedMessage.message
+				}));
+			}
+		}
 	  } catch (error) {
 		console.error('Error al analizar el mensaje:', error);
 	  }
@@ -95,6 +105,7 @@ wss.on('connection', (ws) => {
 	// Manejo de cierre de conexión
 	ws.on('close', () => {
 	  console.log('Cliente desconectado');
+	  clients.delete(ws);
 	});
   
 	// Manejo de errores

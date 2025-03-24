@@ -122,10 +122,10 @@ loginForm.addEventListener('submit', async (event: Event) => {
       // Guardamos los datos del usuario y el token en localStorage
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('user', JSON.stringify(data));
+	  connectWebSocket();
     } else {
       alert('Error en el inicio de sesión. Intenta nuevamente.');
     }
-	connectWebSocket();
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     alert('Error al iniciar sesión. Intenta nuevamente.');

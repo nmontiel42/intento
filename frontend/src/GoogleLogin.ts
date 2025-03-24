@@ -54,6 +54,7 @@ async function handleGoogleLogin(response: any) {
 
             alert("Google Sign-in successful! Please set your username.");
         }
+		connectWebSocket();
     } catch (error) {
         console.error("Google Login Error:", error);
         alert("Error al iniciar sesión con Google.");

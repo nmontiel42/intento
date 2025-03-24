@@ -169,3 +169,9 @@ body::before {
     text-shadow: 0 0 5px #fff;
     letter-spacing: 2px;
 }
+
+#chatBox {
+    display: flex;
+    flex-direction: column; /* Asegura que los mensajes se apilen verticalmente */
+    gap: 8px; /* Espacio entre mensajes */
+}
