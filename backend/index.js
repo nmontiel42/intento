@@ -73,6 +73,7 @@ fastify.decorate('authenticate', async (req, res) => {
 /*-------------------LIVE CHAT-------------------*/
 const clients = new Set();
 const wss = new WebSocket.Server({ server: fastify.server });
+const userList = [];
 
 wss.on('connection', (ws) => {
 	console.log('Cliente conectado');
@@ -87,26 +88,58 @@ wss.on('connection', (ws) => {
 		const parsedMessage = JSON.parse(message);
 		console.log('Mensaje analizado:', parsedMessage);
   
-		// Responder con un mensaje JSON
-		for (const client of clients) {
-			if (client.readyState === WebSocket.OPEN) {
-				client.send(JSON.stringify({
-					type: 'message',
-					user: parsedMessage.user,
-					message: parsedMessage.message
-				}));
+		if (parsedMessage.type === 'setUsername') {
+			const user = { ws, username: parsedMessage.username };
+			userList.push(user);
+			console.log(`${parsedMessage.username} se ha conectado`);
+
+			broadcastUserList();
+		} else {
+			for (const client of clients) {
+				if (client.readyState === WebSocket.OPEN) {
+					client.send(JSON.stringify({
+						type: 'message',
+						user: parsedMessage.user,
+						message: parsedMessage.message
+					}));
+				}
 			}
 		}
 	  } catch (error) {
 		console.error('Error al analizar el mensaje:', error);
 	  }
 	});
-  
+
+	function broadcastUserList() {
+		const usernames = userList.map(user => user.username); // Obtener nombres de usuario
+		const userListMessage = JSON.stringify({
+			type: 'userList',
+			users: usernames
+		});
+	
+		// Enviar a todos los clientes la lista de usuarios
+		for (const client of clients) {
+			if (client.readyState === WebSocket.OPEN) {
+				client.send(userListMessage);
+			}
+		}
+	}
+
+
+
 	// Manejo de cierre de conexión
-	ws.on('close', () => {
-	  console.log('Cliente desconectado');
-	  clients.delete(ws);
-	});
+    ws.on('close', () => {
+        console.log('Cliente desconectado');
+        // Eliminar al usuario desconectado de la lista
+        const userIndex = userList.findIndex(user => user.ws === ws);
+        if (userIndex !== -1) {
+            const user = userList.splice(userIndex, 1)[0];
+            console.log(`${user.username} se ha desconectado`);
+        }
+        // Actualizar la lista de usuarios a todos los clientes conectados
+        broadcastUserList();
+        clients.delete(ws);
+    });
   
 	// Manejo de errores
 	ws.on('error', (error) => {

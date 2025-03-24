@@ -4,6 +4,7 @@ const chatInputContainer = document.getElementById("chatInputContainer") as HTML
 const chatInput = document.getElementById("chatInput") as HTMLInputElement;
 const sendChatBtn = document.getElementById("sendChatBtn") as HTMLButtonElement;
 const toggleButton = document.getElementById("toggleChat") as HTMLButtonElement;
+const userList = document.getElementById("userList") as HTMLUListElement | null;
 
 document.addEventListener("DOMContentLoaded", () => {
    
@@ -26,12 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-/* window.addEventListener("storage", (event) => {
-    if (event.key === "user") {
-        connectWebSocket();
-    }
-}); */
-
 function connectWebSocket()
 {
 	// Obtener el token del usuario autenticado
@@ -44,6 +39,11 @@ function connectWebSocket()
 	socket.onopen = () => {
 		console.log("Conectado al chat.");
 		console.log(user);
+
+		socket.send(JSON.stringify({
+            type: "setUsername",
+            username: user?.username
+        }));
 	};
 
 	socket.onmessage = (event) => {
@@ -52,10 +52,30 @@ function connectWebSocket()
 			if (data.type === "message") {
 				const messageElement = document.createElement("div");
 				messageElement.textContent = `${data.user}: ${data.message}`;
-				messageElement.classList.add("p-2", "bg-gray-200", "rounded", "block", "w-full");
+				messageElement.classList.add(
+					"p-2", "bg-gray-200", "rounded", "block", "w-full", "break-words"
+				);
 				chatBox.appendChild(messageElement);
 				chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll al último mensaje
 			}
+
+			if (data.type === "userList" && userList) {
+                userList.innerHTML = ""; // Limpiar la lista actual
+   				data.users.forEach((user: string) => {
+        			const li = document.createElement("li");
+					li.textContent = user;
+					li.classList.add(
+						"w-full", // Asegura que ocupe todo el ancho disponible
+						"truncate", // Corta el texto con "..." si es muy largo
+						"p-2",
+						"bg-gray-200",
+						"rounded",
+						"block"
+					);
+					userList.appendChild(li);
+   				 });
+            }
+
 		} catch (err) {
 			console.error("Error procesando mensaje:", err);
 		}
