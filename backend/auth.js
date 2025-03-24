@@ -149,8 +149,6 @@ export default async function (fastify, options) {
 
     fastify.post('/google-username', async (request, reply) => {
 
-        console.log('HE LLEGADOOOOOOOOOOOO');
-
         const { token, username } = request.body; // Desestructurar el username recibido
 
         console.log('Usuario recibido:', username);
