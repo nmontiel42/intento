@@ -24,9 +24,13 @@ export default async function (fastify, options) {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = await createUser({ username, email, password: hashedPassword });
 
+            if (!newUser.picture) {
+                newUser.picture = "public/letra-t.png";
+            }
+
             //console.log('Usuario creado:', newUser); // 👀 Verificar que `username` está presente
 
-            const token = fastify.jwt.sign({ userId: newUser.id });
+            const token = fastify.jwt.sign({ userId: newUser.id }); 
 
             reply.send({
                 message: 'Usuario registrado exitosamente',

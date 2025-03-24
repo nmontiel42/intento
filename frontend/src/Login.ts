@@ -76,7 +76,7 @@ registerForm.addEventListener('submit', async (event: Event) => {
       localStorage.setItem('user', JSON.stringify(data.user));
 
       // Actualizamos la imagen de perfil con la foto del usuario o la por defecto
-      profileImage.src = data.user.picture || "public/letra-t.png";
+      userProfile.innerHTML = data.picture ? `<img src="${data.picture}" alt="User profile picture" />` : `<img src="public/letra-t.png";" alt="User profile picture" />`;
 
       registerView.style.display = 'none';
       homeView.style.display = 'block';

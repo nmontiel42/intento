@@ -18,6 +18,8 @@ logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
 
+    profileImage.src = '';
+
     // Volver a la vista de login o registro
     homeView.style.display = 'none';
     loginView.style.display = 'block';
