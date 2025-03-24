@@ -4,7 +4,11 @@ TO DO:
     -Agregar Pong3D
 
     JUEGO:
-        -Arreglar mas el css (et: 2 semana)
+        -MatchMaking:
+            arreglar la tabla y ocultar bien algun label
+        -Multiplayer:
+            
+        
         
 
     FUNCIONES FRONT:

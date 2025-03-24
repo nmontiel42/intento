@@ -116,9 +116,9 @@
 
       <!-- Contenedor de iconos centrado -->
       <div id="icons" class="flex flex-row space-x-4 flex-grow justify-center">
-        <p class="hover:cursor-pointer" id="localPlay">Icono 1</p>
+        <p class="hover:cursor-pointer" id="localPlay">Local</p>
         <p class="hover:cursor-pointer" id="multiPlay">Icono 2</p>
-        <p class="hover:cursor-pointer" id="tourPlay">Icono 3</p>
+        <p class="hover:cursor-pointer" id="tourPlay">Torneo</p>
         <p class="hover:cursor-pointer" id="realPlay">Icono 4</p>
       </div>
 
@@ -143,7 +143,6 @@
     <div class="crt mt-16 pt-4">
       <main class="flex justify-center items-center flex-col">
         <h1 class="text-white">Bienvenido, <span id="userName"></span>!</h1>
-        <p class="text-white">Aquí iría el Pong pero sigue en producción</p>
       </main>
     </div>
 
@@ -185,6 +184,19 @@
       </div>
         
       </div>
+
+    <!-- Torneos -->
+    <div id="tournamentView" style="display: none;">
+      <h2>Crear Torneo</h2>
+      <form id="tournamentForm">
+        <label for="numPlayers">Número de Jugadores:</label>
+        <input type="number" id="numPlayers" name="numPlayers" min="2" max="8" required>
+      </form>
+      <div id="playersInput"></div>
+      <button id="generateTournamentBtn">Crear Torneo</button>
+      <div id="tournamentBracket"></div>
+    </div>
+  </div>
 
     
 
