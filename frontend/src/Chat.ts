@@ -104,25 +104,58 @@ function connectWebSocket()
 			}
 
 			if (data.type === "userList" && userList) {
-                userList.innerHTML = ""; // Limpiar la lista actual
-   				data.users.forEach((user: string) => {
-        			const li = document.createElement("li");
-					li.textContent = user;
+				userList.innerHTML = ""; // Limpiar la lista actual
+			
+				data.users.forEach((user: string) => {
+					const li = document.createElement("li");
 					li.classList.add(
 						"p-3",
-						"bg-white",
+						"text-xs",
+						"bg-blue-100",
 						"rounded-lg",
 						"block",
 						"w-full",
 						"text-gray-800",
 						"mb-1",
-						"hover:bg-gray-100",
-						"transition-all"
+						"hover:bg-blue-300",
+						"transition-all",
+						"sm:flex",           // Mostrar como flex en pantallas más grandes
+						"sm:items-center",    // Centrar el contenido verticalmente
+						"sm:space-x-3",       // Espaciado entre el círculo y el nombre
+						"sm:w-auto"           // Deja que el ancho se ajuste en pantallas grandes
 					);
+			
+					// Crear el icono circular verde para indicar que está en línea
+					const onlineIndicator = document.createElement("span");
+					onlineIndicator.classList.add(
+						"inline-block",
+						"w-2",
+						"h-2",
+						"mr-3",
+						"rounded-full",
+						"bg-green-500",
+						"sm:w-4", 
+						"sm:h-4"
+					);
+			
+					// Crear el texto del nombre de usuario
+					const userNameText = document.createElement("span");
+					userNameText.textContent = user;
+					userNameText.classList.add(
+						"align-middle",         // Alineación de texto
+						"text-xs",              // Tamaño de texto pequeño en móviles
+						"sm:text-xs"          // Tamaño de texto normal en pantallas más grandes
+					);
+			
+					// Agregar el círculo verde y el nombre del usuario al <li>
+					li.appendChild(onlineIndicator);
+					li.appendChild(userNameText);
+			
+					// Añadir el <li> a la lista
 					userList.appendChild(li);
-   				 });
-            }
-
+				});
+			}
+						
 		} catch (err) {
 			console.error("Error procesando mensaje:", err);
 		}
@@ -166,8 +199,9 @@ function connectWebSocket()
 	});
 }
 
+//Para pantallas pequenas que oculte los usuarios o los muestre al pinchar
 if (toggleUserListButton && userListContainer) {
-    toggleUserListButton.classList.add("hover:bg-blue-300", "hover:cursor-pointer"); // Agregar clases de hover
+    toggleUserListButton.classList.add("hover:bg-blue-500", "hover:cursor-pointer"); // Agregar clases de hover
 
     toggleUserListButton.addEventListener("click", () => {
         if (userListContainer.classList.contains("hidden")) {

@@ -46,8 +46,6 @@ async function handleGoogleLogin(response: any) {
             // Usamos una foto por defecto si no existe una imagen de perfil
             const profilePic = data.user.picture || "public/letra-t.png";
             userProfile.innerHTML = `<img src="${profilePic}" alt="User profile picture" />`;
-
-            alert("Google Sign-in successful!");
         } else {
             // Si el usuario no existe, pedimos que elija un nombre de usuario
             loginView.style.display = 'none';
