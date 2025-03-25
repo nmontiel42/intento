@@ -3,7 +3,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import dotenv from 'dotenv';
-import authRoutes from './auth.js';
+import authRoutes from './src/auth.js';
 import fastifyWebsocket from '@fastify/websocket';
 import https from 'https';
 import fs from 'fs';
@@ -63,7 +63,11 @@ fastify.decorate('authenticate', async (req, res) => {
   try {
     await req.jwtVerify();
     const token = await req.jwtDecode();
-    req.userId = token.user;  // Cambié esto a `userId`
+    // Incluir el email además del userId (o en lugar de él)
+    req.user = { 
+      userId: token.userId || token.id, // Intentar obtener userId o id
+      email: token.email // Extraer el email del token
+    };
   } catch (err) {
     res.send(err);
   }

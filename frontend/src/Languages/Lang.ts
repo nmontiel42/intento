@@ -29,7 +29,20 @@ function changeLanguage() {
         const usernameText = document.getElementById('usernameText') as HTMLElement;
         const submitUsername = document.getElementById('submitUsername') as HTMLElement;
 
-        /*-------------------Home-------------------*/
+        /*-------------------Options-------------------*/
+
+        const logoutBtn = document.getElementById('logoutBtn') as HTMLElement;
+        const deleteAccountBtn = document.getElementById('deleteAccountBtn') as HTMLElement;
+        const optionsBtn = document.getElementById('optionsBtn') as HTMLElement;
+        const changeUsernameBtn = document.getElementById('changeUsernameBtn') as HTMLElement;
+        const changeLanguage = document.getElementById('changeLanguage') as HTMLElement;
+        const esBtn2 = document.getElementById('esBtn2') as HTMLElement;
+        const enBtn2 = document.getElementById('enBtn2') as HTMLElement;
+        const frBtn2 = document.getElementById('frBtn2') as HTMLElement;
+        const usernameChangeText = document.getElementById('usernameChangeText') as HTMLElement;
+        const usernameChangeInput = document.getElementById('usernameChangeInput') as HTMLInputElement;
+        const submitChangeUsername = document.getElementById('submitChangeUsername') as HTMLElement;
+        const cancelChange = document.getElementById('cancelChange') as HTMLElement;
 
         if (localStorage.getItem('lang') === 'en')
         {
@@ -51,6 +64,21 @@ function changeLanguage() {
             usernameWelcome.innerHTML = loginLanguages.en.usernameWelcome;
             usernameText.innerHTML = loginLanguages.en.usernameText;
             submitUsername.innerHTML = loginLanguages.en.submitUsername;
+
+            /* ------------------------------------------------------------- */
+
+            logoutBtn.innerHTML = optionsLanguages.en.logoutBtn;
+            deleteAccountBtn.innerHTML = optionsLanguages.en.deleteAccountBtn;
+            optionsBtn.innerHTML = optionsLanguages.en.optionsBtn;
+            changeUsernameBtn.innerHTML = optionsLanguages.en.changeUsernameBtn;
+            changeLanguage.innerHTML = optionsLanguages.en.changeLanguage;
+            esBtn2.innerHTML = optionsLanguages.en.esBtn2;
+            enBtn2.innerHTML = optionsLanguages.en.enBtn2;
+            frBtn2.innerHTML = optionsLanguages.en.frBtn2;
+            usernameChangeText.innerHTML = optionsLanguages.en.usernameChangeText;
+            usernameChangeInput.placeholder = optionsLanguages.en.placeholders.usernameChangeInput;
+            submitChangeUsername.innerHTML = optionsLanguages.en.submitChangeUsername;
+            cancelChange.innerHTML = optionsLanguages.en.cancelChange;
 
             /* ------------------------------------------------------------- */
         }
@@ -76,6 +104,21 @@ function changeLanguage() {
             submitUsername.innerHTML = loginLanguages.fr.submitUsername;
 
             /* ------------------------------------------------------------- */
+
+            logoutBtn.innerHTML = optionsLanguages.fr.logoutBtn;
+            deleteAccountBtn.innerHTML = optionsLanguages.fr.deleteAccountBtn;
+            optionsBtn.innerHTML = optionsLanguages.fr.optionsBtn;
+            changeUsernameBtn.innerHTML = optionsLanguages.fr.changeUsernameBtn;
+            changeLanguage.innerHTML = optionsLanguages.fr.changeLanguage;
+            esBtn2.innerHTML = optionsLanguages.fr.esBtn2;
+            enBtn2.innerHTML = optionsLanguages.fr.enBtn2;
+            frBtn2.innerHTML = optionsLanguages.fr.frBtn2;
+            usernameChangeText.innerHTML = optionsLanguages.fr.usernameChangeText;
+            usernameChangeInput.placeholder = optionsLanguages.fr.placeholders.usernameChangeInput;
+            submitChangeUsername.innerHTML = optionsLanguages.fr.submitChangeUsername;
+            cancelChange.innerHTML = optionsLanguages.fr.cancelChange;
+
+            /* ------------------------------------------------------------- */
         } 
         else if (localStorage.getItem('lang') === 'es')
         {
@@ -97,6 +140,21 @@ function changeLanguage() {
             usernameWelcome.innerHTML = loginLanguages.es.usernameWelcome;
             usernameText.innerHTML = loginLanguages.es.usernameText;
             submitUsername.innerHTML = loginLanguages.es.submitUsername;
+
+            /* ------------------------------------------------------------- */
+
+            logoutBtn.innerHTML = optionsLanguages.es.logoutBtn;
+            deleteAccountBtn.innerHTML = optionsLanguages.es.deleteAccountBtn;
+            optionsBtn.innerHTML = optionsLanguages.es.optionsBtn;
+            changeUsernameBtn.innerHTML = optionsLanguages.es.changeUsernameBtn;
+            changeLanguage.innerHTML = optionsLanguages.es.changeLanguage;
+            esBtn2.innerHTML = optionsLanguages.es.esBtn2;
+            enBtn2.innerHTML = optionsLanguages.es.enBtn2;
+            frBtn2.innerHTML = optionsLanguages.es.frBtn2;
+            usernameChangeText.innerHTML = optionsLanguages.es.usernameChangeText;
+            usernameChangeInput.placeholder = optionsLanguages.es.placeholders.usernameChangeInput;
+            submitChangeUsername.innerHTML = optionsLanguages.es.submitChangeUsername;
+            cancelChange.innerHTML = optionsLanguages.es.cancelChange;
 
             /* ------------------------------------------------------------- */
         }

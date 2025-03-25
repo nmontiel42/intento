@@ -92,7 +92,8 @@ body::before {
 #registerView,
 #loginView,
 #usernameView,
-#changeUsernameView {
+#changeUsernameView,
+#changePictureView {
     background-color: rgba(11, 34, 90, 0.85);
     border: 3px solid #BE36CD;
     box-shadow:
@@ -115,7 +116,8 @@ body::before {
 #registerForm,
 #loginForm,
 #usernameForm,
-#changeUsernameForm {
+#changeUsernameForm,
+#changePictureForm {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -127,7 +129,8 @@ body::before {
 #loginEmail,
 #loginPassword,
 #usernameInput,
-#usernameChangeInput {
+#usernameChangeInput,
+#pictureChangeInput {
     background-color: transparent;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -144,7 +147,9 @@ body::before {
 #submitLogin,
 #submitUsername,
 #submitChangeUsername,
-#cancelChange {
+#cancelChange,
+#submitChangePicture,
+#cancelPicture {
     background-color: #BE36CD;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -167,7 +172,9 @@ body::before {
 #submitLogin:hover,
 #submitUsername:hover,
 #submitChangeUsername:hover,
-#cancelChange:hover {
+#cancelChange:hover,
+#submitChangePicture:hover,
+#cancelPicture:hover {
     color: #fff;
     box-shadow:
         0 0 10px #BE36CD,

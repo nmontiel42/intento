@@ -1,6 +1,5 @@
 const goingBack = document.getElementById('goingBack') as HTMLButtonElement;
 const changeUsername = document.getElementById('changeUsernameBtn') as HTMLButtonElement;
-const changeProfilePic = document.getElementById('changeProfilePicture') as HTMLButtonElement;
 const changeLang = document.getElementById('changeLanguage') as HTMLButtonElement;
 
 /* Change lang */
@@ -19,7 +18,7 @@ const buttonsToAnimate = [
     document.getElementById('optionsBtn'),
     document.getElementById('goingBack'),
     document.getElementById('changeUsernameBtn'),
-    document.getElementById('changeProfilePicture'),
+    document.getElementById('ture'),
     document.getElementById('changeLanguage'),
     document.getElementById('selectLang'),
 ];
@@ -58,7 +57,7 @@ langButtons.forEach(button => {
 
 goingBack.addEventListener('click', () => {
     // Primero, inicia la transición de salida
-    [changeLang, changeProfilePic, changeUsername, goingBack].forEach(btn => {
+    [changeLang, changeUsername, goingBack].forEach(btn => {
         btn.classList.remove('fade-in');
         btn.classList.add('fade-out');
     });
@@ -67,7 +66,6 @@ goingBack.addEventListener('click', () => {
     setTimeout(() => {
         // Ocultar los botones actuales
         changeLang.style.display = 'none';
-        changeProfilePic.style.display = 'none';
         changeUsername.style.display = 'none';
         goingBack.style.display = 'none';
 
@@ -89,7 +87,7 @@ goingBack.addEventListener('click', () => {
 
 changeLang.addEventListener('click', () => {
     // Primero, inicia la transición de salida para los botones actuales
-    [changeLang, changeProfilePic, changeUsername, goingBack].forEach(btn => {
+    [changeLang, changeUsername, goingBack].forEach(btn => {
         btn.classList.remove('fade-in');
         btn.classList.add('fade-out');
     });
@@ -120,7 +118,6 @@ changeLang.addEventListener('click', () => {
     setTimeout(() => {
         // Ocultar los botones actuales
         changeLang.style.display = 'none';
-        changeProfilePic.style.display = 'none';
         changeUsername.style.display = 'none';
         goingBack.style.display = 'none';
 
@@ -171,7 +168,6 @@ goingBackLang.addEventListener('click', () => {
 
         // Mostrar los botones de opciones
         changeLang.style.display = 'block';
-        changeProfilePic.style.display = 'block';
         changeUsername.style.display = 'block';
         goingBack.style.display = 'block';
 
@@ -179,7 +175,7 @@ goingBackLang.addEventListener('click', () => {
         document.body.offsetHeight;
 
         // Aplicar la transición de entrada
-        [changeLang, changeProfilePic, changeUsername, goingBack].forEach(btn => {
+        [changeLang, changeUsername, goingBack].forEach(btn => {
             btn.classList.remove('fade-out');
             btn.classList.add('fade-in');
         });
@@ -199,15 +195,49 @@ cancelChange.addEventListener('click', () => {
 });
 
 /* Por ahora */
-submitChangeUsername.addEventListener('click', async(event) => {
+submitChangeUsername.addEventListener('click', async (event) => {
     event.preventDefault();
-    console.log('Cambiando username...');
-    console.log('Nuevo username:', usernameChangeInput.value);
-    changeUsernameView.style.display = 'none';
-    homeView.style.display = 'block';
+    const newUsername = usernameChangeInput.value;
+    //console.log('Cambiando username...');
+    //console.log('Nuevo username:', newUsername);
 
-    // Forzar un reflow para asegurar que los cambios de estilo se apliquen
-    document.body.offsetHeight;
+    // Obtener el token JWT del localStorage o de donde lo estés guardando
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        console.error('No se encontró el token de autenticación');
+        return;
+    }
+
+    try {
+        const response = await fetch('https://localhost:3000/change-username', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ username: newUsername }),
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseData.error || 'Error desconocido');
+        }
+
+        // Procesar la respuesta exitosa
+        //console.log('Resultado:', responseData);
+
+        // Actualiza la interfaz
+        changeUsernameView.style.display = 'none';
+        homeView.style.display = 'block';
+        userName.textContent = responseData.username; // Usar el nombre de usuario de la respuesta
+
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        if (error instanceof Error) {
+            alert(error.message);
+        } else {
+            alert('An unknown error occurred');
+        }
+    }
 });
-
-//Agregar cambio de username y cambio de foto de perfil

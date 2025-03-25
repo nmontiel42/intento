@@ -101,7 +101,6 @@ optionsBtn.addEventListener('click', (event) => {
 
     // Preparar los nuevos botones (display block pero aún invisibles)
     changeLang.style.display = 'block';
-    changeProfilePic.style.display = 'block';
     changeUsername.style.display = 'block';
     goingBack.style.display = 'block';
 
@@ -109,7 +108,7 @@ optionsBtn.addEventListener('click', (event) => {
     document.body.offsetHeight;
 
     // Aplicar la transición de entrada
-    [changeLang, changeProfilePic, changeUsername, goingBack].forEach(btn => {
+    [changeLang, changeUsername, goingBack].forEach(btn => {
       btn.classList.remove('fade-out');
       btn.classList.add('fade-in');
     });

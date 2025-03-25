@@ -133,26 +133,26 @@
     <!-- Menú Modal -->
     <div id="confirmModal" style="display:none;" class="z-10">
       <div id="modalContent" class="absolute top-16 right-5 bg-white shadow-lg rounded-lg w-45 p-4 z-10 flex flex-col">
-        <button style="display:block;" id="logoutBtn"
+        <button style="display:block; font-size: 0.6rem;" id="logoutBtn"
           class="bg-[#318ED6] text-white px-4 py-2 rounded-lg mb-2 w-full text-xs hover:cursor-pointer hover:scale-105">Cerrar
           sesión</button>
-        <button style="display:block;" id="deleteAccountBtn"
+        <button style="display:block; font-size: 0.6rem;" id="deleteAccountBtn"
           class="bg-[#BE36CD] text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105">Eliminar
           cuenta</button>
-        <button style="display:block;" id="optionsBtn"
+        <button style="display:block; font-size: 0.6rem;" id="optionsBtn"
           class="bg-[#0b225a] text-white px-4 py-2 rounded-lg w-full text-xs hover:cursor-pointer hover:scale-105">Opciones</button>
 
         <!-- Opciones -->
         <button style="display:none;" id="goingBack"
           class="text-black px-4 py-2 text-xs hover:cursor-pointer hover:scale-105 self-start mt-[-10px] ml-[-10px]">
           < </button>
-            <button style="display:none;" id="changeUsernameBtn"
+            <button style="display:none; font-size: 0.6rem;" id="changeUsernameBtn"
               class="bg-[#318ED6] text-white px-4 py-2 rounded-lg mb-2 w-full text-xs hover:cursor-pointer hover:scale-105">Cambiar
               nombre de usuario</button>
-            <button style="display:none;" id="changeProfilePicture"
+            <button style="display:none; font-size: 0.6rem;" id="changeProfilePicture"
               class="bg-[#BE36CD] text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105">Cambiar
               foto de perfil</button>
-            <button style="display:none;" id="changeLanguage"
+            <button style="display:none; font-size: 0.6rem;" id="changeLanguage"
               class="bg-[#0b225a] text-white px-4 py-2 rounded-lg w-full text-xs hover:cursor-pointer hover:scale-105">Cambiar
               idioma</button>
 
@@ -230,6 +230,48 @@
       <button id="submitChangeUsername" type="submit">Cambiar</button>
       <button id="cancelChange">Cancelar</button>
     </form>
+  </div>
+
+  <div id="changePictureView" style="display:none;">
+    <p id="pictureChangeText" class="text-white text-xs mb-2 flex flex-row">Elige una foto de perfil:</p>
+    
+    <div class="grid grid-cols-5 gap-4 mb-4">
+      <!-- Avatares seleccionables -->
+      <div class="avatar-option cursor-pointer" data-avatar-id="1">
+        <img src="../public/avatars/avatar1.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+      <div class="avatar-option cursor-pointer" data-avatar-id="2">
+        <img src="../public/avatars/avatar2.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+      <div class="avatar-option cursor-pointer" data-avatar-id="3">
+        <img src="../public/avatars/avatar3.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+      <div class="avatar-option cursor-pointer" data-avatar-id="4">
+        <img src="../public/avatars/avatar4.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+      <div class="avatar-option cursor-pointer" data-avatar-id="5">
+        <img src="../public/avatars/avatar5.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+      <div class="avatar-option cursor-pointer" data-avatar-id="6">
+        <img src="../public/avatars/avatar6.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+      <div class="avatar-option cursor-pointer" data-avatar-id="7">
+        <img src="../public/avatars/avatar7.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+      <div class="avatar-option cursor-pointer" data-avatar-id="8">
+        <img src="../public/avatars/avatar8.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+      <div class="avatar-option cursor-pointer" data-avatar-id="9">
+        <img src="../public/avatars/avatar9.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+      <div class="avatar-option cursor-pointer" data-avatar-id="10">
+        <img src="../public/avatars/avatar10.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
+      </div>
+    </div>
+    
+    <div class="flex space-x-4">
+      <button id="cancelPicture" type="button" class="bg-[#0b225a] text-white px-4 py-2 rounded-lg">Cancelar</button>
+    </div>
   </div>
 
   <script src="/dist/output.js"></script>
