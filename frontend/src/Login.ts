@@ -98,16 +98,19 @@ registerForm.addEventListener('submit', async (event: Event) => {
 });
 
 // Manejo del formulario de login
-loginForm.addEventListener('submit', async (event: Event) => {
-  event.preventDefault(); // Evita el envío tradicional del formulario
+// Mantener todo el código inicial igual...
 
-  // Obtenemos los valores de los campos del formulario de login
+// Manejo del formulario de login
+loginForm.addEventListener('submit', async (event: Event) => {
+  event.preventDefault();
+
+  // Obtenemos los valores
   const email = (document.getElementById('loginEmail') as HTMLInputElement).value;
   const password = (document.getElementById('loginPassword') as HTMLInputElement).value;
 
   try {
-    // Enviamos la solicitud POST al backend para iniciar sesión
-    const response = await fetch('https://localhost:3000/login', {
+    // Usar la URL existente de 2FA
+    const response = await fetch('https://localhost:3000/login-with-2fa', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -118,26 +121,43 @@ loginForm.addEventListener('submit', async (event: Event) => {
     if (response.ok) {
       const data = await response.json();
 
-      // Cambiar a la vista de inicio
+      // Verificar si se requiere 2FA
+      if (data.requires2FA) {
+        // Guardar el token temporal y la info de sesión
+        localStorage.setItem('tempToken', data.tempToken);
+        
+        // Mostrar la vista de 2FA y ocultar login
+        loginView.style.display = 'none';
+        
+        const twoFactorAuthView = document.getElementById('twoFactorAuthView');
+        if (twoFactorAuthView) {
+          twoFactorAuthView.style.display = 'block';
+          
+          // Asegurar que sea visible e interactivo
+          twoFactorAuthView.style.position = 'fixed';
+          twoFactorAuthView.style.zIndex = '1000';
+          twoFactorAuthView.style.top = '50%';
+          twoFactorAuthView.style.left = '50%';
+          twoFactorAuthView.style.transform = 'translate(-50%, -50%)';
+          twoFactorAuthView.style.padding = '20px';
+          twoFactorAuthView.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+        }
+        
+        // Notificar al usuario
+        alert('Se ha enviado un código de verificación a tu correo electrónico.');
+        return;
+      }
+
+      // Login normal sin 2FA
       loginView.style.display = 'none';
       homeView.style.display = 'block';
       userName.textContent = data.username;
 
-      // Actualizamos la imagen de perfil
-      userProfile.innerHTML = data.picture ? `<img src="${data.picture}" alt="User profile picture" />` : `<img src="public/letra-t.png";" alt="User profile picture" />`;
-
-      // Guardamos los datos del usuario y el token en localStorage
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('user', JSON.stringify(data));
     } else {
-      const lang = localStorage.getItem('lang');
-      if (lang === 'en') {
-        alert('Error in login: The user does not exist or the Email/Password are incorrect');
-      } else if (lang === 'fr') {
-        alert('Erreur de connexion: l\'utilisateur n\'existe pas ou l\'Email/Mot de passe sont incorrects');
-      } else {
-        alert('Error en el inicio de sesión. El usuario no existe o el Email/Contraseña son erroneos.');
-      }
+      // Manejo de errores
+      alert('Error en el inicio de sesión.');
     }
   } catch (error) {
     console.error('Error al iniciar sesión:', error);

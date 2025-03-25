@@ -62,6 +62,19 @@ export default async function (fastify, options) {
                 return reply.status(400).send({ error: 'Contraseña incorrecta' });
             }
 
+            if (user.has2FA === 1 && user.two_fa_status === 'active'){
+                const { generateEmailVerificationCode } = await import('./firebaseConfigFile.js');
+                const emailTo = user["2fa_email"] || user.email;
+                const session = await generateEmailVerificationCode(emailTo);
+                await saveLoginSessionInfo(user.id, session.sessionInfo);
+                return reply.send({
+                    requiresSecondFactor: true,
+                    userId: user.id,
+                    sessionInfo: session.sessionInfo,
+                    message: 'Código de verificación enviado a tu correo'
+                });
+            }
+
             // Generar un JWT
             const token = fastify.jwt.sign({ user: user.username });
 
@@ -72,6 +85,32 @@ export default async function (fastify, options) {
         }
     });
 
+    async function saveLoginSessionInfo(userId, sessionInfo){
+        return new Promise((resolve, reject) => {
+            db.run(
+                `INSERT INTO user_2fa_sessions (user_id, session_info, created_at, type)
+                VALUE (?, ?, datetime('now'), 'login)`,
+                [userId, sessionInfo],
+                function(err){
+                    if (err) reject(err);
+                    else resolve({ id: this.lastID});
+                }
+            );
+        });
+    }
+
+    async function getUserById(id) {
+        return new Promise((resolve, reject) => {
+            db.get(
+                `SELECT * FROM users WHERE id = ?`,
+                [id],
+                (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                }
+            );
+        });
+    }
 
     fastify.get('/users', async (request, reply) => {
         try {

@@ -1,4 +1,4 @@
-import { firebaseAuth, adminAuth, generatePhoneVerificationCode, verifyPhoneVerificationCode } from "../firebaseConfigFile.js";
+import { firebaseAuth, adminAuth, generateEmailVerificationCode, verifyEmailVerificationCode } from "../firebaseConfigFile.js";
 import db from '../src/database.js';
 import {
 	PhoneAuthProvider,
@@ -18,16 +18,18 @@ export default async function(fastify, options) {
 		console.log('Received request to /enroll-2fa');
 		try{
 			const { userId } = request;
-			const { phoneNumber } = request.body;
+			const { email } = request.body;
 			const user = await getUserById(userId);
 			if (!user){
 				return reply.status(404).send({ error: 'User not found '});
 			}
-			await updateUserWith2FA(userId, phoneNumber, 'pending');
+			const session = await generateEmailVerificationCode(email);
+			await saveSessionInfo(userId, session.sessionInfo);
+			await updateUserWith2FA(userId, email, 'pending');
 			reply.send({
 				success: true,
-				//sessionInfo: session.sessionInfo
-				phoneNumber,
+				sessionInfo: session.sessionInfo,
+				email
 			});
 		}catch (error){
 			console.error('Error enrolling 2FA:', error);
@@ -37,20 +39,21 @@ export default async function(fastify, options) {
 	fastify.post('/verify-2fa-enrollment', { preHandler: fastify.authenticate }, async(request, reply) => {
 		try{
 			const { userId } = request;
-			const { verificationCode, sessionInfo, phoneNumber } = request.body;
+			const { verificationCode, sessionInfo, email } = request.body;
 			const user = await getUserById(userId);
 			if (!user){
 				return reply.status(404).send({ error: 'User not found' });
 			}
-			await verifyPhoneVerificationCode(sessionInfo, verificationCode);
-			await updateUserWith2FA(userId, phoneNumber);
-			if (firebaseVerified){
-				await updateUserWith2FA(userId, phoneNumber, 'active');
+			const emailVerified = await verifyEmailVerificationCode(sessionInfo, verificationCode);
+			if (emailVerified){
+				await updateUserWith2FA(userId, email, 'active');
+				reply.send({
+					success: true,
+					message: '2FA has been successfully enabled'
+				});
+			}else{
+				reply.status(400).send({ error: 'Invalid verification code' });
 			}
-			reply.send({
-				success: true,
-				message: '2FA has been successfully enabled'
-			});
 		}catch(error){
 			console.error('Error verifying 2FA code:', error);
 			reply.status(500).send({ error: 'Failed to verfy code', details: error.message});
@@ -58,32 +61,47 @@ export default async function(fastify, options) {
 	});
 	fastify.post('/login-with-2fa', async (request, reply) => {
 		const { email, password } = request.body;
-		try{
+		try {
 			const user = await getUserByEmail(email);
-			if (!user){
+			if (!user) {
 				return reply.status(400).send({ error: 'User not found' });
 			}
+			
 			const validPassword = await bcrypt.compare(password, user.password)
 			if (!validPassword) {
 				return reply.status(400).send({ error: 'Invalid password' });
 			}
-			if (user.has2FA){
+			
+			if (user.has2FA) {
+				// NUEVO: Generar y enviar un nuevo código de verificación
+				const emailTo = user["2fa_email"] || user.email;
+				const session = await generateEmailVerificationCode(emailTo);
+				
+				// Guardar la sesión
+				await saveSessionInfo(user.id, session.sessionInfo);
+				
+				// Generar token temporal
 				const tempToken = fastify.jwt.sign({
 					userId: user.id,
 					requires2FA: true
-				},{ expiresIn: '5m'});
+				}, { expiresIn: '5m' });
+				
 				return reply.send({
 					requires2FA: true,
 					tempToken,
-					userId: user.id
+					userId: user.id,
+					sessionInfo: session.sessionInfo,
+					message: 'Verification code sent to your email'
 				});
 			}
+			
+			// Usuario sin 2FA
 			const token = fastify.jwt.sign({ userId: user.id });
 			return reply.send({
 				token,
 				username: user.username
 			});
-		}catch(error){
+		} catch(error) {
 			console.error('Error in 2FA login:', error);
 			return reply.status(500).send({ error: 'Error during login' });
 		}
@@ -91,6 +109,9 @@ export default async function(fastify, options) {
 	fastify.post('/verify-2fa-login', async(request, reply) => {
 		try{
 			const { verificationCode, tempToken } = request.body;
+			if (!verificationCode || !tempToken) {
+                return reply.status(400).send({ error: 'Missing required fields' });
+            }
 			let decoded;
 			try{
 				decoded = fastify.jwt.verify(tempToken);
@@ -131,11 +152,11 @@ async function getUserById(id){
 	});
 }
 
-async function updateUserWith2FA(userId, phoneNumber) {
+async function updateUserWith2FA(userId, email, status = 'active') {
 	return new Promise((resolve, reject) => {
 		db.run(
-			`UPDATE users SET has2FA = 1, phone_number = ? WHERE id = ?`,
-			[phoneNumber, userId],
+			`UPDATE users SET "has2FA" = 1, "2fa_email" = ?, two_fa_status = ? WHERE id = ?`,
+			[email, status, userId],
 			function(err) {
 				if (err) reject(err);
 				else resolve({ updated: this.changes > 0 });
@@ -144,42 +165,31 @@ async function updateUserWith2FA(userId, phoneNumber) {
 	});
 }
 
+async function saveSessionInfo(userId, sessionInfo){
+	return new Promise((resolve, reject) => {
+		db.run(
+			`INSERT INTO user_2fa_sessions (user_id, session_info, created_at)
+			 VALUES (?, ?, datetime('now'))`,
+			[userId, sessionInfo],
+			function(err){
+				if (err) reject(err);
+				else resolve({ id: this.lastID});
+			}
+		);
+	});
+}
+
 // Helper function to verify 2FA code
 async function verify2FACode(user, code) {
-	try {
-	  // Get the session info from your database or temporary storage
-	  // This should be stored from the initial phone verification request
-	  const sessionInfo = await getSessionInfoForUser(user.id);
-	  
-	  // Use Firebase Auth's verification API
-	  const phoneAuthCredential = PhoneAuthProvider.credential(
-		sessionInfo, // This should be the verification ID stored previously
-		code // The code provided by the user
-	  );
-	  
-	  // Verify the credential - there are multiple ways to do this
-	  
-	  // Option 1: Using Admin SDK to check if the code is valid
-	  try {
-		// Look up the Firebase user
-		const firebaseUser = await adminAuth.getUserByEmail(user.email);
-		
-		// Verify that this user has the phone number registered for MFA
-		const userRecord = await adminAuth.getUser(firebaseUser.uid);
-		
-		// Check if the phone number matches what we have stored
-		if (userRecord.phoneNumber === user.phone_number) {
-		  // At this point, the code is valid if we got this far without errors
-		  return true;
+	try{
+		const sessionInfo = await getSessionInfoForUser(user.id);
+		if (!sessionInfo){
+			return false;
 		}
+		return await verifyEmailVerificationCode(sessionInfo, code);
+	}catch(error){
+		console.error("Error in verify2FACode:", error);
 		return false;
-	  } catch (error) {
-		console.error("Error verifying phone auth credential:", error);
-		return false;
-	  }
-	} catch (error) {
-	  console.error("Error in verify2FACode:", error);
-	  return false;
 	}
   }
 
@@ -208,4 +218,3 @@ async function getUserByEmail(email) {
 	  );
 	});
   }
-
