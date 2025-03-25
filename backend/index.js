@@ -4,6 +4,7 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import dotenv from 'dotenv';
 import authRoutes from './auth.js';
+import twoFactorAuth from './controllers/2faControllers.js'
 import fastifyWebsocket from '@fastify/websocket';
 import https from 'https';
 import fs from 'fs';
@@ -55,19 +56,24 @@ fastify.addHook('onSend', (request, reply, payload, done) => {
   done();
 });
 
-
 fastify.register(authRoutes);
 
 // Decorador para verificar el JWT
-fastify.decorate('authenticate', async (req, res) => {
+fastify.decorate('authenticate', async (req, reply) => {
   try {
     await req.jwtVerify();
+    console.log('Token payload:', req.user);
     const token = await req.jwtDecode();
-    req.userId = token.user;  // Cambié esto a `userId`
+    console.log('Token payload 2:', req.user);
+    req.userId = req.user.userId;  // Cambié esto a `userId`
+    console.log('Authentication successful, userId:', req.userId);
   } catch (err) {
-    res.send(err);
+    console.error('Authentication error:', err);
+    return reply.status(401).send({ error: 'Authentication failed', details: err.message });
   }
 });
+
+fastify.register(twoFactorAuth);
 
 /*-------------------LIVE CHAT-------------------*/
 
