@@ -11,7 +11,10 @@ async function handleGoogleLogin(response: any) {
         // Enviar el token al backend para validarlo
         const backendResponse = await fetch('https://localhost:3000/google-login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${googleToken}`
+			},
             body: JSON.stringify({ token: googleToken }),
         });
 

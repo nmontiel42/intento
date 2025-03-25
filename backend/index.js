@@ -38,8 +38,8 @@ fastify.register(jwt, {
 // Añadir hook para establecer cabeceras de seguridad
 fastify.addHook('onSend', (request, reply, payload, done) => {
   // Configurar Content-Security-Policy para permitir Google Sign-In
-  reply.header('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');  // Cambiar a same-origin si no usas popups
-  reply.header('Cross-Origin-Resource-Policy', 'cross-origin');  // Cambiar a same-origin o eliminar
+  reply.header('Cross-Origin-Opener-Policy', 'same-origin');  // Cambiar a same-origin si no usas popups
+  reply.header('Cross-Origin-Resource-Policy', 'same-origin');  // Cambiar a same-origin o eliminar
   reply.header('Content-Security-Policy', 
     "default-src 'self'; " +
     "script-src 'self' https://accounts.google.com https://*.googleusercontent.com 'unsafe-inline'; " +

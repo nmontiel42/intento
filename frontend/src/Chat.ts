@@ -5,26 +5,30 @@ const chatInput = document.getElementById("chatInput") as HTMLInputElement;
 const sendChatBtn = document.getElementById("sendChatBtn") as HTMLButtonElement;
 const toggleButton = document.getElementById("toggleChat") as HTMLButtonElement;
 const userList = document.getElementById("userList") as HTMLUListElement | null;
+const toggleUserListButton = document.getElementById("toggleUserListButton");
+const userListContainer = document.getElementById("userListContainer");
 
 document.addEventListener("DOMContentLoaded", () => {
-   
+
     let chatMinimized = false;
 
     // Minimizar o maximizar chat
-    toggleButton.addEventListener("click", () => {
-        if (chatMinimized) {
-            chatContainer.style.height = "100%";
-            chatBox.style.display = "flex";
-            chatInputContainer.style.display = "flex";
-            toggleButton.textContent = "−";
-        } else {
-            chatContainer.style.height = "50px";
-            chatBox.style.display = "none";
-            chatInputContainer.style.display = "none";
-            toggleButton.textContent = "+";
-        }
-        chatMinimized = !chatMinimized;
-    });
+	toggleButton.addEventListener("click", () => {
+		if (chatMinimized) {
+			chatContainer.classList.remove("h-[50px]");
+			chatContainer.classList.add("h-auto", "md:h-3/5");
+			chatBox.classList.remove("hidden");
+			chatInputContainer.classList.remove("hidden");
+			toggleButton.textContent = "−";
+		} else {
+			chatContainer.classList.remove("h-auto", "md:h-3/5");
+			chatContainer.classList.add("h-[50px]");
+			chatBox.classList.add("hidden");
+			chatInputContainer.classList.add("hidden");
+			toggleButton.textContent = "+";
+		}
+		chatMinimized = !chatMinimized;
+	});
 });
 
 function connectWebSocket()
@@ -50,12 +54,52 @@ function connectWebSocket()
 		try {
 			const data = JSON.parse(event.data);
 			if (data.type === "message") {
-				const messageElement = document.createElement("div");
-				messageElement.textContent = `${data.user}: ${data.message}`;
-				messageElement.classList.add(
-					"p-2", "bg-gray-200", "rounded", "block", "w-full", "break-words"
-				);
-				chatBox.appendChild(messageElement);
+				if (data.user === "chat")
+				{
+					const messageElement = document.createElement("div");
+					messageElement.textContent = `${data.user}: ${data.message}`;
+					messageElement.classList.add(
+						"p-3",
+						"bg-yellow-200",
+						"rounded-lg",
+						"block",
+						"w-full",
+						"break-words",
+						"mb-2"
+					);
+					chatBox.appendChild(messageElement);
+				}
+				else if (data.user === user.username)
+				{
+					const messageElement = document.createElement("div");
+					messageElement.textContent = `${data.user}: ${data.message}`;
+					messageElement.classList.add(
+						"p-3",
+						"bg-blue-200",
+						"rounded-lg",
+						"block",
+						"w-full", 
+						"break-words",
+						"mb-2"
+					);
+					chatBox.appendChild(messageElement);
+				}
+				else
+				{
+					const messageElement = document.createElement("div");
+					messageElement.textContent = `${data.user}: ${data.message}`;
+					messageElement.classList.add(
+						"p-3",
+						"bg-green-200",
+						"rounded-lg",
+						"block",
+						"w-full", 
+						"break-words",
+						"mb-2"
+					);
+					chatBox.appendChild(messageElement);
+				}
+
 				chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll al último mensaje
 			}
 
@@ -65,12 +109,15 @@ function connectWebSocket()
         			const li = document.createElement("li");
 					li.textContent = user;
 					li.classList.add(
-						"w-full", // Asegura que ocupe todo el ancho disponible
-						"truncate", // Corta el texto con "..." si es muy largo
-						"p-2",
-						"bg-gray-200",
-						"rounded",
-						"block"
+						"p-3",
+						"bg-white",
+						"rounded-lg",
+						"block",
+						"w-full",
+						"text-gray-800",
+						"mb-1",
+						"hover:bg-gray-100",
+						"transition-all"
 					);
 					userList.appendChild(li);
    				 });
@@ -118,3 +165,18 @@ function connectWebSocket()
 		socket.close(); // Cierra la conexión WebSocket
 	});
 }
+
+if (toggleUserListButton && userListContainer) {
+    toggleUserListButton.classList.add("hover:bg-blue-300", "hover:cursor-pointer"); // Agregar clases de hover
+
+    toggleUserListButton.addEventListener("click", () => {
+        if (userListContainer.classList.contains("hidden")) {
+            userListContainer.classList.remove("hidden");
+            toggleUserListButton.textContent = "Ocultar Usuarios";
+        } else {
+            userListContainer.classList.add("hidden");
+            toggleUserListButton.textContent = "Mostrar Usuarios";
+        }
+    });
+}
+
