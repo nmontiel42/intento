@@ -181,8 +181,6 @@ function connectWebSocket()
             };
 
             console.log("Enviando mensaje:", message);
-            console.log("Estado WebSocket:", socket.readyState);
-            console.log("WebSocket.OPEN:", WebSocket.OPEN);
 
             if (socket.readyState === WebSocket.OPEN) {
                 socket.send(JSON.stringify(message)); // Enviar el mensaje
