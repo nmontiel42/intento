@@ -24,7 +24,7 @@ EXPOSE 80 443
 RUN mkdir /etc/ssl/nginx-certs
 
 #Copiar mi fichero de nginx conf al docker y renombrar el antiguo
-COPY ./conf/* .
+COPY ./conf/* ./
 RUN mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old
 
 #Copiar mi fichero default.conf al directorio de nginx
