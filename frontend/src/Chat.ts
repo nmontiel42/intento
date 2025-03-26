@@ -119,10 +119,11 @@ function connectWebSocket()
 						"mb-1",
 						"hover:bg-blue-300",
 						"transition-all",
-						"sm:flex",           // Mostrar como flex en pantallas más grandes
-						"sm:items-center",    // Centrar el contenido verticalmente
-						"sm:space-x-3",       // Espaciado entre el círculo y el nombre
-						"sm:w-auto"           // Deja que el ancho se ajuste en pantallas grandes
+						"sm:flex",          // Mostrar como flex en pantallas más grandes
+						"sm:items-center",	// Centrar el contenido verticalmente
+						"sm:space-x-3",		// Espaciado entre el círculo y el nombre
+						"sm:w-auto",		// Deja que el ancho se ajuste en pantallas grandes
+						"relative"			// Para posicionar el tooltip
 					);
 			
 					// Crear el icono circular verde para indicar que está en línea
@@ -144,18 +145,102 @@ function connectWebSocket()
 					userNameText.classList.add(
 						"align-middle",         // Alineación de texto
 						"text-xs",              // Tamaño de texto pequeño en móviles
-						"sm:text-xs"          // Tamaño de texto normal en pantallas más grandes
+						"sm:text-xs",          // Tamaño de texto normal en pantallas más grandes
+						"cursor-pointer",
+						"relative"
 					);
 			
-					// Agregar el círculo verde y el nombre del usuario al <li>
+					// Crear el tooltip (oculto por defecto)
+					const tooltip = document.createElement("div");
+					tooltip.classList.add(
+						"absolute",
+						"left-1/2",
+						"top-full",
+						"transform",
+						"-translate-x-1/2",
+						"mt-2",
+						"w-48",
+						"bg-white",
+						"p-3",
+						"shadow-lg",
+						"rounded-lg",
+						"border",
+						"hidden", // Oculto inicialmente
+						"z-50"
+					);
+
+					// Imagen de perfil
+					const profileImg = document.createElement("img");
+					profileImg.src = "https://via.placeholder.com/40"; // Cambiar por la imagen real del usuario
+					profileImg.alt = "Perfil";
+					profileImg.classList.add("w-10", "h-10", "rounded-full", "mx-auto");
+
+					// Nombre con estado
+					const nameWithStatus = document.createElement("div");
+					nameWithStatus.classList.add("flex", "items-center", "justify-center", "mt-2", "text-sm", "font-semibold");
+
+					const nameText = document.createElement("span");
+					nameText.textContent = user;
+					const statusDot = document.createElement("span");
+					statusDot.classList.add("ml-2", "w-2", "h-2", "bg-green-500", "rounded-full");
+
+					nameWithStatus.appendChild(nameText);
+					nameWithStatus.appendChild(statusDot);
+
+					// Botones de acción
+					const buttonsWrapper = document.createElement("div");
+					buttonsWrapper.classList.add("mt-2", "space-y-1");
+
+					const btnPrivateMessage = document.createElement("button");
+					btnPrivateMessage.textContent = "Mensaje";
+					btnPrivateMessage.classList.add("w-full", "bg-blue-500", "text-white", "py-1", "rounded", "hover:bg-blue-600");
+
+					const btnBlock = document.createElement("button");
+					btnBlock.textContent = "Bloquear";
+					btnBlock.classList.add("w-full", "bg-red-500", "text-white", "py-1", "rounded", "hover:bg-red-600");
+
+					const btnInvite = document.createElement("button");
+					btnInvite.textContent = "Invitar";
+					btnInvite.classList.add("w-full", "bg-green-500", "text-white", "py-1", "rounded", "hover:bg-green-600");
+
+					// Agregar elementos al tooltip
+					buttonsWrapper.appendChild(btnPrivateMessage);
+					buttonsWrapper.appendChild(btnBlock);
+					buttonsWrapper.appendChild(btnInvite);
+
+					tooltip.appendChild(profileImg);
+					tooltip.appendChild(nameWithStatus);
+					tooltip.appendChild(buttonsWrapper);
+
+					// Mostrar tooltip al pasar el mouse
+					userNameText.addEventListener("mouseenter", () => {
+						tooltip.classList.remove("hidden");
+					});
+					tooltip.addEventListener("mouseenter", () => {
+						tooltip.classList.remove("hidden");
+					});
+
+					// Ocultar tooltip solo si el cursor deja tanto el nombre como el tooltip
+					const hideTooltip = () => {
+						setTimeout(() => {
+							if (!tooltip.matches(":hover") && !userNameText.matches(":hover")) {
+								tooltip.classList.add("hidden");
+							}
+						}, 200);
+					};
+
+					userNameText.addEventListener("mouseleave", hideTooltip);
+					tooltip.addEventListener("mouseleave", hideTooltip);
+
+					// Agregar elementos al <li>
 					li.appendChild(onlineIndicator);
 					li.appendChild(userNameText);
-			
+					li.appendChild(tooltip); // Agregar el tooltip al li
+
 					// Añadir el <li> a la lista
 					userList.appendChild(li);
 				});
-			}
-						
+			}			
 		} catch (err) {
 			console.error("Error procesando mensaje:", err);
 		}
