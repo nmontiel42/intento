@@ -81,6 +81,7 @@ registerForm.addEventListener('submit', async (event: Event) => {
       registerView.style.display = 'none';
       homeView.style.display = 'block';
       userName.textContent = data.user.username;
+	  connectWebSocket();
     } else {
       alert('Error en el registro. Intenta nuevamente.');
     }

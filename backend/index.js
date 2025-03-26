@@ -50,7 +50,7 @@ fastify.addHook('onSend', (request, reply, payload, done) => {
   );
   // Otras cabeceras de seguridad útiles
   reply.header('X-Content-Type-Options', 'nosniff');
-  reply.header('X-Frame-Options', 'DENY');
+  reply.header('X-Frame-Options', 'SAMEORIGIN');
   reply.header('X-XSS-Protection', '1; mode=block');
   
   done();

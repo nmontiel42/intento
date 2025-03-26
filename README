@@ -10,6 +10,16 @@ TO DO:
     MAYBE:
         -Reset password
 
+    CHAT:
+        - The user should be able to send direct messages to other users.
+        - The user should be able to block other users, preventing them from seeing any
+        further messages from the blocked account.
+        - The user should be able to invite other users to play a Pong game through the
+        chat interface.
+        - The tournament system should be able to notify users about the next game.
+        - The user should be able to access other players’ profiles through the chat
+        interface.
+
 WARNINGS Y ERRORES:
 
     -Feature Policy: Skipping unsupported feature name “identity-credentials-get”. client:263:248 (Es interno del sign-in de gogle)
