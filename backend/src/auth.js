@@ -203,23 +203,23 @@ export default async function (fastify, options) {
 
 
     fastify.delete('/delete-account', { preHandler: fastify.authenticate }, async (req, reply) => {
-        const { username } = req.body; // Obtener el username del body
-        console.log('Intentando eliminar usuario con username:', username);
-
-        if (!username) {
-            return reply.status(400).send({ error: 'Username no proporcionado' });
+        const email = req.user.email; // Obtener el email del usuario autenticado
+        console.log('Intentando eliminar usuario con email:', email);
+    
+        if (!email) {
+            return reply.status(400).send({ error: 'Email no proporcionado' });
         }
-
-        db.run('DELETE FROM users WHERE username = ?', [username], function (err) {
+    
+        db.run('DELETE FROM users WHERE email = ?', [email], function (err) {
             if (err) {
                 console.error('Error al eliminar la cuenta:', err);
                 return reply.status(500).send({ error: 'Error al eliminar la cuenta' });
             }
             if (this.changes === 0) {
-                console.log('No se encontró el usuario:', username);
+                console.log('No se encontró el usuario con email:', email);
                 return reply.status(404).send({ error: 'No se encontró el usuario' });
             }
-            console.log(`Usuario con username ${username} eliminado correctamente.`);
+            console.log(`Usuario con email ${email} eliminado correctamente.`);
             reply.send({ message: 'Cuenta eliminada correctamente' });
         });
     });

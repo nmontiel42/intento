@@ -1,9 +1,11 @@
 TO DO:
     -Seguir cambiando idioma (home)
-    -Agregar Pong3D
-
-    MAYBE:
-        -Reset password
+    
+    PONG 3D:
+        -Decorar
+        -Agregar botones pausa y reset
+        -Que el juego empiece pausado
+        -Agregar contador y ganador
 
 WARNINGS Y ERRORES:
 

@@ -1,0 +1,19 @@
+#canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;        /* El contenedor ocupa el 100% del ancho de la pantalla */
+    height: 100vh;      /* El contenedor ocupa el 100% de la altura de la pantalla */
+}
+
+#renderCanvas {
+    width: 70%;
+    height: 70vh;  /* La altura será del 90% de la ventana del navegador */
+    border: 3px solid #BE36CD;
+    box-shadow: 
+        0 0 10px #BE36CD,
+        0 0 20px #318ED6,
+        0 0 40px rgba(49, 142, 214, 0.5);
+    border-radius: 10px;
+    z-index: 100;
+}
