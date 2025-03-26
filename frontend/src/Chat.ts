@@ -105,6 +105,7 @@ function connectWebSocket()
 
 			if (data.type === "userList" && userList) {
 				userList.innerHTML = ""; // Limpiar la lista actual
+				const currentUser = user.username;
 			
 				data.users.forEach((user: string) => {
 					const li = document.createElement("li");
@@ -187,30 +188,31 @@ function connectWebSocket()
 					nameWithStatus.appendChild(nameText);
 					nameWithStatus.appendChild(statusDot);
 
-					// Botones de acción
-					const buttonsWrapper = document.createElement("div");
-					buttonsWrapper.classList.add("mt-2", "space-y-1");
-
-					const btnPrivateMessage = document.createElement("button");
-					btnPrivateMessage.textContent = "Mensaje";
-					btnPrivateMessage.classList.add("w-full", "bg-blue-500", "text-white", "py-1", "rounded", "hover:bg-blue-600");
-
-					const btnBlock = document.createElement("button");
-					btnBlock.textContent = "Bloquear";
-					btnBlock.classList.add("w-full", "bg-red-500", "text-white", "py-1", "rounded", "hover:bg-red-600");
-
-					const btnInvite = document.createElement("button");
-					btnInvite.textContent = "Invitar";
-					btnInvite.classList.add("w-full", "bg-green-500", "text-white", "py-1", "rounded", "hover:bg-green-600");
-
-					// Agregar elementos al tooltip
-					buttonsWrapper.appendChild(btnPrivateMessage);
-					buttonsWrapper.appendChild(btnBlock);
-					buttonsWrapper.appendChild(btnInvite);
-
 					tooltip.appendChild(profileImg);
 					tooltip.appendChild(nameWithStatus);
-					tooltip.appendChild(buttonsWrapper);
+
+					if (user !== currentUser) {
+						const buttonsWrapper = document.createElement("div");
+						buttonsWrapper.classList.add("mt-2", "space-y-1");
+			
+						const btnPrivateMessage = document.createElement("button");
+						btnPrivateMessage.textContent = "Mensaje";
+						btnPrivateMessage.classList.add("w-full", "bg-blue-500", "text-white", "py-1", "rounded", "hover:bg-blue-600");
+			
+						const btnBlock = document.createElement("button");
+						btnBlock.textContent = "Bloquear";
+						btnBlock.classList.add("w-full", "bg-red-500", "text-white", "py-1", "rounded", "hover:bg-red-600");
+			
+						const btnInvite = document.createElement("button");
+						btnInvite.textContent = "Invitar";
+						btnInvite.classList.add("w-full", "bg-green-500", "text-white", "py-1", "rounded", "hover:bg-green-600");
+			
+						buttonsWrapper.appendChild(btnPrivateMessage);
+						buttonsWrapper.appendChild(btnBlock);
+						buttonsWrapper.appendChild(btnInvite);
+			
+						tooltip.appendChild(buttonsWrapper);
+					}
 
 					// Mostrar tooltip al pasar el mouse
 					userNameText.addEventListener("mouseenter", () => {
