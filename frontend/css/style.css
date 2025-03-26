@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import './Register.css';
 @import './Home/Header.css';
+@import './2fa.css';
 
 @layer utilities {
     .text-xs-custom {

@@ -170,12 +170,8 @@
                     class="bg-[#0b225a] text-white px-4 py-2 rounded-lg w-full text-xs hover:cursor-pointer hover:scale-105"
                     id="frBtn2">FRANCES</button>
             </div>
-
       </div>
     </div>
-
-
-
     <div class="crt mt-16 pt-4">
       <main class="flex justify-center items-center flex-col">
 
@@ -231,6 +227,31 @@
       <button id="cancelChange">Cancelar</button>
     </form>
   </div>
+
+  <!-- Modal de autenticación de dos factores -->
+ <div id="twoFactorAuthView" class="two-factor-modal">
+  <div class="two-factor-content">
+      <h1 class="two-factor-title">Two-Factor Authentication</h1>
+      <p class="two-factor-subtitle">Enter the verification code sent to your email:</p>
+      <form id="twoFactorAuthForm">
+          <input 
+              type="text" 
+              id="verificationCode" 
+              name="verificationCode" 
+              placeholder="Verification Code" 
+              required 
+              class="two-factor-input"
+          />
+          <button 
+              id="submitVerificationCode" 
+              type="submit"
+              class="two-factor-button"
+          >
+              Verify
+          </button>
+      </form>
+  </div>
+</div>
 
   <script src="/dist/output.js"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>

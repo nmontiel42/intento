@@ -8,14 +8,8 @@ const db = new sqlite3.Database("database.db", (err) => {
 });
 
 db.serialize(() => {
-    db.run(`DROP TABLE IF EXISTS verification_codes`, (err) => {
-        if (err) {
-            console.error('Error dropping verification_codes table:', err);
-            return;
-        }
-        
         db.run(`
-            CREATE TABLE verification_codes (
+            CREATE TABLE IF NOT EXISTS verification_codes (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               session_info TEXT NOT NULL,
               code TEXT NOT NULL,
@@ -28,7 +22,7 @@ db.serialize(() => {
                 else console.log('Successfully recreated verification_codes table');
             }
         );
-    });
+
     db.run(
         `
         CREATE TABLE IF NOT EXISTS users (
@@ -61,28 +55,6 @@ db.serialize(() => {
             console.error("Error creating user_2fa_sessions table:", err);
         } else {
             console.log("Created user_2fa_sessions table");
-        }
-    });
-    db.run(`ALTER TABLE users ADD COLUMN has2FA BOOLEAN DEFAULT 0`, err => {
-        if (err && !err.message.includes('duplicate column')) {
-            console.error("Error adding has2FA column:", err);
-        }
-    });
-    
-    db.run(`ALTER TABLE users ADD COLUMN "2fa_email" TEXT`, err => {
-        if (err && !err.message.includes('duplicate column')) {
-            console.error("Error adding 2fa_email column:", err);
-        }
-    });
-    
-    db.run(`ALTER TABLE users ADD COLUMN two_fa_status TEXT`, err => {
-        if (err && !err.message.includes('duplicate column')) {
-            console.error("Error adding two_fa_status column:", err);
-        }
-    });
-    db.run(`ALTER TABLE user_2fa_sessions ADD COLUMN type TEXT DEFAULT 'enrollment'`, err => {
-        if (err && !err.message.includes('duplicate column')) {
-            console.error("Error adding type column to user_2fa_sessions:", err);
         }
     });
 });

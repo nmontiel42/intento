@@ -137,6 +137,66 @@ export default async function(fastify, options) {
 			reply.status(500).send({ error: 'Failed to verify 2FA', details: error.message });
 		}
 	});
+	fastify.get('/2fa-status', { preHandler: fastify.authenticate }, async (request, reply) => {
+		try {
+			const { userId } = request;
+			
+			// Obtener el usuario desde la base de datos
+			const user = await getUserById(userId);
+			if (!user) {
+				return reply.status(404).send({ error: 'User not found' });
+			}
+			
+			// Devolver el estado de 2FA
+			return reply.send({
+				enabled: user.has2FA === 1 && user.two_fa_status === 'active'
+			});
+		} catch (error) {
+			console.error('Error getting 2FA status:', error);
+			return reply.status(500).send({ error: 'Internal server error' });
+		}
+	});
+	fastify.post('/disable-2fa', { preHandler: fastify.authenticate }, async (request, reply) => {
+		console.log('Received request to disable 2FA:', {
+			headers: request.headers,
+			userId: request.userId,
+			body: request.body
+		});
+		
+		try {
+			const { userId } = request;
+			console.log('User ID from token:', userId);
+			
+			if (!userId) {
+				console.error('No userId found in authenticated request');
+				return reply.status(400).send({ error: 'Authentication error - no user ID' });
+			}
+			
+			// Obtener el usuario desde la base de datos
+			const user = await getUserById(userId);
+			console.log('User found:', user ? 'yes' : 'no');
+			
+			if (!user) {
+				return reply.status(404).send({ error: 'User not found' });
+			}
+			
+			// Desactivar 2FA
+			console.log('Disabling 2FA for user:', userId);
+			await db.run(
+				`UPDATE users SET has2FA = 0, two_fa_status = 'inactive' WHERE id = ?`,
+				[userId]
+			);
+			
+			console.log('2FA disabled successfully');
+			return reply.send({
+				success: true,
+				message: '2FA has been successfully disabled'
+			});
+		} catch (error) {
+			console.error('Error disabling 2FA:', error);
+			return reply.status(500).send({ error: 'Internal server error', details: error.message });
+		}
+	});
 }
 
 async function getUserById(id){

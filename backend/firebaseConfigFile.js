@@ -115,8 +115,8 @@ export const verifyEmailVerificationCode = async (sessionInfo, code) => {
 async function sendVerificationEmail(email, code) {
     // Mantener el log para depuración
     console.log(`VERIFICATION CODE for ${email}: ${code}`);
-    
-    const mailOptions = {
+    //desactivado para que no me pete el movil a emails
+   /*  const mailOptions = {
         from: `"${process.env.APP_NAME || 'Security Team'}" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: '🔐 Tu código de verificación 2FA',
@@ -141,7 +141,7 @@ async function sendVerificationEmail(email, code) {
         // Durante desarrollo, retorna true para que la app siga funcionando
         // incluso si el email falla
         return true;
-    }
+    } */
 }
 
 async function storeVerificationCode(sessionInfo, hashedCode, email, expiresAt) {

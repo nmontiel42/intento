@@ -1,58 +1,8 @@
 // Handle 2FA functionality
-let twoFactorAuthView: HTMLElement | null = null; // Change to nullable type
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Create a modal container for 2FA
-    twoFactorAuthView = document.createElement('div');
-    twoFactorAuthView.id = 'twoFactorAuthView';
-    
-    // Estilos para el contenedor modal (capa oscura de fondo)
-    twoFactorAuthView.style.position = 'center';
-    twoFactorAuthView.style.top = '0';
-    twoFactorAuthView.style.left = '0';
-    twoFactorAuthView.style.width = '100%';
-    twoFactorAuthView.style.height = '100%';
-    twoFactorAuthView.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    twoFactorAuthView.style.display = 'none';
-    twoFactorAuthView.style.zIndex = '9999';
-    twoFactorAuthView.style.alignItems = 'center';
-    twoFactorAuthView.style.justifyContent = 'center';
-    
-    // Crear el contenido del modal
-    const modalContent = document.createElement('div');
-    modalContent.style.backgroundColor = '#111';
-    modalContent.style.borderRadius = '8px';
-    modalContent.style.padding = '30px';
-    modalContent.style.boxShadow = '0 0 20px rgba(0, 255, 0, 0.7)';
-    modalContent.style.width = '350px';
-    modalContent.style.maxWidth = '90%';
-    modalContent.style.textAlign = 'center';
-    modalContent.style.position = 'relative';
-    
-    // Contenido HTML del formulario
-    modalContent.innerHTML = `
-        <h1 style="color: white; font-size: 24px; margin-bottom: 15px;">Two-Factor Authentication</h1>
-        <p style="color: white; font-size: 14px; margin-bottom: 20px;">Enter the verification code sent to your email:</p>
-        <form id="twoFactorAuthForm">
-            <input type="text" id="verificationCode" name="verificationCode" 
-                placeholder="Verification Code" required 
-                style="width: 100%; padding: 12px; margin-bottom: 15px; background-color: #222; color: white; border: 1px solid #4CAF50; border-radius: 4px; font-size: 16px; box-sizing: border-box;" />
-            
-            <button id="submitVerificationCode" type="submit"
-                style="width: 100%; padding: 12px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
-                Verify
-            </button>
-        </form>
-    `;
-    
-    // Agregar el contenido al modal
-    twoFactorAuthView.appendChild(modalContent);
-    
-    // Agregar el modal al body
-    document.body.appendChild(twoFactorAuthView);
-    
+    const twoFactorAuthForm = document.getElementById('twoFactorAuthForm');
+    const twoFactorAuthView = document.getElementById('twoFactorAuthView');
     // Agregar event listener al formulario
-    const twoFactorAuthForm = document.getElementById('twoFactorAuthForm') as HTMLFormElement | null;
     if (twoFactorAuthForm) {
         twoFactorAuthForm.addEventListener('submit', handleTwoFactorAuth);
     }
@@ -101,10 +51,8 @@ async function handleTwoFactorAuth(event: Event) {
             hide2FAModal();
             
             // Cambiar a vista home
-            const twoFactorAuthView = document.getElementById('twoFactorAuthView');
             const homeView = document.getElementById('homeView');
-            if (twoFactorAuthView && homeView) {
-                twoFactorAuthView.style.display = 'none';
+            if (homeView) {
                 homeView.style.display = 'block';
             }
             
@@ -123,83 +71,48 @@ async function handleTwoFactorAuth(event: Event) {
 }
 
 // Setup 2FA UI in profile settings
-function setupTwoFactorAuthUI() {
-    // Create a button for enabling 2FA
+async function setupTwoFactorAuthUI() {
+    // Verificar el estado actual de 2FA
+    const is2FAEnabled = await check2FAStatus();
+    
+    // Create a button for 2FA
     const setup2FABtn = document.createElement('button');
     setup2FABtn.id = 'setup2FABtn';
-    setup2FABtn.className = 'bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105';
-    setup2FABtn.innerText = 'Setup 2FA';
+    
+    // Cambiar el estilo y texto según el estado
+    if (is2FAEnabled) {
+        setup2FABtn.className = 'bg-red-500 text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105';
+        setup2FABtn.innerText = 'Disable 2FA';
+    } else {
+        setup2FABtn.className = 'bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105';
+        setup2FABtn.innerText = 'Enable 2FA';
+    }
     
     // Add it to the modal content
     const modalContent = document.getElementById('modalContent');
     if (modalContent) {
+        // Eliminar el botón anterior si existe
+        const existingBtn = document.getElementById('setup2FABtn');
+        if (existingBtn && existingBtn.parentNode) {
+            existingBtn.parentNode.removeChild(existingBtn);
+        }
+        
         modalContent.appendChild(setup2FABtn);
         
         // Add event listener
         setup2FABtn.addEventListener('click', async () => {
-            // Create a prompt for email
-            const email = prompt('Enter your email to receive verification codes:');
-            if (!email) return;
-            
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('You must be logged in to enable 2FA');
-                return;
-            }
-            
-            try {
-                const response = await fetch('https://localhost:3000/enroll-2fa', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ email }),
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    // Save session info
-                    localStorage.setItem('2faSessionInfo', data.sessionInfo);
-                    
-                    // Ask for verification code
-                    const verificationCode = prompt('Enter the verification code sent to your email:');
-                    if (!verificationCode) return;
-                    
-                    // Verify the code
-                    const verifyResponse = await fetch('https://localhost:3000/verify-2fa-enrollment', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({ 
-                            verificationCode,
-                            sessionInfo: data.sessionInfo, // This was using data without being defined
-                            email
-                        }),
-                    });
-                    
-                    if (verifyResponse.ok) {
-                        alert('Two-factor authentication has been enabled successfully!');
-                        // Close the modal if it exists
-                        const confirmModal = document.getElementById('confirmModal');
-                        if (confirmModal) {
-                            confirmModal.style.display = 'none';
-                        }
-                    } else {
-                        const errorData = await verifyResponse.json();
-                        alert(`Failed to verify the code: ${errorData.error || 'Unknown error'}`);
-                    }
-                    
-                } else {
-                    const errorData = await response.json();
-                    alert(`Failed to setup 2FA: ${errorData.error || 'Unknown error'}`);
+            if (is2FAEnabled) {
+                // Lógica para desactivar 2FA
+                if (await disable2FA()) {
+                    // Solo actualizar si la desactivación fue exitosa
+                    await setupTwoFactorAuthUI(); // Recrear el botón
                 }
-            } catch (error) {
-                console.error('Error setting up 2FA:', error);
-                alert('Error setting up 2FA. Please try again.');
+            } else {
+                // Lógica para activar 2FA
+                if (await enable2FA()) {
+                    // Solo actualizar si la activación fue exitosa
+                    await setupTwoFactorAuthUI(); // Recrear el botón
+                }
             }
         });
     }
@@ -247,20 +160,18 @@ function setupLoginForm() {
                     if (data.requires2FA) {
                         // Store the temporary token
                         localStorage.setItem('tempToken', data.tempToken);
-                        if(loginView){
+                        
+                        // Ocultar login
+                        if (loginView) {
                             loginView.style.display = 'none';
                         }
+                        
+                        // Mostrar modal 2FA
                         show2FAModal();
                         
-                        // Show 2FA view
-                        if (loginView && twoFactorAuthView) {
-                            loginView.style.display = 'none';
-                            twoFactorAuthView.style.display = 'flex';
-                        }
-                        
-                        // Alert user to check phone
+                        // Alert user to check email
                         alert('Please check your email for a verification code.');
-                    } else {
+                    }else {
                         // Normal login flow
                         localStorage.setItem('authToken', data.token);
                         localStorage.setItem('user', JSON.stringify(data));
@@ -299,17 +210,16 @@ function setupLoginForm() {
 function show2FAModal() {
     const modal = document.getElementById('twoFactorAuthView');
     if (modal) {
-        modal.style.display = 'flex'; // Usar flex para centrar
-        
-        // Asegurar que está centrado
-        modal.style.alignItems = 'center';
-        modal.style.justifyContent = 'center';
+        // Usar display: flex para activar el centrado
+        modal.style.display = 'flex';
         
         // Enfocar en el campo de entrada
         setTimeout(() => {
             const input = document.getElementById('verificationCode') as HTMLInputElement;
             if (input) input.focus();
         }, 100);
+    } else {
+        console.error('Modal 2FA not found in the DOM');
     }
 }
 
@@ -318,5 +228,137 @@ function hide2FAModal() {
     const modal = document.getElementById('twoFactorAuthView');
     if (modal) {
         modal.style.display = 'none';
+    }
+}
+
+async function check2FAStatus(): Promise<boolean> {
+    const token = localStorage.getItem('authToken');
+    if (!token) return false;
+    
+    try {
+        const response = await fetch('https://localhost:3000/2fa-status', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            return data.enabled || false;
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Error checking 2FA status:', error);
+        return false;
+    }
+}
+
+async function disable2FA(): Promise<boolean> {
+    const confirmation = confirm('Are you sure you want to disable two-factor authentication? This will make your account less secure.');
+    if (!confirmation) return false;
+    
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('You must be logged in to disable 2FA');
+        return false;
+    }
+    
+    try {
+        const response = await fetch('https://localhost:3000/disable-2fa', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ confirm: true }) // Añadir un cuerpo a la solicitud
+        });
+        
+        // Para depuración
+        console.log('Response status:', response.status);
+        
+        if (response.ok) {
+            alert('Two-factor authentication has been disabled successfully.');
+            return true;
+        } else {
+            // Intentar leer el mensaje de error
+            try {
+                const errorData = await response.json();
+                alert(`Failed to disable 2FA: ${errorData.error || 'Unknown error'}`);
+            } catch (e) {
+                alert(`Failed to disable 2FA. Status: ${response.status}`);
+            }
+            return false;
+        }
+    } catch (error) {
+        console.error('Error disabling 2FA:', error);
+        alert('Error disabling 2FA. Please try again.');
+        return false;
+    }
+}
+
+async function enable2FA(): Promise<boolean> {
+    // Create a prompt for email
+    const email = prompt('Enter your email to receive verification codes:');
+    if (!email) return false;
+    
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('You must be logged in to enable 2FA');
+        return false;
+    }
+    
+    try {
+        const response = await fetch('https://localhost:3000/enroll-2fa', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ email }),
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Save session info
+            localStorage.setItem('2faSessionInfo', data.sessionInfo);
+            
+            // Ask for verification code
+            const verificationCode = prompt('Enter the verification code sent to your email:');
+            if (!verificationCode) return false;
+            
+            // Verify the code
+            const verifyResponse = await fetch('https://localhost:3000/verify-2fa-enrollment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ 
+                    verificationCode,
+                    sessionInfo: data.sessionInfo,
+                    email
+                }),
+            });
+            
+            if (verifyResponse.ok) {
+                alert('Two-factor authentication has been enabled successfully!');
+                return true;
+            } else {
+                const errorData = await verifyResponse.json();
+                alert(`Failed to verify the code: ${errorData.error || 'Unknown error'}`);
+                return false;
+            }
+        } else {
+            const errorData = await response.json();
+            alert(`Failed to setup 2FA: ${errorData.error || 'Unknown error'}`);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error setting up 2FA:', error);
+        alert('Error setting up 2FA. Please try again.');
+        return false;
     }
 }

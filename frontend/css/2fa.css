@@ -1,0 +1,65 @@
+.two-factor-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.two-factor-content {
+    background-color: #111;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+    width: 350px;
+    max-width: 90%;
+    text-align: center;
+    position: relative;
+    margin: 0 auto;
+}
+
+.two-factor-title {
+    color: white;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.two-factor-subtitle {
+    color: white;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.two-factor-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background-color: #222;
+    color: white;
+    border: 1px solid #4CAF50;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.two-factor-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.two-factor-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+}
