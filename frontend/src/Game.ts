@@ -32,9 +32,13 @@ let animation: number;
 let player1Score: number = 0;
 let player2Score: number = 0;
 // Nombres de los jugadores
-const player1Name = "Player 1";
-const player2Name = "Player 2";
+let player1Name = "Player 1";
+let player2Name = "Player 2";
 const winnerScore = 5; // Puntuación para ganar el juego
+let isTournament: boolean = false;
+let isGameOver:boolean = false;
+
+let winner: string = "";
 
 let isGamePaused: boolean = true;
 let newGame: boolean = true;
@@ -159,15 +163,15 @@ if (ball.x + ball.radius > rightPaddle.x - paddleCollisionMargin &&
       resetBall(); // Resetea la posición de la pelota
   }
   if(player1Score === winnerScore || player2Score === winnerScore){
+    isGameOver = true;
     cancelAnimationFrame(animation); // Detener el bucle del juego
     showGameResult(); // Mostrar el resultado del juego
-     
   }
 }
 
 function showGameResult() {
   isGamePaused = true;
-  let winner = player1Score > player2Score ? player1Name : player2Name;
+  winner = player1Score > player2Score ? player1Name : player2Name;
   let resultText = winner + " wins!";
 
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
@@ -178,8 +182,13 @@ function showGameResult() {
   ctx.font = "24px 'Press Start 2P', cursive";
   ctx.fillText(player1Score + " - " + player2Score, canvas.width / 2, canvas.height / 2 + 50);
   ctx.font = "16px 'Press Start 2P', cursive";
-  resetGameBtn.innerText = "Reiniciar Juego";
-  startGameBtn.style.display = "none";
+  if(isTournament){
+    resetGameBtn.innerText = "Volver al Torneo";
+    startGameBtn.style.display = "none";
+  }else{
+    resetGameBtn.innerText = "Reiniciar Juego";
+    startGameBtn.style.display = "none";
+  }
 }
 
 // Función para mostrar la cuenta atrás
@@ -229,6 +238,7 @@ function resetBall() {
 
 function resetAll(){
   resetBall();
+  isGameOver = false;
   leftPaddle.y = canvas.height / 2 - paddleHeight / 2;
   rightPaddle.y = canvas.height / 2 - paddleHeight / 2;
   player1Score = 0;
@@ -254,11 +264,23 @@ function updatePaddlePositions() {
 }
 
 
+function resetButtonLogic(){
+      resetGameBtn.innerText = "Reiniciar Juego";
+      resetAll(); // Resetea el juego
+      isGamePaused = true;
+      newGame = true;
+      cancelAnimationFrame(animation); // Pausar el juego
+      drawGame();
+      startGameBtn.innerText = "Iniciar Juego";
+      startGameBtn.style.display = "block";
+}
+
 // Bucle principal del juego
 function gameLoop() {
     if (isGamePaused) {
       return;
     }
+    isGameOver = false;
     drawGame();
     moveGameObjects();
     animation = requestAnimationFrame(gameLoop); // Llama a gameLoop para crear el bucle del juego

@@ -4,8 +4,10 @@ TO DO:
     -Agregar Pong3D
 
     JUEGO:
+        -Crear tabla de BBDD para el torneo
+        -Desactivar partida ya iniciada
         -MatchMaking:
-            arreglar la tabla y ocultar bien algun label
+           
         -Multiplayer:
             
         

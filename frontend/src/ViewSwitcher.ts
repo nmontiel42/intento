@@ -7,10 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     localPlayButton.addEventListener('click', () => {
       gameView.style.display = 'block';
       tournamentView.style.display = 'none';
+      resetButtonLogic();
     });
   
     tourPlayButton.addEventListener('click', () => {
       gameView.style.display = 'none';
       tournamentView.style.display = 'block';
+      resetButtonLogic();
     });
   });

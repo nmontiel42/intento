@@ -143,7 +143,9 @@ body::before {
 #submitLogin,
 #submitUsername,
 #startGameBtn,
-#resetGameBtn  {
+#resetGameBtn,
+#generateTournamentBtn,
+#tournamentBracket button  {
     background-color: #BE36CD;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -166,7 +168,9 @@ body::before {
 #submitLogin:hover,
 #submitUsername:hover,
 #startGameBtn:hover,
-#resetGameBtn:hover {
+#resetGameBtn:hover,
+#generateTournamentBtn:hover,
+#tournamentBracket button:hover {
     color: #fff;
     box-shadow:
         0 0 10px #BE36CD,

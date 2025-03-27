@@ -5,8 +5,8 @@ const homeView = document.getElementById('homeView') as HTMLElement;
 const usernameView = document.getElementById('usernameView') as HTMLElement;
 
 // Seleccionamos el elemento para mostrar el nombre de usuario
-const userName = document.getElementById('userName') as HTMLElement;
-
+/* const userName = document.getElementById('userName') as HTMLElement;
+ */
 // Seleccionamos los formularios
 const registerForm = document.getElementById('registerForm') as HTMLFormElement;
 const loginForm = document.getElementById('loginForm') as HTMLFormElement;
@@ -80,7 +80,7 @@ registerForm.addEventListener('submit', async (event: Event) => {
 
       registerView.style.display = 'none';
       homeView.style.display = 'block';
-      userName.textContent = data.user.username;
+      //userName.textContent = data.user.username;
     } else {
       alert('Error en el registro. Intenta nuevamente.');
     }
@@ -114,7 +114,7 @@ loginForm.addEventListener('submit', async (event: Event) => {
       // Cambiar a la vista de inicio
       loginView.style.display = 'none';
       homeView.style.display = 'block';
-      userName.textContent = data.username;
+      //userName.textContent = data.username;
 
       // Actualizamos la imagen de perfil
       userProfile.innerHTML = data.picture ? `<img src="${data.picture}" alt="User profile picture" />` : `<img src="public/letra-t.png";" alt="User profile picture" />`;

@@ -11,50 +11,29 @@
     margin-top: 20px;
 }
 
-#tournamentForm label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 14px;
+#tournamentForm .form-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-#tournamentForm input[type="number"] {
-    width: 50px;
-    padding: 5px;
-    margin-bottom: 20px;
+#tournamentForm label {
+    margin-right: 10px;
     font-size: 14px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+#tournamentForm select {
+    padding: 5px;
+    font-size: 14px;
     border: 2px solid #BE36CD;
     background-color: rgba(11, 34, 90, 0.85);
     color: white;
     border-radius: 5px;
 }
 
-#tournamentView button {
-    background-color: #BE36CD;
-    border: 2px solid #BE36CD;
-    color: #D2D2EA;
-    padding: 10px 20px;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 14px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    overflow: hidden;
-    transition: all 0.3s;
-    box-shadow:
-        0 0 5px #BE36CD,
-        0 0 10px rgba(49, 142, 214, 0.7);
-    z-index: 1;
-    margin-top: 10px;
-}
-
-#tournamentView button:hover {
-    background-color: #318ED6;
-    border-color: #318ED6;
-    box-shadow:
-        0 0 10px #318ED6,
-        0 0 20px rgba(49, 142, 214, 0.7);
-}
 
 /* Estilo para la entrada de nombres de jugadores */
 #playersInput {
@@ -73,34 +52,32 @@
     border-radius: 5px;
 }
 
-/* Estilo para la tabla de enfrentamientos */
-#tournamentBracket {
-    margin-top: 20px;
+/* Estilos para el torneo */
+
+#numPlayers {
+    margin-left: 10px;
+}
+
+#generateTournamentBtn, #tournamentBracket button {
+    margin: 20px;
+}
+
+
+/* Estilos para el torneo */
+.tournament-bracket {
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 30px;
+    overflow-x: auto;
+    width: 100%;
+}
+
+
+.tournament-column {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
+    margin: 20px 40px;
 }
 
-#tournamentBracket .round {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 20px;
-}
-
-#tournamentBracket .match {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 10px 0;
-}
-
-#tournamentBracket .player {
-    border: 1px solid #BE36CD;
-    padding: 10px;
-    margin: 5px 0;
-    text-align: center;
-    font-size: 14px;
-    color: white;
-    background-color: rgba(11, 34, 90, 0.85);
-    border-radius: 5px;
-}

@@ -1,7 +1,5 @@
 // gameLogic.ts
 
-
-
 // Obtener los botones de control
 const startGameBtn = document.getElementById("startGameBtn") as HTMLButtonElement;
 const resetGameBtn = document.getElementById("resetGameBtn") as HTMLButtonElement;
@@ -74,14 +72,17 @@ startGameBtn.addEventListener("click", () => {
 
 // Función para resetear el juego
 resetGameBtn.addEventListener("click", () => {
-    resetGameBtn.innerText = "Reiniciar Juego";
-    resetAll(); // Resetea el juego
-    isGamePaused = true;
-    newGame = true;
-    cancelAnimationFrame(animation); // Pausar el juego
-    startGameBtn.innerText = "Iniciar Juego";
-    startGameBtn.style.display = "block";
-    drawGame();
+    if(!isGameOver){
+        resetButtonLogic();
+        //drawGame();
+    }else if(isTournament && isGameOver){
+        isTournament = false;
+        gameView.style.display = 'none';
+        tournamentView.style.display = 'block';
+        
+        //Actualizar con el ganador el bracket
+
+    }
 });
 
 
