@@ -172,7 +172,16 @@
 				Mostrar Usuarios
 			</div>
 			<!-- Mensajes del chat (derecha) -->
-			<div id="chatBox" class="flex-1 overflow-y-auto p-3 space-y-3 bg-white max-h-64 md:max-h-full">
+			<div id="chatContainer" class="relative w-full h-full">
+				<!-- Chat global -->
+				<div id="chatBox" class="flex-1 overflow-y-auto p-3 space-y-3 bg-white max-h-64 md:max-h-full">
+					<!-- Aquí va el chat global -->
+				</div>
+	
+				<!-- Contenedor de chats privados (ubicado encima del chat global) -->
+				<div id="privateChatsContainer" class="absolute top-0 right-0 flex flex-col space-y-2">
+					<!-- Los chats privados se añadirán aquí dinámicamente -->
+				</div>
 			</div>
 		</div>
 		<!-- Input para enviar mensajes -->
@@ -185,6 +194,8 @@
 			</button>
 		</div>
 	</div>
+
+
 
     <!-- Pong -->
 

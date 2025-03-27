@@ -92,9 +92,31 @@ wss.on('connection', (ws) => {
 			const user = { ws, username: parsedMessage.username };
 			userList.push(user);
 			console.log(`${parsedMessage.username} se ha conectado`);
-
 			broadcastUserList();
-		} else {
+		}
+		else if (parsedMessage.type === 'privateMessage'){
+			// **Mensaje privado**
+			const { to, message } = parsedMessage;
+			const recipient = userList.find(user => user.username === to);
+
+			if (recipient && recipient.ws.readyState === WebSocket.OPEN) {
+				recipient.ws.send(JSON.stringify({
+					type: 'privateMessage',
+					from: parsedMessage.user,
+					message
+				}));
+			} else {
+				// Si no se encuentra al destinatario o está desconectado, informar al remitente
+				const sender = userList.find(user => user.username === parsedMessage.user);
+				if (sender) {
+					sender.ws.send(JSON.stringify({
+						type: 'error',
+						message: `El usuario ${to} no está disponible para recibir mensajes privados.`
+					}));
+				}
+			}
+		}
+		else {
 			for (const client of clients) {
 				if (client.readyState === WebSocket.OPEN) {
 					client.send(JSON.stringify({
@@ -125,8 +147,6 @@ wss.on('connection', (ws) => {
 		}
 	}
 
-
-
 	// Manejo de cierre de conexión
     ws.on('close', () => {
         console.log('Cliente desconectado');
@@ -144,6 +164,17 @@ wss.on('connection', (ws) => {
 	// Manejo de errores
 	ws.on('error', (error) => {
 	  console.error('Error en WebSocket:', error);
+	});
+});
+
+fastify.get('/chat', { websocket: true }, (request, reply) => {
+	if (!request.raw.upgrade) {
+		reply.code(400).send({ error: 'This is the WebSocket not an HTTP Request' });
+		return;
+	}
+
+	wss.handleUpgrade(request.raw, request.raw.socket, Buffer.alloc(0), (ws) => {
+		wss.emit('connection', ws, request.raw);
 	});
 });
 
