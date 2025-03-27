@@ -74,10 +74,8 @@ async function handleTwoFactorAuth(event: Event) {
 async function setupTwoFactorAuthUI() {
     // Verificar el estado actual de 2FA
     const is2FAEnabled = await check2FAStatus();
-    
-    // Create a button for 2FA
-    const setup2FABtn = document.createElement('button');
-    setup2FABtn.id = 'setup2FABtn';
+
+    const setup2FABtn = document.getElementById('setup2FABtn') as HTMLElement;
     
     // Cambiar el estilo y texto según el estado
     if (is2FAEnabled) {

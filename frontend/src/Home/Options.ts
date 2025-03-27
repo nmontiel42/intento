@@ -21,6 +21,7 @@ const buttonsToAnimate = [
     document.getElementById('changeUsernameBtn'),
     document.getElementById('changeProfilePicture'),
     document.getElementById('changeLanguage'),
+    document.getElementById('setup2FABtn'),
     document.getElementById('selectLang'),
 ];
 
@@ -58,7 +59,7 @@ langButtons.forEach(button => {
 
 goingBack.addEventListener('click', () => {
     // Primero, inicia la transición de salida
-    [changeLang, changeProfilePic, changeUsername, goingBack].forEach(btn => {
+    [changeLang, changeProfilePic, changeUsername, setup2FABtn, goingBack].forEach(btn => {
         btn.classList.remove('fade-in');
         btn.classList.add('fade-out');
     });
@@ -69,6 +70,7 @@ goingBack.addEventListener('click', () => {
         changeLang.style.display = 'none';
         changeProfilePic.style.display = 'none';
         changeUsername.style.display = 'none';
+        setup2FABtn.style.display = 'none';
         goingBack.style.display = 'none';
 
         // Preparar los botones originales
@@ -89,7 +91,7 @@ goingBack.addEventListener('click', () => {
 
 changeLang.addEventListener('click', () => {
     // Primero, inicia la transición de salida para los botones actuales
-    [changeLang, changeProfilePic, changeUsername, goingBack].forEach(btn => {
+    [changeLang, changeProfilePic, changeUsername, setup2FABtn, goingBack].forEach(btn => {
         btn.classList.remove('fade-in');
         btn.classList.add('fade-out');
     });
@@ -122,6 +124,7 @@ changeLang.addEventListener('click', () => {
         changeLang.style.display = 'none';
         changeProfilePic.style.display = 'none';
         changeUsername.style.display = 'none';
+        setup2FABtn.style.display = 'none';
         goingBack.style.display = 'none';
 
         // Mostrar la vista de idioma
@@ -173,13 +176,14 @@ goingBackLang.addEventListener('click', () => {
         changeLang.style.display = 'block';
         changeProfilePic.style.display = 'block';
         changeUsername.style.display = 'block';
+        setup2FABtn.style.display = 'block';
         goingBack.style.display = 'block';
 
         // Forzar un reflow para que la transición funcione
         document.body.offsetHeight;
 
         // Aplicar la transición de entrada
-        [changeLang, changeProfilePic, changeUsername, goingBack].forEach(btn => {
+        [changeLang, changeProfilePic, changeUsername, setup2FABtn, goingBack].forEach(btn => {
             btn.classList.remove('fade-out');
             btn.classList.add('fade-in');
         });

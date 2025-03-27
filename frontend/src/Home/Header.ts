@@ -4,6 +4,7 @@ const confirmModal = document.getElementById('confirmModal') as HTMLElement;
 const cancelBtn = document.getElementById('cancelBtn') as HTMLButtonElement;
 const deleteAccountBtn = document.getElementById('deleteAccountBtn') as HTMLButtonElement;
 const optionsBtn = document.getElementById('optionsBtn') as HTMLButtonElement;
+const setup2FABtn = document.getElementById('setup2FABtn') as HTMLButtonElement;
 
 const localPlay = document.getElementById('localPlay') as HTMLButtonElement;
 const multiPlay = document.getElementById('multiPlay') as HTMLButtonElement;
@@ -103,13 +104,14 @@ optionsBtn.addEventListener('click', (event) => {
     changeLang.style.display = 'block';
     changeProfilePic.style.display = 'block';
     changeUsername.style.display = 'block';
+    setup2FABtn.style.display = 'block';
     goingBack.style.display = 'block';
 
     // Forzar un reflow para que la transición funcione
     document.body.offsetHeight;
 
     // Aplicar la transición de entrada
-    [changeLang, changeProfilePic, changeUsername, goingBack].forEach(btn => {
+    [changeLang, changeProfilePic, changeUsername, setup2FABtn, goingBack].forEach(btn => {
       btn.classList.remove('fade-out');
       btn.classList.add('fade-in');
     });
