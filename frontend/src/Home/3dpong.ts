@@ -1,5 +1,5 @@
 window.addEventListener("DOMContentLoaded", () => {
-  // Configuración del juego
+  // Configuración del juego]
   const config = {
     canvas: 'renderCanvas',
     paddleSpeed: 0.3,
@@ -8,7 +8,8 @@ window.addEventListener("DOMContentLoaded", () => {
     paddleHeight: 4,
     borderThickness: 0.2,
     gameWidth: 20,
-    gameHeight: 12
+    gameHeight: 12,
+    winScore: 5
   };
 
   /* ----------------------CANVAS---------------------- */
@@ -272,21 +273,47 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // Marcar puntos
     if (ball.position.x >= config.gameWidth / 2) {
-      state.scorePlayer1++;
+      
       ball.position = new BABYLON.Vector3(0, 0, 0);
       state.ballVelocity.x = -config.ballSpeed;
-      console.log("Player 1 score: ", state.scorePlayer1);
+      if (isActivated) {
+        state.scorePlayer1++;
+        console.log("Player 1 score: ", state.scorePlayer1);
+      }
     }
 
     if (ball.position.x <= -config.gameWidth / 2) {
-      state.scorePlayer2++;
       ball.position = new BABYLON.Vector3(0, 0, 0);
       state.ballVelocity.x = config.ballSpeed;
-      console.log("Player 2 score: ", state.scorePlayer2);
+      if (isActivated) {
+        state.scorePlayer2++;
+        console.log("Player 2 score: ", state.scorePlayer2);
+      }
     }
 
+    if (state.scorePlayer1 >= config.winScore || state.scorePlayer2 >= config.winScore) {
+      isActivated = false;
+      state.scorePlayer1 = 0;
+      state.scorePlayer2 = 0;
+      ball.position = new BABYLON.Vector3(0, 0, 0);
+      state.ballVelocity.x = config.ballSpeed;
+      state.ballVelocity.y = config.ballSpeed;
+      winView.style.display = "block";
+      show3d.style.display = "none";
+      showAdvert.style.display = "none";
+    }
     // Actualizar posición de la luz
     pointLight.position = ball.position.add(new BABYLON.Vector3(0, 2, 0));
+  });
+
+  reset3dGame.addEventListener("click", () => {
+    isActivated = false;
+    state.scorePlayer1 = 0;
+    state.scorePlayer2 = 0;
+    ball.position = new BABYLON.Vector3(0, 0, 0);
+    state.ballVelocity.x = config.ballSpeed;
+    state.ballVelocity.y = config.ballSpeed;
+    activateScore.innerText = lang === 'es' ? 'Activar Puntuación' : lang === 'en' ? 'Activate Score' : 'Activer le score';
   });
 
   // Bucle de renderizado

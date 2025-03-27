@@ -120,8 +120,11 @@
       <!-- Contenedor de iconos centrado -->
       <div id="icons" class="flex flex-row space-x-4 flex-grow justify-center">
         <p class="hover:cursor-pointer" id="localPlay">Local</p>
-        <p class="hover:cursor-pointer" id="multiPlay">Multijugador</p>
+        <div id="divider2" class="w-0.5 h-6 bg-white"></div>
+        <p class="hover:cursor-pointer" id="multiPlay">Multi</p>
+        <div id="divider2" class="w-0.5 h-6 bg-white"></div>
         <p class="hover:cursor-pointer" id="tourPlay">Torneo</p>
+        <div id="divider2" class="w-0.5 h-6 bg-white"></div>
         <p class="hover:cursor-pointer" id="realPlay">3D</p>
       </div>
 
@@ -152,9 +155,6 @@
             <button style="display:none; font-size: 0.6rem;" id="changeUsernameBtn"
               class="bg-[#318ED6] text-white px-4 py-2 rounded-lg mb-2 w-full text-xs hover:cursor-pointer hover:scale-105">Cambiar
               nombre de usuario</button>
-            <button style="display:none; font-size: 0.6rem;" id="changeProfilePicture"
-              class="bg-[#BE36CD] text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105">Cambiar
-              foto de perfil</button>
             <button style="display:none; font-size: 0.6rem;" id="changeLanguage"
               class="bg-[#0b225a] text-white px-4 py-2 rounded-lg w-full text-xs hover:cursor-pointer hover:scale-105">Cambiar
               idioma</button>
@@ -195,11 +195,19 @@
           <p class="text-white">Torneo</p>
         </div>
 
-        <div id="realPlayView" style="display:none;">
-          <canvas id="renderCanvas" style="width:100%; height:400px;"></canvas>
-          <div id="gameButtons" class="flex flex-col space-y-2 mt-2">
-            <button id="stop3dGame" class="bg-[#BE36CD] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105">Detener juego</button>
+        <div id="realPlayView" style="display:none;" class="text-white">
+          <div id="showAdvert" class="text-white" style="display:none;">
+            <p id="gameTitle">Esto es una prueba</p>
+            <button id="show3dGame" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105">Iniciar juego</button>
+          </div>
+          <div id="show3d" class="text-white" style="display:none;">
+            <canvas id="renderCanvas" style="width:100%; height:400px;"></canvas>
+            <button id="activateScore" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105">Activar puntuación</button>
             <button id="reset3dGame" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105">Reiniciar juego</button>
+          </div>
+          <div id="winView" class="txt-white" style="display: none;">
+            <p id="winMsg">Ganaste!</p>
+            <button id="closeWin">Cerrar</button>
           </div>
         </div>
       </main>

@@ -95,13 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
             userProfile.innerHTML = `<img src="${profilePic}" alt="User profile picture" />`;
         } else {
             const lang = localStorage.getItem('lang');
-            if (lang === 'en') {
-                alert('The username is already in use');
-            } else if (lang === 'fr') {
-                alert('Le nom d\'utilisateur est déjà utilisé');
-            } else {
-                alert('El nombre de usuario ya esta en uso');
-            }
+            if (lang === 'en') alert('The username is already in use');
+            if (lang === 'fr') alert('Le nom d\'utilisateur est déjà utilisé');
+            if (lang === 'es') alert('El nombre de usuario ya esta en uso');
         }
     });
 });

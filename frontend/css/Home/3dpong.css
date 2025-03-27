@@ -2,13 +2,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;        /* El contenedor ocupa el 100% del ancho de la pantalla */
-    height: 100vh;      /* El contenedor ocupa el 100% de la altura de la pantalla */
 }
 
 #renderCanvas {
-    width: 70%;
-    height: 70vh;  /* La altura será del 90% de la ventana del navegador */
+    width: 80%;
+    height: 80vh;
     border: 3px solid #BE36CD;
     box-shadow: 
         0 0 10px #BE36CD,

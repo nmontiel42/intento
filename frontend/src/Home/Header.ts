@@ -141,4 +141,5 @@ realPlay.addEventListener('click', () => {
   multiPlayView.style.display = 'none';
   tourPlayView.style.display = 'none';
   realPlayView.style.display = 'block';
+  showAdvert.style.display = 'block';
 });

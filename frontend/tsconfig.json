@@ -5,7 +5,7 @@
     "outFile": "./dist/output.js",
     "strict": true,
     "esModuleInterop": true,
-    "lib": ["es6", "dom"],
+    "lib": ["es6", "dom", "ES2017"],
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "skipLibCheck": true,

@@ -94,13 +94,9 @@ registerForm.addEventListener('submit', async (event: Event) => {
       userName.textContent = data.user.username;
     } else {
       const lang = localStorage.getItem('lang');
-      if (lang === 'en') {
-        alert('Error in registration: email or username is already in use');
-      } else if (lang === 'fr') {
-        alert('Erreur d\'inscription: l\'email ou le nom d\'utilisateur est déjà utilisé');
-      } else {
-        alert('Error en el registro: el email o el username ya está en uso');
-      }
+      if (lang === 'en') alert('Error in registration: email or username is already in use');
+      if (lang === 'fr') alert('Erreur d\'inscription: l\'email ou le nom d\'utilisateur est déjà utilisé');
+      if (lang === 'es') alert('Error en el registro: el email o el username ya está en uso');
     }
   } catch (error) {
     console.error('Error al registrar:', error);
@@ -155,13 +151,9 @@ loginForm.addEventListener('submit', async (event: Event) => {
     } else {
       // Manejo de errores (sin cambios)
       const lang = localStorage.getItem('lang');
-      if (lang === 'en') {
-        alert('Error in login: The user does not exist or the Email/Password are incorrect');
-      } else if (lang === 'fr') {
-        alert('Erreur de connexion: l\'utilisateur n\'existe pas ou l\'Email/Mot de passe sont incorrects');
-      } else {
-        alert('Error en el inicio de sesión. El usuario no existe o el Email/Contraseña son erroneos.');
-      }
+      if (lang === 'en') alert('Error in login: The user does not exist or the Email/Password are incorrect');
+      if (lang === 'fr') alert('Erreur de connexion: l\'utilisateur n\'existe pas ou l\'Email/Mot de passe sont incorrects');
+      if (lang === 'es') alert('Error en el inicio de sesión. El usuario no existe o el Email/Contraseña son erroneos.');
     }
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
