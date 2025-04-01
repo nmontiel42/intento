@@ -197,18 +197,82 @@
 
         <div id="realPlayView" style="display:none;" class="text-white">
           <div id="showAdvert" class="text-white" style="display:none;">
-            <p id="gameTitle">Esto es una prueba</p>
-            <button id="show3dGame" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105">Iniciar juego</button>
+            <p id="gameTitle" class="text-lg font-semibold text-center text-white bg-gray-900/50 p-6 shadow-lg max-w-xl mx-auto space-y-4 rounded-lg">
+              Esto es un Pong en 3D.
+              <br>
+              La pelota estará en movimiento todo el rato y no se podrá parar, pero sí se podrá activar la puntuación y reiniciar el juego.
+              <br>
+              Para que no se mueva el punto de vista, hay que cliquear fuera del canvas.
+              <br>
+              Si la puntuación se activa, ganará el primero que llegue a 5 puntos.
+              <br>
+              Cuando alguien gana y el juego se reinicia, la puntuacion esta desactivada.
+              <br>
+              <span class="text-[#BE36CD] font-bold">Buena suerte ;)</span>
+              <br>
+            </p>
+            <button id="show3dGame" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105 cursor-pointer">Iniciar juego</button>
+            
           </div>
-          <div id="show3d" class="text-white" style="display:none;">
+          <div id="show3d" class="text-white flex flex-col items-center" style="display:none;">
             <canvas id="renderCanvas" style="width:100%; height:400px;"></canvas>
-            <button id="activateScore" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105">Activar puntuación</button>
-            <button id="reset3dGame" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105">Reiniciar juego</button>
+          
+            <!-- Contenedor para centrar todo -->
+            <div class="w-full flex flex-col items-center mt-4">
+  
+              <!-- Puntuación centrada y bien alineada -->
+              <div id="score" class="flex items-center text-xl font-semibold gap-6">
+                <div class="flex flex-col items-center">
+                  <p id="player1Name" class="text-[#318ED6]">Ping</p>
+                  <p id="player1Score">0</p>
+                </div>
+                <div id="divider2" class="w-0.5 h-6 bg-white"></div>
+                <div class="flex flex-col items-center">
+                  <p id="player2Name" class="text-[#318ED6]">Pong</p>
+                  <p id="player2Score">0</p>
+                </div>
+              </div>
+            
+              <!-- Botones bien alineados y del mismo tamaño -->
+              <div class="flex justify-center gap-4 mt-4 w-full max-w-sm">
+                <button 
+                  id="activateScore" 
+                  class="flex justify-center items-center px-6 py-3 w-1/2 text-sm font-medium text-[#318ED6] border-2 border-[#318ED6] rounded-lg 
+                         transition-all duration-300 hover:bg-[#318ED6] hover:text-white hover:shadow-md"
+                >
+                  ▶
+                </button>
+                <button 
+                  id="reset3dGame" 
+                  class="flex justify-center items-center px-6 py-3 w-1/2 text-sm font-medium text-[#318ED6] border-2 border-[#318ED6] rounded-lg 
+                         transition-all duration-300 hover:bg-[#318ED6] hover:text-white hover:shadow-md"
+                >
+                  ⟳
+                </button>
+              </div>
+            
+            </div>
+            
           </div>
-          <div id="winView" class="txt-white" style="display: none;">
-            <p id="winMsg">Ganaste!</p>
-            <button id="closeWin">Cerrar</button>
+          
+          <div id="winView" class="text-white bg-gray-900/50 p-6 rounded-lg shadow-lg text-center" style="display: none;">
+            <div class="flex justify-center items-center gap-2 text-xl font-semibold">
+              <p id="winMsg">¡Ganaste</p>
+              <p id="winnerPlayer" class="text-[#318ED6]"></p>
+              <p>!</p>
+            </div>
+            <img 
+              src="https://media2.giphy.com/media/BK1EfIsdkKZMY/giphy.gif?cid=6c09b952ufxyfabixutnsm8xo2kwfzk49snn8pxii6ozbwzc&ep=v1_gifs_search&rid=giphy.gif&ct=g" 
+              id="winnerImage" 
+              alt="Ganador" 
+              class="w-40 h-40 mx-auto mt-4 rounded-lg shadow-md"
+            />
+            <button 
+              id="closeWin" class="mt-4 rounded-xl">
+              Cerrar
+            </button>
           </div>
+          
         </div>
       </main>
     </div>
@@ -246,47 +310,6 @@
       <button id="cancelChange">Cancelar</button>
     </form>
   </div>
-
-  <div id="changePictureView" style="display:none;">
-    <p id="pictureChangeText" class="text-white text-xs mb-2 flex flex-row">Elige una foto de perfil:</p>
-    
-    <div class="grid grid-cols-5 gap-4 mb-4">
-      <!-- Avatares seleccionables -->
-      <div class="avatar-option cursor-pointer" data-avatar-id="1">
-        <img src="../public/avatars/avatar1.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-      <div class="avatar-option cursor-pointer" data-avatar-id="2">
-        <img src="../public/avatars/avatar2.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-      <div class="avatar-option cursor-pointer" data-avatar-id="3">
-        <img src="../public/avatars/avatar3.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-      <div class="avatar-option cursor-pointer" data-avatar-id="4">
-        <img src="../public/avatars/avatar4.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-      <div class="avatar-option cursor-pointer" data-avatar-id="5">
-        <img src="../public/avatars/avatar5.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-      <div class="avatar-option cursor-pointer" data-avatar-id="6">
-        <img src="../public/avatars/avatar6.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-      <div class="avatar-option cursor-pointer" data-avatar-id="7">
-        <img src="../public/avatars/avatar7.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-      <div class="avatar-option cursor-pointer" data-avatar-id="8">
-        <img src="../public/avatars/avatar8.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-      <div class="avatar-option cursor-pointer" data-avatar-id="9">
-        <img src="../public/avatars/avatar9.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-      <div class="avatar-option cursor-pointer" data-avatar-id="10">
-        <img src="../public/avatars/avatar10.png" class="w-16 h-16 object-cover rounded-full border-2 border-white hover:border-[#BE36CD] transition-all" />
-      </div>
-    </div>
-    
-    <div class="flex space-x-4">
-      <button id="cancelPicture" type="button" class="bg-[#0b225a] text-white px-4 py-2 rounded-lg">Cancelar</button>
-    </div>
   </div>
 
   <script src="/dist/output.js"></script>

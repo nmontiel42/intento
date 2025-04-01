@@ -31,6 +31,7 @@ function changeLanguage() {
 
         /*-------------------Options-------------------*/
 
+        const tourPlay = document.getElementById('tourPlay') as HTMLButtonElement;
         const logoutBtn = document.getElementById('logoutBtn') as HTMLElement;
         const deleteAccountBtn = document.getElementById('deleteAccountBtn') as HTMLElement;
         const optionsBtn = document.getElementById('optionsBtn') as HTMLElement;
@@ -49,14 +50,11 @@ function changeLanguage() {
 
         const gameTitle = document.getElementById('gameTitle') as HTMLElement;
         const show3dGame = document.getElementById('show3dGame') as HTMLButtonElement;
-        const activateScore = document.getElementById('activateScore') as HTMLButtonElement;
-        const reset3dGame = document.getElementById('reset3dGame') as HTMLButtonElement;
         const winMsg = document.getElementById('winMsg') as HTMLElement;
         const closeWin = document.getElementById('closeWin') as HTMLElement;
 
 
-        if (localStorage.getItem('lang') === 'en')
-        {
+        if (localStorage.getItem('lang') === 'en') {
             logoText.innerHTML = 'Welcome to PONG';
             neonSubtitle.innerHTML = 'REGISTER TO PLAY';
             email.placeholder = 'Your email';
@@ -78,6 +76,7 @@ function changeLanguage() {
 
             /* ------------------------------------------------------------- */
 
+            tourPlay.innerHTML = 'Tourny';
             logoutBtn.innerHTML = 'Log out';
             deleteAccountBtn.innerHTML = 'Delete account';
             optionsBtn.innerHTML = 'Options';
@@ -92,18 +91,27 @@ function changeLanguage() {
             cancelChange.innerHTML = 'Cancel';
 
             /* ------------------------------------------------------------- */
-            
-            gameTitle.innerHTML = '3D Game';
+
+            gameTitle.innerHTML = `
+        This is a 3D Pong.
+        <br>
+        The ball will always be in motion and cannot be stopped, but the score can be activated and the game can be restarted.
+        <br>
+        To prevent the viewpoint from moving, click outside the canvas.
+        <br>
+        If the score is activated, the first to reach 5 points wins.
+        <br>
+        When someone wins and the game restarts, the score is disabled.
+        <br>
+        <span class="text-[#BE36CD] font-bold">Good luck ;)</span>
+    `;
             show3dGame.innerHTML = 'Show 3D Game';
-            activateScore.innerHTML = 'Activate Score';
-            reset3dGame.innerHTML = 'Reset 3D Game';
-            winMsg.innerHTML = 'You won!';
+            winMsg.innerHTML = 'You won';
             closeWin.innerHTML = 'Close';
 
             /* ------------------------------------------------------------- */
         }
-        else if (localStorage.getItem('lang') === 'fr')
-        {
+        else if (localStorage.getItem('lang') === 'fr') {
             logoText.innerHTML = 'Bienvenue à PONG';
             neonSubtitle.innerHTML = 'INSCRIVEZ-VOUS POUR JOUER';
             email.placeholder = 'Votre email';
@@ -125,6 +133,7 @@ function changeLanguage() {
 
             /* ------------------------------------------------------------- */
 
+            tourPlay.innerHTML = 'Tournoi';
             logoutBtn.innerHTML = 'Déconnexion';
             deleteAccountBtn.innerHTML = 'Supprimer le compte';
             optionsBtn.innerHTML = 'Options';
@@ -140,17 +149,26 @@ function changeLanguage() {
 
             /* ------------------------------------------------------------- */
 
-            gameTitle.innerHTML = 'Jeu 3D';
+            gameTitle.innerHTML = `
+        Ceci est un Pong en 3D.
+        <br>
+        La balle sera toujours en mouvement et ne pourra pas être arrêtée, mais le score peut être activé et la partie peut être redémarrée.
+        <br>
+        Pour empêcher le point de vue de bouger, cliquez en dehors du canvas.
+        <br>
+        Si le score est activé, le premier à atteindre 5 points gagne.
+        <br>
+        Lorsqu'un joueur gagne et que la partie redémarre, le score est désactivé.
+        <br>
+        <span class="text-[#BE36CD] font-bold">Bonne chance ;)</span>
+    `;
             show3dGame.innerHTML = 'Afficher le jeu 3D';
-            activateScore.innerHTML = 'Activer le score';
-            reset3dGame.innerHTML = 'Réinitialiser le jeu 3D';
-            winMsg.innerHTML = 'Vous avez gagné!';
+            winMsg.innerHTML = 'Vous avez gagné';
             closeWin.innerHTML = 'Fermer le jeu 3D';
 
             /* ------------------------------------------------------------- */
-        } 
-        else if (localStorage.getItem('lang') === 'es')
-        {
+        }
+        else if (localStorage.getItem('lang') === 'es') {
             logoText.innerHTML = 'Bienvenido a PONG';
             neonSubtitle.innerHTML = 'REGISTRATE PARA JUGAR';
             email.placeholder = 'Tu correo electrónico';
@@ -172,6 +190,7 @@ function changeLanguage() {
 
             /* ------------------------------------------------------------- */
 
+            tourPlay.innerHTML = 'Torneo';
             logoutBtn.innerHTML = 'Cerrar sesión';
             deleteAccountBtn.innerHTML = 'Eliminar cuenta';
             optionsBtn.innerHTML = 'Opciones';
@@ -186,12 +205,22 @@ function changeLanguage() {
             cancelChange.innerHTML = 'Cancelar';
 
             /* ------------------------------------------------------------- */
-            
-            gameTitle.innerHTML = 'Juego 3D';
+
+            gameTitle.innerHTML = `
+        This is a 3D Pong.
+        <br>
+        The ball will always be in motion and cannot be stopped, but the score can be activated and the game can be restarted.
+        <br>
+        To prevent the viewpoint from moving, click outside the canvas.
+        <br>
+        If the score is activated, the first to reach 5 points wins.
+        <br>
+        When someone wins and the game restarts, the score is disabled.
+        <br>
+        <span class="text-[#BE36CD] font-bold">Good luck ;)</span>
+    `;
             show3dGame.innerHTML = 'Mostrar Juego 3D';
-            activateScore.innerHTML = 'Activar Puntuación';
-            reset3dGame.innerHTML = 'Reiniciar Juego 3D';
-            winMsg.innerHTML = '¡Ganaste!';
+            winMsg.innerHTML = '¡Ganaste';
             closeWin.innerHTML = 'Cerrar Juego 3D';
 
             /* ------------------------------------------------------------- */

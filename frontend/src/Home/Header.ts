@@ -120,6 +120,7 @@ localPlay.addEventListener('click', () => {
   multiPlayView.style.display = 'none';
   tourPlayView.style.display = 'none';
   realPlayView.style.display = 'none';
+  show3d.style.display = 'none';
 });
 
 multiPlay.addEventListener('click', () => {
@@ -127,6 +128,7 @@ multiPlay.addEventListener('click', () => {
   multiPlayView.style.display = 'block';
   tourPlayView.style.display = 'none';
   realPlayView.style.display = 'none';
+  show3d.style.display = 'none';
 });
 
 tourPlay.addEventListener('click', () => {
@@ -134,6 +136,11 @@ tourPlay.addEventListener('click', () => {
   multiPlayView.style.display = 'none';
   tourPlayView.style.display = 'block';
   realPlayView.style.display = 'none';
+  show3d.style.display = 'none';
+  isActivated = false;
+  player1Score.innerHTML = '0';
+  player2Score.innerHTML = '0';
+  activateScore.innerText = '▶';
 });
 
 realPlay.addEventListener('click', () => {
@@ -142,4 +149,5 @@ realPlay.addEventListener('click', () => {
   tourPlayView.style.display = 'none';
   realPlayView.style.display = 'block';
   showAdvert.style.display = 'block';
+  show3d.style.display = 'none';
 });

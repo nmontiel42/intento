@@ -150,7 +150,8 @@ body::before {
 #submitChangeUsername,
 #cancelChange,
 #submitChangePicture,
-#cancelPicture {
+#cancelPicture,
+#closeWin {
     background-color: #BE36CD;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -175,7 +176,8 @@ body::before {
 #submitChangeUsername:hover,
 #cancelChange:hover,
 #submitChangePicture:hover,
-#cancelPicture:hover {
+#cancelPicture:hover,
+#closeWin:hover {
     color: #fff;
     box-shadow:
         0 0 10px #BE36CD,
