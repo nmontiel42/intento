@@ -67,7 +67,7 @@ function connectWebSocket()
 		
 				// Si el chat no existe y el mensaje viene con "openChat: true", abrirlo
 				if (!chatExists && data.openChat) {
-					openPrivateChat(data.from, data.to);
+					openPrivateChat(data.from, data.to, true);
 				}
 		
 				// Mostrar el mensaje en el chat
@@ -196,7 +196,7 @@ function connectWebSocket()
 
 			// Añadir el evento click para enviar el mensaje privado
 			messageButton.addEventListener("click", () => {
-				openPrivateChat(username, currentUser); // Llamar a la función para enviar un mensaje privado
+				openPrivateChat(username, currentUser, true); // Llamar a la función para enviar un mensaje privado
 			});
 			buttonsWrapper.appendChild(messageButton);
 
@@ -226,7 +226,7 @@ function connectWebSocket()
 		return tooltip;
 	}
 
-	function openPrivateChat(username: string | null, currentUser: string | null) {
+	function openPrivateChat(username: string | null, currentUser: string | null, sender: boolean = false) {
 		// Verificar si el chat ya está abierto en cualquier forma (maximizado o minimizado)
 		let existingChat = document.getElementById(`chat-${username}`);
 		let minimizedChat = document.querySelector(`#minimized-${username}`);
@@ -383,7 +383,7 @@ function connectWebSocket()
 				const message = messageInput.value.trim();
 				if (message) {
 					sendPrivateMessage(username, message);
-					displayPrivateMessage(username, message, currentUser);
+					displayPrivateMessage(username, message, currentUser, sender);
 					messageInput.value = "";
 				}
 			});
@@ -394,7 +394,7 @@ function connectWebSocket()
 					const message = messageInput.value.trim();
 					if (message) {
 						sendPrivateMessage(username, message);
-						displayPrivateMessage(username, message, currentUser);
+						displayPrivateMessage(username, message, currentUser, sender);
 						messageInput.value = "";
 					}
 				}
@@ -427,38 +427,64 @@ function connectWebSocket()
 
 	// Función para mostrar un mensaje privado en el chat
 	// Función para mostrar un mensaje privado en el chat
-	function displayPrivateMessage(username: string | null, message: string | null, currentUser: string | null, isError: boolean = false) {
+	function displayPrivateMessage(username: string | null, message: string | null, currentUser: string | null, sender: boolean = false, isError: boolean = false) {
 		const chatBody = document.querySelector(`#chat-${username} .chat-body`);
 		if (!chatBody) return; // Evitar errores si el chat no está abierto
-
+	
 		const messageElement = document.createElement("div");
-		messageElement.classList.add("message", "p-2", "rounded-lg", "my-2", "max-w-[70%]");
-
+		messageElement.classList.add(
+			"message", 
+			"p-2", 
+			"rounded-lg", 
+			"my-2", 
+			"max-w-[70%]", // Limita el ancho máximo del mensaje
+			"break-words", // Permite que las palabras largas se rompan
+			"whitespace-pre-wrap", // Ajuste del texto para que se divida si es necesario
+			"overflow-hidden", // Oculta el contenido desbordado
+			"truncate" // Puntos suspensivos para contenido que no cabe
+		);
+	
 		// Verificar si el mensaje fue enviado por el usuario actual
 		const isSender = username === user.username; 
 		console.log(username, currentUser, user.username);
-
-
+	
 		if (isError) {
 			// Mensaje de error (siempre centrado con fondo rojo)
 			messageElement.classList.add("bg-red-500", "text-white", "text-center", "w-full");
 			messageElement.textContent = `⚠️ ${message}`;
 		} else {
-			if (username !== currentUser) {
+			if (sender) {
 				// Mensaje enviado por el usuario actual (alineado a la derecha, azul claro)
-				messageElement.classList.add("bg-blue-200", "text-black", "self-end", "ml-auto", "text-right");
-			}
-			else if (username === user.username)
-			{
+				messageElement.classList.add(
+					"bg-blue-200", 
+					"text-black", 
+					"self-end", 
+					"ml-auto", 
+					"text-right",
+					"max-w-[80%]", // Asegura que el mensaje no ocupe todo el ancho
+					"overflow-ellipsis", // Usar puntos suspensivos cuando el texto es largo
+					"truncate" // Limitar el texto
+				);
+			} else {
 				// Mensaje recibido del otro usuario (alineado a la izquierda, verde claro)
-				messageElement.classList.add("bg-green-200", "text-black", "self-start", "mr-auto", "text-left");
+				messageElement.classList.add(
+					"bg-green-200", 
+					"text-black", 
+					"self-start", 
+					"mr-auto", 
+					"text-left",
+					"max-w-[80%]", // Asegura que el mensaje no ocupe todo el ancho
+					"overflow-ellipsis", // Usar puntos suspensivos cuando el texto es largo
+					"truncate" // Limitar el texto
+				);
 			}
 			messageElement.textContent = message;
 		}
-
+	
 		chatBody.appendChild(messageElement);
 		chatBody.scrollTop = chatBody.scrollHeight; // Hacer scroll hacia el último mensaje
 	}
+	
 
 	// Función auxiliar para crear botones con icono
 	function createButton(text: string, bgColor: string, hoverColor: string, icon: string) {
