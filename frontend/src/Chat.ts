@@ -67,16 +67,20 @@ function connectWebSocket()
 		
 				// Si el chat no existe y el mensaje viene con "openChat: true", abrirlo
 				if (!chatExists && data.openChat) {
-					openPrivateChat(data.from);
+					openPrivateChat(data.from, data.to);
 				}
 		
 				// Mostrar el mensaje en el chat
-				displayPrivateMessage(data.from, data.message);
+				displayPrivateMessage(data.from, data.message, data.to);
 			}
 
 			if (data.type === "privateMessageError") {
-				// Mostrar un mensaje de error en el chat del remitente
-				displayPrivateMessage(data.to, data.message, true); // Mostrar con fondo rojo para el error
+				const chatExists = document.getElementById(`chat-${data.from}`); // Buscar chat del remitente
+	
+				if (chatExists) {
+					// Si el chat existe, mostrar el mensaje de error dentro del chat del remitente
+					displayPrivateMessage(data.from, "El usuario no está disponible", data.to, true);
+				}
 			}
 		} catch (err) {
 			console.error("Error procesando mensaje:", err);
@@ -192,7 +196,7 @@ function connectWebSocket()
 
 			// Añadir el evento click para enviar el mensaje privado
 			messageButton.addEventListener("click", () => {
-				openPrivateChat(username); // Llamar a la función para enviar un mensaje privado
+				openPrivateChat(username, currentUser); // Llamar a la función para enviar un mensaje privado
 			});
 			buttonsWrapper.appendChild(messageButton);
 
@@ -222,7 +226,7 @@ function connectWebSocket()
 		return tooltip;
 	}
 
-	function openPrivateChat(username: string | null) {
+	function openPrivateChat(username: string | null, currentUser: string | null) {
 		// Verificar si el chat ya está abierto en cualquier forma (maximizado o minimizado)
 		let existingChat = document.getElementById(`chat-${username}`);
 		let minimizedChat = document.querySelector(`#minimized-${username}`);
@@ -379,7 +383,7 @@ function connectWebSocket()
 				const message = messageInput.value.trim();
 				if (message) {
 					sendPrivateMessage(username, message);
-					displayPrivateMessage(username, message);
+					displayPrivateMessage(username, message, currentUser);
 					messageInput.value = "";
 				}
 			});
@@ -390,7 +394,7 @@ function connectWebSocket()
 					const message = messageInput.value.trim();
 					if (message) {
 						sendPrivateMessage(username, message);
-						displayPrivateMessage(username, message);
+						displayPrivateMessage(username, message, currentUser);
 						messageInput.value = "";
 					}
 				}
@@ -399,39 +403,62 @@ function connectWebSocket()
 	}
 
 	// Función para enviar mensaje privado a través del WebSocket
-	function sendPrivateMessage(username: string | null, message: string | null, currentUSer = user.username) {
-		const privateMessage = {
-			type: "privateMessage",
-			to: username,
-			from: currentUSer,
-			message: message,
-		};
-
-		socket.send(JSON.stringify(privateMessage));
+	function sendPrivateMessage(username: string | null, message: string | null, currentUSer = user.username, isError: boolean = false) {
+		if (isError)
+		{
+			const privateMessageError = {
+				type: "privateMessage",
+				to: username,
+				from: currentUSer,
+				message: message,
+			};
+			socket.send(JSON.stringify(privateMessageError));
+		}
+		else{
+			const privateMessage = {
+				type: "privateMessage",
+				to: username,
+				from: currentUSer,
+				message: message,
+			};
+			socket.send(JSON.stringify(privateMessage));
+		}
 	}
 
 	// Función para mostrar un mensaje privado en el chat
-	function displayPrivateMessage(username: string | null, message: string | null, isError: boolean = false) {
+	// Función para mostrar un mensaje privado en el chat
+	function displayPrivateMessage(username: string | null, message: string | null, currentUser: string | null, isError: boolean = false) {
 		const chatBody = document.querySelector(`#chat-${username} .chat-body`);
+		if (!chatBody) return; // Evitar errores si el chat no está abierto
+
 		const messageElement = document.createElement("div");
-		messageElement.classList.add("message", "p-2", "rounded-lg", "my-2");
-	
+		messageElement.classList.add("message", "p-2", "rounded-lg", "my-2", "max-w-[70%]");
+
+		// Verificar si el mensaje fue enviado por el usuario actual
+		const isSender = username === user.username; 
+		console.log(username, currentUser, user.username);
+
+
 		if (isError) {
-			// Si es un error, darle un fondo rojo y texto blanco
-			messageElement.classList.add("bg-red-500", "text-white");
-			messageElement.textContent = `⚠️ ${message}`; // Añadir un icono de advertencia
+			// Mensaje de error (siempre centrado con fondo rojo)
+			messageElement.classList.add("bg-red-500", "text-white", "text-center", "w-full");
+			messageElement.textContent = `⚠️ ${message}`;
 		} else {
-			// Si es un mensaje normal, darle un fondo blanco
-			messageElement.classList.add("bg-white", "text-black");
+			if (username !== currentUser) {
+				// Mensaje enviado por el usuario actual (alineado a la derecha, azul claro)
+				messageElement.classList.add("bg-blue-200", "text-black", "self-end", "ml-auto", "text-right");
+			}
+			else if (username === user.username)
+			{
+				// Mensaje recibido del otro usuario (alineado a la izquierda, verde claro)
+				messageElement.classList.add("bg-green-200", "text-black", "self-start", "mr-auto", "text-left");
+			}
 			messageElement.textContent = message;
 		}
-	
-		if (chatBody) {
-			chatBody.appendChild(messageElement);
-			chatBody.scrollTop = chatBody.scrollHeight; // Hacer scroll hacia el último mensaje
-		}
+
+		chatBody.appendChild(messageElement);
+		chatBody.scrollTop = chatBody.scrollHeight; // Hacer scroll hacia el último mensaje
 	}
-	
 
 	// Función auxiliar para crear botones con icono
 	function createButton(text: string, bgColor: string, hoverColor: string, icon: string) {

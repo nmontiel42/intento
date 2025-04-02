@@ -106,6 +106,7 @@ wss.on('connection', (ws) => {
 					type: 'privateMessage',
 					from: from,
 					message: message,
+					to: to,
 					openChat: true // Nueva señal para abrir el chat si está cerrado
 				}));
 				
@@ -114,7 +115,8 @@ wss.on('connection', (ws) => {
 					sender.ws.send(JSON.stringify({
 						type: 'messageStatus',
 						status: 'delivered',
-						to: to
+						to: to,
+						from: from
 					}));
 				}
 			} else {
@@ -123,7 +125,8 @@ wss.on('connection', (ws) => {
 					sender.ws.send(JSON.stringify({
 						type: 'privateMessageError',
 						message: `El usuario ${to} no está disponible.`,
-						to: from
+						to: from,
+						from: to
 					}));
 				}
 			}
