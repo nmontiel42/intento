@@ -60,7 +60,24 @@ function connectWebSocket()
 
 			if (data.type === "userList") {
 				updateUserList(data);
-			}		
+			}
+			
+			if (data.type === "privateMessage") {
+				const chatExists = document.getElementById(`chat-${data.from}`);
+		
+				// Si el chat no existe y el mensaje viene con "openChat: true", abrirlo
+				if (!chatExists && data.openChat) {
+					openPrivateChat(data.from);
+				}
+		
+				// Mostrar el mensaje en el chat
+				displayPrivateMessage(data.from, data.message);
+			}
+
+			if (data.type === "privateMessageError") {
+				// Mostrar un mensaje de error en el chat del remitente
+				displayPrivateMessage(data.to, data.message, true); // Mostrar con fondo rojo para el error
+			}
 		} catch (err) {
 			console.error("Error procesando mensaje:", err);
 		}
@@ -266,55 +283,77 @@ function connectWebSocket()
 			privChat.appendChild(chatContainer);
 		}
 	
+		// Obtener el contenedor de chats minimizados
+		const minimizedContainer = document.getElementById("minimizedChatsContainer") as HTMLElement | null;
+		const liveChatContainer = document.getElementById("liveChatContainer") as HTMLElement | null;
+		if (minimizedContainer && liveChatContainer) {
+			// Obtener la posición y las dimensiones de LiveChatContainer
+			const liveChatRect = liveChatContainer.getBoundingClientRect();
+		
+			// Establecer la posición del contenedor de chats minimizados
+			minimizedContainer.style.position = 'absolute';  // Para posicionar relativo a la pantalla
+			minimizedContainer.style.top = `${liveChatRect.top}px`;  // Alineamos la parte superior con LiveChatContainer
+			minimizedContainer.style.left = `${liveChatRect.left - minimizedContainer.offsetWidth}px`;  // Lo colocamos justo a la izquierda de LiveChatContainer
+		
+			// Ajustar la altura del contenedor de chats minimizados para que coincida con LiveChatContainer
+			minimizedContainer.style.height = `${liveChatContainer.offsetHeight}px`;
+		}
+
 		// Lógica para minimizar el chat
 		const minimizeButton = chatHeader.querySelector(".minimize-btn") as HTMLButtonElement | null;
 		if (minimizeButton) {
 			minimizeButton.addEventListener("click", () => {
 				// Crear el cuadro minimizado
 				const minimizedBox = document.createElement("div");
-				minimizedBox.id = `minimized-${username}`; // Usamos un ID único para la versión minimizada
+				minimizedBox.id = `minimized-${username}`;
 				minimizedBox.classList.add(
 					"minimized-chat",
 					"bg-blue-500",
 					"text-white",
-					"p-0.5",
-					"mt-2",
+					"p-2",
 					"rounded-lg",
 					"cursor-pointer",
-					"w-32", // Ajusta el tamaño del cuadro minimizado
+					"w-auto", // Ajusta el ancho al contenido
+					"h-auto", // Ajusta la altura al contenido
 					"flex",
 					"items-center",
-					"justify-center",
-					"space-x-2"
+					"justify-between",
+					"shadow-md",
+					"transition-all",
+					"hover:bg-blue-600"
 				);
+	
 				minimizedBox.innerHTML = `
-					<span class="text-xs">${username}</span>
-					<button class="restore-btn hover:cursor-pointer">+</button>
-					<button class="close-btn text-lg hover:cursor-pointer">×</button> <!-- Botón de cerrar en el cuadro minimizado -->
+					<span class="text-xs truncate">${username}</span>
+					<div class="flex space-x-1">
+						<button class="restore-btn text-sm hover:cursor-pointer">+</button>
+						<button class="close-btn text-sm hover:cursor-pointer">×</button>
+					</div>
 				`;
-			
-				// Reemplazar el chat con el cuadro minimizado
-				chatContainer.replaceWith(minimizedBox);
-			
-				// Lógica para restaurar el chat
+	
+				// Agregar el chat minimizado al contenedor flotante en la esquina inferior derecha
+				if (minimizedContainer) {
+					minimizedContainer.appendChild(minimizedBox);
+				}
+	
+				// Ocultar el chat original sin eliminarlo
+				chatContainer.classList.add("hidden");
+	
+				// Restaurar el chat al hacer clic en el botón de restaurar
 				const restoreButton = minimizedBox.querySelector(".restore-btn") as HTMLButtonElement | null;
 				if (restoreButton) {
 					restoreButton.addEventListener("click", () => {
-						// Reemplazar el cuadro minimizado con el chat original
-						if (privChat)
-							privChat.appendChild(chatContainer);
-						minimizedBox.remove(); // Eliminar el cuadro minimizado
+						chatContainer.classList.remove("hidden");
+						minimizedBox.remove();
 					});
 				}
 	
-				// Lógica para cerrar el chat en el cuadro minimizado
-				const minimizedCloseButton = minimizedBox.querySelector(".close-btn") as HTMLButtonElement | null;
-				if (minimizedCloseButton) {
-					minimizedCloseButton.addEventListener("click", () => {
-						// Eliminar el chat y la conexión
+				// Cerrar completamente el chat minimizado
+				const closeButton = minimizedBox.querySelector(".close-btn") as HTMLButtonElement | null;
+				if (closeButton) {
+					closeButton.addEventListener("click", () => {
 						minimizedBox.remove();
-						// Aquí también podrías cerrar la conexión si es necesario
-						// closeConnection(username);
+						chatContainer.remove();
 					});
 				}
 			});
@@ -344,14 +383,27 @@ function connectWebSocket()
 					messageInput.value = "";
 				}
 			});
+
+			messageInput.addEventListener("keydown", (event) => {
+				if (event.key === "Enter") {
+					event.preventDefault(); // Evita el salto de línea en el input
+					const message = messageInput.value.trim();
+					if (message) {
+						sendPrivateMessage(username, message);
+						displayPrivateMessage(username, message);
+						messageInput.value = "";
+					}
+				}
+			});
 		}
 	}
 
 	// Función para enviar mensaje privado a través del WebSocket
-	function sendPrivateMessage(username: string | null, message: string | null) {
+	function sendPrivateMessage(username: string | null, message: string | null, currentUSer = user.username) {
 		const privateMessage = {
 			type: "privateMessage",
 			to: username,
+			from: currentUSer,
 			message: message,
 		};
 
@@ -359,17 +411,27 @@ function connectWebSocket()
 	}
 
 	// Función para mostrar un mensaje privado en el chat
-	function displayPrivateMessage(username: string | null, message: string | null) {
+	function displayPrivateMessage(username: string | null, message: string | null, isError: boolean = false) {
 		const chatBody = document.querySelector(`#chat-${username} .chat-body`);
 		const messageElement = document.createElement("div");
-		messageElement.classList.add("message", "p-2", "bg-white", "rounded-lg", "my-2");
-		messageElement.textContent = message;
-		if (chatBody)
-		{
+		messageElement.classList.add("message", "p-2", "rounded-lg", "my-2");
+	
+		if (isError) {
+			// Si es un error, darle un fondo rojo y texto blanco
+			messageElement.classList.add("bg-red-500", "text-white");
+			messageElement.textContent = `⚠️ ${message}`; // Añadir un icono de advertencia
+		} else {
+			// Si es un mensaje normal, darle un fondo blanco
+			messageElement.classList.add("bg-white", "text-black");
+			messageElement.textContent = message;
+		}
+	
+		if (chatBody) {
 			chatBody.appendChild(messageElement);
 			chatBody.scrollTop = chatBody.scrollHeight; // Hacer scroll hacia el último mensaje
 		}
 	}
+	
 
 	// Función auxiliar para crear botones con icono
 	function createButton(text: string, bgColor: string, hoverColor: string, icon: string) {

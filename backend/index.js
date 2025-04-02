@@ -96,22 +96,34 @@ wss.on('connection', (ws) => {
 		}
 		else if (parsedMessage.type === 'privateMessage'){
 			// **Mensaje privado**
-			const { to, message } = parsedMessage;
+			const { to, from, message } = parsedMessage;
 			const recipient = userList.find(user => user.username === to);
+			const sender = userList.find(user => user.username === from);
 
 			if (recipient && recipient.ws.readyState === WebSocket.OPEN) {
+				// Enviar el mensaje al destinatario
 				recipient.ws.send(JSON.stringify({
 					type: 'privateMessage',
-					from: parsedMessage.user,
-					message
+					from: from,
+					message: message,
+					openChat: true // Nueva señal para abrir el chat si está cerrado
 				}));
-			} else {
-				// Si no se encuentra al destinatario o está desconectado, informar al remitente
-				const sender = userList.find(user => user.username === parsedMessage.user);
-				if (sender) {
+				
+				// Enviar confirmación al remitente
+				if (sender && sender.ws.readyState === WebSocket.OPEN) {
 					sender.ws.send(JSON.stringify({
-						type: 'error',
-						message: `El usuario ${to} no está disponible para recibir mensajes privados.`
+						type: 'messageStatus',
+						status: 'delivered',
+						to: to
+					}));
+				}
+			} else {
+				// Informar al remitente si el destinatario no está disponible
+				if (sender && sender.ws.readyState === WebSocket.OPEN) {
+					sender.ws.send(JSON.stringify({
+						type: 'privateMessageError',
+						message: `El usuario ${to} no está disponible.`,
+						to: from
 					}));
 				}
 			}
