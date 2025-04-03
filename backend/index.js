@@ -7,6 +7,8 @@ import authRoutes from './auth.js';
 import fastifyWebsocket from '@fastify/websocket';
 import https from 'https';
 import fs from 'fs';
+import tournamentRoutes from './tournament.js';
+
 
 dotenv.config();
 //console.log('JWT_SECRET:', process.env.JWT_SECRET);
@@ -57,6 +59,8 @@ fastify.addHook('onSend', (request, reply, payload, done) => {
 
 
 fastify.register(authRoutes);
+
+fastify.register(tournamentRoutes);
 
 // Decorador para verificar el JWT
 fastify.decorate('authenticate', async (req, res) => {

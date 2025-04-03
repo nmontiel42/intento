@@ -37,11 +37,12 @@ function createTournament(): void {
 
 
 // Generar la tabla de enfrentamientos
-function generateBracket(): void {
+async function generateBracket(): Promise<void> {
     const numPlayers = parseInt(numPlayersInput.value);
     const players: string[] = [];
     const playerNamesSet = new Set<string>();
 
+    // Validar jugadores
     for (let i = 0; i < numPlayers; i++) {
         const playerNameInput = document.getElementById(`player${i + 1}`) as HTMLInputElement;
         const playerName = playerNameInput.value.trim();
@@ -54,24 +55,70 @@ function generateBracket(): void {
         playerNamesSet.add(playerName);
         players.push(playerName);
     }
-    generateTournamentTree(players);
 
-    // Ocultar elementos del formulario, excepto el botón de reset
-    tournamentForm.style.display = 'none';
-    playersInput.style.display = 'none';
+    try {
+        // Mostrar indicador de carga
+        generateTournamentBtn.disabled = true;
+        generateTournamentBtn.textContent = 'Creando torneo...';
+        
+        // Generar nombre para el torneo (puedes hacer que el usuario lo ingrese)
+        const now = new Date();
+        const tournamentName = `Torneo ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+        
+        console.log('Jugadores:', players);
+        console.log('Número de jugadores:', players.length);
+        
+        const response = await fetch('https://localhost:3000/tournament', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Añadir token de autenticación si es necesario
+                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify({
+                name: tournamentName,
+                players: players
+            })
+        });
 
-    // Cambiar el texto y la funcionalidad del botón
-    generateTournamentBtn.textContent = 'Nuevo Torneo';
-    generateTournamentBtn.onclick = resetTournament;
+        if (!response.ok) {
+            throw new Error('Error al crear el torneo');
+        }
 
+        const data = await response.json();
+        console.log('Torneo creado:', data);
+
+        // Guardar el ID del torneo para futuras operaciones
+        const tournamentId = data.tournament.id;
+        localStorage.setItem('currentTournamentId', tournamentId.toString());
+        
+        // Generar la vista del bracket con los datos del servidor
+        generateTournamentTree(players, data.tournament, data.matches);
+
+        // Ocultar elementos del formulario, excepto el botón de reset
+        tournamentForm.style.display = 'none';
+        playersInput.style.display = 'none';
+
+        // Cambiar el texto y la funcionalidad del botón
+        generateTournamentBtn.textContent = 'Nuevo Torneo';
+        generateTournamentBtn.disabled = false;
+        generateTournamentBtn.onclick = resetTournament;
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Ocurrió un error al crear el torneo. Intenta nuevamente.');
+        generateTournamentBtn.disabled = false;
+        generateTournamentBtn.textContent = 'Generar Torneo';
+    }
 }
 
 
-function generateTournamentTree(players: string[]): void {
+function generateTournamentTree(
+    players: string[], 
+    tournament: any, 
+    matches: any[]
+): void {
     tournamentBracket.innerHTML = '';
-
-    // Mezclar los jugadores aleatoriamente
-    players = shuffleArray([...players]);
 
     // Calcular el número de rondas necesarias
     const numRounds = Math.ceil(Math.log2(players.length));
@@ -79,6 +126,7 @@ function generateTournamentTree(players: string[]): void {
     // Crear elemento de torneo
     const bracketElement = document.createElement('div');
     bracketElement.className = 'tournament-bracket';
+    bracketElement.dataset.tournamentId = tournament.id.toString();
 
     // Preparar rondas
     let currentRoundPlayers = [...players];
@@ -100,43 +148,81 @@ function generateTournamentTree(players: string[]): void {
         // Crear emparejamientos para esta ronda
         const nextRoundPlayers: string[] = [];
 
-        // Crear partidos
-        for (let i = 0; i < currentRoundPlayers.length; i += 2) {
-            // Crear botón para el partido
-            const matchButton = document.createElement('button');
-            matchButton.className = 'match-button';
+        // Si es la primera ronda, usa los partidos creados por el servidor
+        if (round === 0) {
+            for (const match of matches) {
+                // Crear botón para el partido
+                const matchButton = document.createElement('button');
+                matchButton.className = 'match-button';
+                matchButton.dataset.matchId = match.match_id.toString();
 
-            // Primer jugador
-            const player1 = currentRoundPlayers[i] || 'Vacío';
-            let player2 = '';
-
-            // Segundo jugador (si existe)
-            if (i + 1 < currentRoundPlayers.length) {
-                player2 = currentRoundPlayers[i + 1] || 'Vacío';
+                // Jugadores
+                const player1 = match.player1;
+                const player2 = match.player2 || 'Vacío';
 
                 // Formato del texto del botón
                 matchButton.textContent = `${player1} vs ${player2}`;
 
                 // Añadir evento al botón
                 matchButton.addEventListener('click', () => {
-                    isTournament = true;
+                    // Guardar información del partido actual
+                    localStorage.setItem('currentMatch', JSON.stringify({
+                        id: match.match_id,
+                        player1: player1,
+                        player2: player2,
+                        tournament_id: tournament.id
+                    }));
+                    
+                    // Configurar nombres para el juego
+                    (window as any).player1Name = player1;
+                    (window as any).player2Name = player2;
+                    
+                    // Cambiar a la vista de juego
+                    (window as any).isTournament = true;
                     gameView.style.display = 'block';
                     tournamentView.style.display = 'none';
-                    player1Name = player1;
-                    player2Name = player2;
-                    resetButtonLogic();
+                    (window as any).resetButtonLogic();
                 });
-                
-            } else {
-                // Si hay un jugador impar, pasa a la siguiente ronda
-                nextRoundPlayers.push(currentRoundPlayers[i]);
+
+                // Añadir el botón a la columna
+                columnElement.appendChild(matchButton);
+
+                // Simular ganador para generar las siguientes rondas (solo para visualización)
+                if (match.winner) {
+                    // Si ya hay un ganador guardado
+                    nextRoundPlayers.push(match.winner);
+                } else {
+                    // Simulación - solo para mostrar la estructura
+                    const winner = Math.random() < 0.5 ? player1 : player2;
+                    nextRoundPlayers.push(winner);
+                }
             }
+        } else {
+            // Para las rondas siguientes (simulación)
+            for (let i = 0; i < currentRoundPlayers.length; i += 2) {
+                // Crear botón para el partido
+                const matchButton = document.createElement('button');
+                matchButton.className = 'match-button future-match';
 
-            // Formato del texto del botón
-            matchButton.textContent = `${player1} vs ${player2}`;
+                // Jugadores (vacíos por ahora)
+                const player1 = "Por determinar";
+                const player2 = "Por determinar";
 
-            // Añadir el botón a la columna
-            columnElement.appendChild(matchButton);
+                // Formato del texto del botón
+                matchButton.textContent = `${player1} vs ${player2}`;
+                matchButton.disabled = true; // Deshabilitar hasta que se determinen los jugadores
+
+                // Añadir el botón a la columna
+                columnElement.appendChild(matchButton);
+
+                // Simular para la siguiente ronda
+                if (i + 1 < currentRoundPlayers.length) {
+                    const winner = Math.random() < 0.5 ? currentRoundPlayers[i] : currentRoundPlayers[i + 1];
+                    nextRoundPlayers.push(winner);
+                } else {
+                    nextRoundPlayers.push(currentRoundPlayers[i]);
+                }
+            }
         }
 
         // Añadir la columna al bracket
@@ -180,8 +266,6 @@ function resetTournament(): void {
     createTournament();
     numPlayersInput.value = '2';
 }
-
-
 
 // Asegúrate de que las funciones estén disponibles globalmente
 (window as any).createTournament = createTournament;

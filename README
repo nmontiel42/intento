@@ -1,7 +1,6 @@
 TO DO:
-    -arreglar cambio foto (sin google)
-    -Cambiar idioma
-    -Agregar Pong3D
+    -Crear matches
+    -Agregar matches a base de datos t_match
 
     JUEGO:
         -Crear tabla de BBDD para el torneo

@@ -275,6 +275,45 @@ function resetButtonLogic(){
       startGameBtn.style.display = "block";
 }
 
+// Al final del juego, cuando se determina un ganador
+async function updateTournamentMatch(winner: string) {
+  if ((window as any).isTournament) {
+      try {
+          // Obtener información del partido actual
+          const currentMatchData = localStorage.getItem('currentMatch');
+          if (!currentMatchData) return;
+          
+          const match = JSON.parse(currentMatchData);
+          
+          // Llamar al backend para actualizar el resultado
+          const response = await fetch(`/api/matches/${match.id}`, {
+              method: 'PUT',
+              headers: {
+                  'Content-Type': 'application/json',
+                  // Incluir token si es necesario
+              },
+              body: JSON.stringify({
+                  player1_score: player1Score,
+                  player2_score: player2Score,
+                  winner: winner
+              })
+          });
+          
+          if (!response.ok) {
+              throw new Error('Error al actualizar el partido');
+          }
+          
+          console.log('Partido actualizado correctamente');
+          
+          // Cambiar texto del botón de reseteo
+          resetGameBtn.textContent = "Volver al Torneo";
+      } catch (error) {
+          console.error('Error al actualizar partido:', error);
+      }
+  }
+}
+
+
 // Bucle principal del juego
 function gameLoop() {
     if (isGamePaused) {
