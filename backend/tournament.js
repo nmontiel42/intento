@@ -29,7 +29,31 @@ export default async function (fastify, options) {
             console.log('Número de jugadores: ', num_players);
 
             const tournament = await createTournament({ name, num_players, created_by });
-            reply.send({ message: 'Torneo creado correctamente', tournament });
+
+            // Mezclar aleatoriamente los jugadores
+            const shuffledPlayers = [...players];
+            for (let i = shuffledPlayers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
+            }
+
+            // Crear los emparejamientos
+            const matches = [];
+            for (let i = 0; i < shuffledPlayers.length; i += 2) {
+                const player1 = shuffledPlayers[i];
+                // Si queda un jugador sin emparejar, player2 quedará como null o una cadena vacía
+                const player2 = i + 1 < shuffledPlayers.length ? shuffledPlayers[i + 1] : null;
+                
+                const match = await createMatch({ 
+                    tournament_id: tournament.id,
+                    player1: player1, 
+                    player2: player2 
+                });
+                
+                matches.push(match);
+            }
+            console.log('Matches creados: ', matches);
+            reply.send({ success: true, tournament, matches });
         } catch (error) {
             console.error('Error al crear torneo:', error);
             reply.status(500).send({ error: 'Error al crear el torneo' });

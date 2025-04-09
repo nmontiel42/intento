@@ -1,5 +1,6 @@
 // game.ts
 
+// Importar la función para actualizar el torneo
 // Definimos las interfaces para los elementos del juego
 interface Paddle {
   width: number;
@@ -34,8 +35,9 @@ let player2Score: number = 0;
 // Nombres de los jugadores
 let player1Name = "Player 1";
 let player2Name = "Player 2";
-const winnerScore = 5; // Puntuación para ganar el juego
+const winnerScore = 3; // Puntuación para ganar el juego
 let isTournament: boolean = false;
+let currentMatchId: string;
 let isGameOver:boolean = false;
 
 let winner: string = "";
@@ -185,6 +187,15 @@ function showGameResult() {
   if(isTournament){
     resetGameBtn.innerText = "Volver al Torneo";
     startGameBtn.style.display = "none";
+
+    //quiero acceder al boton de matchButton con un  dataset.mathid en concreto
+
+      const matchButton = document.querySelector(`button[data-match-id="${currentMatchId}"]`);
+      if (matchButton) {
+        matchButton.innerHTML = player1Name + "(" + player1Score + ")" + " vs " + player2Name + "(" + player2Score + ")";
+        
+      }
+    
   }else{
     resetGameBtn.innerText = "Reiniciar Juego";
     startGameBtn.style.display = "none";
@@ -274,45 +285,6 @@ function resetButtonLogic(){
       startGameBtn.innerText = "Iniciar Juego";
       startGameBtn.style.display = "block";
 }
-
-// Al final del juego, cuando se determina un ganador
-async function updateTournamentMatch(winner: string) {
-  if ((window as any).isTournament) {
-      try {
-          // Obtener información del partido actual
-          const currentMatchData = localStorage.getItem('currentMatch');
-          if (!currentMatchData) return;
-          
-          const match = JSON.parse(currentMatchData);
-          
-          // Llamar al backend para actualizar el resultado
-          const response = await fetch(`/api/matches/${match.id}`, {
-              method: 'PUT',
-              headers: {
-                  'Content-Type': 'application/json',
-                  // Incluir token si es necesario
-              },
-              body: JSON.stringify({
-                  player1_score: player1Score,
-                  player2_score: player2Score,
-                  winner: winner
-              })
-          });
-          
-          if (!response.ok) {
-              throw new Error('Error al actualizar el partido');
-          }
-          
-          console.log('Partido actualizado correctamente');
-          
-          // Cambiar texto del botón de reseteo
-          resetGameBtn.textContent = "Volver al Torneo";
-      } catch (error) {
-          console.error('Error al actualizar partido:', error);
-      }
-  }
-}
-
 
 // Bucle principal del juego
 function gameLoop() {

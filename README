@@ -1,6 +1,6 @@
 TO DO:
-    -Crear matches
-    -Agregar matches a base de datos t_match
+    -Modificar bbdd con ganador y estado del match
+    -Al crear un torneo nuevo que se borre el anterior
 
     JUEGO:
         -Crear tabla de BBDD para el torneo

@@ -165,23 +165,20 @@ function generateTournamentTree(
 
                 // Añadir evento al botón
                 matchButton.addEventListener('click', () => {
-                    // Guardar información del partido actual
-                    localStorage.setItem('currentMatch', JSON.stringify({
-                        id: match.match_id,
-                        player1: player1,
-                        player2: player2,
-                        tournament_id: tournament.id
-                    }));
-                    
-                    // Configurar nombres para el juego
-                    (window as any).player1Name = player1;
-                    (window as any).player2Name = player2;
-                    
-                    // Cambiar a la vista de juego
-                    (window as any).isTournament = true;
+                    //Enviar la informacion del match al partido
+                    console.log('Partido seleccionado:', match);
+                    console.log('ID del torneo:', tournament.id);
+                    console.log('Jugador 1:', player1);
+                    console.log('Jugador 2:', player2);
+
+                    //Asignar nombres
+                    currentMatchId = matchButton.dataset.matchId || '';
+                    player1Name = player1;
+                    player2Name = player2;
+                    isTournament = true;                  
                     gameView.style.display = 'block';
                     tournamentView.style.display = 'none';
-                    (window as any).resetButtonLogic();
+                    resetButtonLogic();
                 });
 
                 // Añadir el botón a la columna
@@ -235,7 +232,7 @@ function generateTournamentTree(
     tournamentBracket.appendChild(bracketElement);
 }
 
-// Función auxiliar para mezclar jugadores
+/* // Función auxiliar para mezclar jugadores
 function shuffleArray<T>(array: T[]): T[] {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -243,6 +240,8 @@ function shuffleArray<T>(array: T[]): T[] {
     }
     return array;
 }
+ */
+
 
 // Modificación de la función de reset
 function resetTournament(): void {

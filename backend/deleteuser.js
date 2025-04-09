@@ -24,6 +24,18 @@ function deleteTournament() {
   });
 }
 
+function deleteMatches() {
+  const query = "DELETE FROM t_match";
+  db.run(query, function(err) {
+    if (err) {
+      console.error("Error al borrar el match:", err.message);
+    } else {
+      console.log(`Borrado correctamente.`);
+    }
+  });
+}
+
 // Llamada para borrar un usuario (por ejemplo, con el email "usuario@example.com")
 deleteUsers();
 deleteTournament();
+deleteMatches();

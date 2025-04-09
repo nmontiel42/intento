@@ -3,10 +3,18 @@ import db from '../src/database.js';
 // Crear un nuevo partido
 export function createMatch({ tournament_id, player1, player2 }) {
     return new Promise((resolve, reject) => {
-        const sql = `INSERT INTO t_match 
-                    (tournament_id, player1, player2, status) 
-                    VALUES (?, ?, ?, 'pending')`;
-        
+        let sql;
+        if (player2 === undefined) {
+            player2 = null;
+            sql = `INSERT INTO t_match
+                        (tournament_id, player1, player2, status) 
+                        VALUES (?, ?, ?, 'completed')`;
+        } else {
+
+            sql = `INSERT INTO t_match 
+                        (tournament_id, player1, player2, status) 
+                        VALUES (?, ?, ?, 'pending')`;
+        }
         db.run(sql, [tournament_id, player1, player2], function(err) {
             if (err) {
                 reject(err);
@@ -121,3 +129,4 @@ export function deleteMatchesByTournament(tournament_id) {
         });
     });
 }
+

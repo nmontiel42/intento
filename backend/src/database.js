@@ -52,7 +52,7 @@ db.serialize(() => {
         match_id INTEGER PRIMARY KEY AUTOINCREMENT,
         tournament_id INTEGER NOT NULL,
         player1 VARCHAR(255) NOT NULL,
-        player2 VARCHAR(255) NOT NULL,
+        player2 VARCHAR(255),
         player1_score INTEGER DEFAULT 0,
         player2_score INTEGER DEFAULT 0,
         winner VARCHAR(255),
