@@ -45,6 +45,8 @@ let winner: string = "";
 let isGamePaused: boolean = true;
 let newGame: boolean = true;
 
+let winners: string[] = [];
+
 // Definir un factor de incremento para la velocidad de la pelota
 const inicialBallSpeed = 6;
 const speedIncrement = 0.01;
@@ -171,7 +173,7 @@ if (ball.x + ball.radius > rightPaddle.x - paddleCollisionMargin &&
   }
 }
 
-function showGameResult() {
+async function showGameResult() {
   isGamePaused = true;
   winner = player1Score > player2Score ? player1Name : player2Name;
   let resultText = winner + " wins!";
@@ -193,8 +195,47 @@ function showGameResult() {
       const matchButton = document.querySelector(`button[data-match-id="${currentMatchId}"]`);
       if (matchButton) {
         matchButton.innerHTML = player1Name + "(" + player1Score + ")" + " vs " + player2Name + "(" + player2Score + ")";
-        
+        (matchButton as HTMLButtonElement).disabled = true; // Deshabilitar el botón
       }
+
+      const response = await fetch('https://localhost:3000/updateMatchWinner', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          match_id: currentMatchId,
+          winner: winner,
+          player1_score: player1Score,
+          player2_score: player2Score
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Error al actualizar el torneo:', response.statusText);
+      }
+
+      const data = await response.json();
+      console.log('Partida actualizado:', data);
+
+      console.log('ID Torneo:', tournamentId);
+
+      //Actualizar con el ganador el bracket
+      const response2 = await fetch('https://localhost:3000/checkMatches', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            tournament_id: tournamentId,
+        })
+      });
+      const data2 = await response2.json();
+      if (!response2.ok) {
+        console.error('Error obteniendo winners:', response2.statusText);
+      }
+      winners = data2.winners;
+      console.log('Winners:', winners);
     
   }else{
     resetGameBtn.innerText = "Reiniciar Juego";

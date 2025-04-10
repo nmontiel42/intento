@@ -36,6 +36,6 @@ function deleteMatches() {
 }
 
 // Llamada para borrar un usuario (por ejemplo, con el email "usuario@example.com")
-deleteUsers();
+//deleteUsers();
 deleteTournament();
 deleteMatches();

@@ -6,6 +6,8 @@ const tournamentBracket = document.getElementById('tournamentBracket') as HTMLDi
 const gameView = document.getElementById('gameView') as HTMLDivElement;
 const tournamentView = document.getElementById('tournamentView') as HTMLDivElement;
 
+let tournamentId: string;
+
 document.addEventListener('DOMContentLoaded', () => {
     // Prevenir el comportamiento predeterminado del formulario
     tournamentForm.addEventListener('submit', (event) => {
@@ -89,7 +91,7 @@ async function generateBracket(): Promise<void> {
         console.log('Torneo creado:', data);
 
         // Guardar el ID del torneo para futuras operaciones
-        const tournamentId = data.tournament.id;
+        tournamentId = data.tournament.id;
         localStorage.setItem('currentTournamentId', tournamentId.toString());
         
         // Generar la vista del bracket con los datos del servidor
@@ -158,11 +160,16 @@ function generateTournamentTree(
 
                 // Jugadores
                 const player1 = match.player1;
-                const player2 = match.player2 || 'Vacío';
+                const player2 = match.player2 || '';
 
                 // Formato del texto del botón
-                matchButton.textContent = `${player1} vs ${player2}`;
-
+                if (player2 == ''){
+                    matchButton.textContent = `${player1}`;
+                    matchButton.disabled = true;
+                } else {
+                    matchButton.textContent = `${player1} vs ${player2}`;
+                }
+                
                 // Añadir evento al botón
                 matchButton.addEventListener('click', () => {
                     //Enviar la informacion del match al partido
@@ -202,8 +209,8 @@ function generateTournamentTree(
                 matchButton.className = 'match-button future-match';
 
                 // Jugadores (vacíos por ahora)
-                const player1 = "Por determinar";
-                const player2 = "Por determinar";
+                const player1 = "...";
+                const player2 = "...";
 
                 // Formato del texto del botón
                 matchButton.textContent = `${player1} vs ${player2}`;

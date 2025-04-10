@@ -2,7 +2,7 @@ import {
     createTournament, getTournamentById, getAllTournaments, updateTournamentWinner
 } from './models/tournamentModel.js';
 import {
-    createMatch, getMatchesByTournament, updateMatchResult
+    createMatch, getMatchesByTournament, updateMatchResult, getAllMatches, countPendingMatches, checkWinners
 } from './models/t_matchModel.js';
 
 import { getUserIdByName } from './auth.js';
@@ -60,6 +60,49 @@ export default async function (fastify, options) {
         }
     });
     
+    fastify.post('/updateMatchWinner', async (request, reply) => {
+        const { match_id, winner, player1_score, player2_score } = request.body;
+
+        try {
+            const result = await updateMatchResult(match_id, player1_score, player2_score, winner);
+            reply.send({ success: true, result });
+        } catch (error) {
+            console.error('Error al actualizar el ganador del partido:', error);
+            reply.code(500).send({ error: 'Error al actualizar el ganador del partido' });
+        }
+    });
+
+
+    fastify.post('/checkMatches', async (request, reply) => {
+        const { tournament_id } = request.body;
+        console.log('ID del torneo: ', tournament_id);
+
+        try {
+            const pendingMatches = await countPendingMatches(tournament_id);
+
+            console.log('Partidos pendientes: ', pendingMatches);
+
+            if (pendingMatches === 0) {
+                // Si no hay partidos pendientes, avanza de ronda (o finaliza si es la ultima)
+                const winners = await checkWinners(tournament_id);
+                if (winners) {
+                    // Crear un array con los ganadores
+                    const winnerArray = winners.map(winner => winner.winner);
+                    console.log('Ganadores: ', winnerArray);
+                    reply.send({ success: true, winners: winnerArray });
+                    return;
+                } else {
+                    console.log('No hay ganador del torneo');
+                }
+            }
+
+            reply.send({ success: true, pendingMatches });
+        } catch (error) {
+            console.error('Error al verificar los partidos:', error);
+            reply.code(500).send({ error: 'Error al verificar los partidos' });
+        }
+    });
+
     // Obtener todos los torneos
     fastify.get('/tournaments', async (request, reply) => {
         try {
@@ -68,6 +111,17 @@ export default async function (fastify, options) {
         } catch (error) {
             console.error('Error al obtener torneos:', error);
             reply.status(500).send({ error: 'Error al obtener los torneos' });
+        }
+    });
+
+    // Obtener todos los matches
+    fastify.get('/matches', async (request, reply) => {
+        try {
+            const matches = await getAllMatches();
+            reply.send(matches);
+        } catch (error) {
+            console.error('Error al obtener partidos:', error);
+            reply.status(500).send({ error: 'Error al obtener los partidos' });
         }
     });
     

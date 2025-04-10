@@ -1,6 +1,5 @@
 TO DO:
-    -Modificar bbdd con ganador y estado del match
-    -Al crear un torneo nuevo que se borre el anterior
+    -Estadisticas torneo (en multi)
 
     JUEGO:
         -Crear tabla de BBDD para el torneo

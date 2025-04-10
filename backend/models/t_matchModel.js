@@ -4,18 +4,19 @@ import db from '../src/database.js';
 export function createMatch({ tournament_id, player1, player2 }) {
     return new Promise((resolve, reject) => {
         let sql;
-        if (player2 === undefined) {
-            player2 = null;
+        let params;
+        if (player2 === null) {
             sql = `INSERT INTO t_match
-                        (tournament_id, player1, player2, status) 
-                        VALUES (?, ?, ?, 'completed')`;
+                        (tournament_id, player1, player2, winner, status) 
+                        VALUES (?, ?, NULL, ?, 'completed')`;
+            params = [tournament_id, player1, player1]; // player1 como ganador
         } else {
-
             sql = `INSERT INTO t_match 
                         (tournament_id, player1, player2, status) 
                         VALUES (?, ?, ?, 'pending')`;
+            params = [tournament_id, player1, player2];
         }
-        db.run(sql, [tournament_id, player1, player2], function(err) {
+        db.run(sql, params, function(err) {
             if (err) {
                 reject(err);
                 return;
@@ -48,6 +49,18 @@ export function getMatchesByTournament(tournament_id) {
     return new Promise((resolve, reject) => {
         db.all(`SELECT * FROM t_match WHERE tournament_id = ?`, 
             [tournament_id], 
+            (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            }
+        );
+    });
+}
+
+// Obtener todos los partidos de un torneo
+export function getAllMatches() {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM t_match`,
             (err, rows) => {
                 if (err) reject(err);
                 else resolve(rows);
@@ -97,6 +110,18 @@ export function getPendingMatches(tournament_id) {
     });
 }
 
+export function countPendingMatches(tournament_id) {
+    return new Promise((resolve, reject) => {
+        db.get(`SELECT COUNT(*) as count FROM t_match WHERE tournament_id = ? AND status = 'pending'`, 
+            [tournament_id], 
+            (err, row) => {
+                if (err) reject(err);
+                else resolve(row.count);
+            }
+        );
+    });
+}
+
 // Obtener partidos completados de un torneo
 export function getCompletedMatches(tournament_id) {
     return new Promise((resolve, reject) => {
@@ -130,3 +155,14 @@ export function deleteMatchesByTournament(tournament_id) {
     });
 }
 
+export function checkWinners(tournament_id) {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM t_match WHERE tournament_id = ? AND winner IS NOT NULL`, 
+            [tournament_id], 
+            (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            }
+        );
+    });
+}

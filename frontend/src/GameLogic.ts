@@ -79,9 +79,6 @@ resetGameBtn.addEventListener("click", () => {
         isTournament = false;
         gameView.style.display = 'none';
         tournamentView.style.display = 'block';
-        
-        //Actualizar con el ganador el bracket
-
     }
 });
 
