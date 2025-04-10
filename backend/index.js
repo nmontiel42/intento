@@ -93,7 +93,11 @@ wss.on('connection', (ws) => {
 		console.log('Mensaje analizado:', parsedMessage);
   
 		if (parsedMessage.type === 'setUsername') {
-			const user = { ws, username: parsedMessage.username };
+			const user = {
+				ws,
+				username: parsedMessage.username,
+				picture: parsedMessage.picture,
+			};
 			userList.push(user);
 			console.log(`${parsedMessage.username} se ha conectado`);
 			broadcastUserList();
@@ -152,17 +156,21 @@ wss.on('connection', (ws) => {
 	});
 
 	function broadcastUserList() {
-		const usernames = userList.map(user => user.username); // Obtener nombres de usuario
+		const userListWithPictures = userList.map(user => ({
+		  username: user.username,
+		  picture: user.picture // Agregar la imagen de perfil
+		}));
+	  
 		const userListMessage = JSON.stringify({
-			type: 'userList',
-			users: usernames
+		  type: 'userList',
+		  users: userListWithPictures, // Enviar la lista de usuarios con la imagen de perfil incluida
 		});
-	
+	  
 		// Enviar a todos los clientes la lista de usuarios
 		for (const client of clients) {
-			if (client.readyState === WebSocket.OPEN) {
-				client.send(userListMessage);
-			}
+		  if (client.readyState === WebSocket.OPEN) {
+			client.send(userListMessage);
+		  }
 		}
 	}
 

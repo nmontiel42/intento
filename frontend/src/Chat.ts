@@ -89,7 +89,8 @@ function connectWebSocket()
 
 		socket.send(JSON.stringify({
             type: "setUsername",
-            username: user?.username
+            username: user?.username,
+			picture: user?.picture,
         }));
 	};
 
@@ -254,16 +255,17 @@ function connectWebSocket()
 		}
 	}
 
-	function updateUserList(data: { users: any[]; }) {
+	function updateUserList(data: { users: { username: string; picture: string }[] }) {
+
 		if (!userList) return;
 	
 		userList.innerHTML = ""; // Limpiar la lista actual
 		const currentUser = user.username;  // Obtener el nombre de usuario del usuario actual
 	
 		// Filtrar los usuarios para excluir al usuario actual
-		const filteredUsers = data.users.filter((username: string | null) => username !== currentUser);
+		const filteredUsers = data.users.filter((user: { username: string }) => user.username !== currentUser);
 	
-		data.users.forEach((username: string | null) => {
+		data.users.forEach((user) => {
 			const li = document.createElement("li");
 			li.classList.add(
 				"p-3", "bg-blue-100", "rounded-lg", "block", "w-full",
@@ -282,7 +284,7 @@ function connectWebSocket()
 			);			  
 	
 			// Obtener la primera palabra y la primera letra de la segunda palabra
-			const nameParts = username ? username.split(" ") : [];
+			const nameParts = user.username ? user.username.split(" ") : [];
 			const firstWord = nameParts[0]; // Primera palabra
 			const secondLetter = nameParts[1] ? nameParts[1][0] : ""; // Primera letra de la segunda palabra (si existe)
 	
@@ -304,7 +306,7 @@ function connectWebSocket()
 			);
 	
 			// Tooltip
-			const tooltip = createUserTooltip(username, currentUser);
+			const tooltip = createUserTooltip(user.username, currentUser, user.picture);
 	
 			// Evento para mostrar y ocultar tooltip
 			userNameText.addEventListener("mouseenter", () => tooltip.classList.remove("hidden"));
@@ -330,7 +332,7 @@ function connectWebSocket()
 	
 	
 	// Función para crear el tooltip de usuario
-	function createUserTooltip(username: string | null, currentUser: any) {
+	function createUserTooltip(username: string | null, currentUser: any, userImage : string) {
 		const tooltip = document.createElement("div");
 		tooltip.classList.add(
 			"absolute", "left-1/2", "top-full", "transform", "-translate-x-1/2",
@@ -340,7 +342,7 @@ function connectWebSocket()
 
 		// Imagen de perfil
 		const profileImg = document.createElement("img");
-		profileImg.src = "https://via.placeholder.com/40"; // Imagen de perfil temporal
+		profileImg.src = userImage; // Imagen de perfil temporal
 		profileImg.alt = "Perfil";
 		profileImg.classList.add("w-10", "h-10", "rounded-full", "mx-auto");
 
