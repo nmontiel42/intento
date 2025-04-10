@@ -1,6 +1,6 @@
 // auth.js
-import db from './src/database.js';  // Importamos la base de datos
-import { createUser } from './models/userModel.js';  // Importamos las funciones de la base de datos
+import db from './database.js';  // Importamos la base de datos
+import { createUser } from '../models/userModel.js';  // Importamos las funciones de la base de datos
 import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
@@ -30,7 +30,9 @@ export default async function (fastify, options) {
 
             //console.log('Usuario creado:', newUser); // 👀 Verificar que `username` está presente
 
-            const token = fastify.jwt.sign({ userId: newUser.id }); 
+            const token = fastify.jwt.sign({ userId: newUser.id, 
+                email: newUser.email
+             }); 
 
             reply.send({
                 message: 'Usuario registrado exitosamente',
@@ -63,7 +65,9 @@ export default async function (fastify, options) {
             }
 
             // Generar un JWT
-            const token = fastify.jwt.sign({ user: user.username });
+            const token = fastify.jwt.sign({ user: user.username,
+                email: user.email
+             });
 
             return reply.send({ username: user.username, token });
         } catch (error) {
@@ -149,8 +153,6 @@ export default async function (fastify, options) {
 
     fastify.post('/google-username', async (request, reply) => {
 
-        console.log('HE LLEGADOOOOOOOOOOOO');
-
         const { token, username } = request.body; // Desestructurar el username recibido
 
         console.log('Usuario recibido:', username);
@@ -201,26 +203,87 @@ export default async function (fastify, options) {
 
 
     fastify.delete('/delete-account', { preHandler: fastify.authenticate }, async (req, reply) => {
-        const { username } = req.body; // Obtener el username del body
-        console.log('Intentando eliminar usuario con username:', username);
-
-        if (!username) {
-            return reply.status(400).send({ error: 'Username no proporcionado' });
+        const email = req.user.email; // Obtener el email del usuario autenticado
+        console.log('Intentando eliminar usuario con email:', email);
+    
+        if (!email) {
+            return reply.status(400).send({ error: 'Email no proporcionado' });
         }
-
-        db.run('DELETE FROM users WHERE username = ?', [username], function (err) {
+    
+        db.run('DELETE FROM users WHERE email = ?', [email], function (err) {
             if (err) {
                 console.error('Error al eliminar la cuenta:', err);
                 return reply.status(500).send({ error: 'Error al eliminar la cuenta' });
             }
             if (this.changes === 0) {
-                console.log('No se encontró el usuario:', username);
+                console.log('No se encontró el usuario con email:', email);
                 return reply.status(404).send({ error: 'No se encontró el usuario' });
             }
-            console.log(`Usuario con username ${username} eliminado correctamente.`);
+            console.log(`Usuario con email ${email} eliminado correctamente.`);
             reply.send({ message: 'Cuenta eliminada correctamente' });
         });
     });
+
+    fastify.post('/change-username', { preHandler: fastify.authenticate }, async (request, reply) => {
+        const { username } = request.body;
+        const { email } = request.user;
+    
+        console.log('Cambio de username solicitado para email:', email);
+        console.log('Nuevo username:', username);
+    
+        // Validar que se haya proporcionado un nuevo nombre de usuario
+        if (!username || username.trim().length === 0) {
+          return reply.status(400).send({ error: 'El nombre de usuario no puede estar vacío.' });
+        }
+    
+        if (!email) {
+          console.error('No se proporcionó email en el token JWT');
+          return reply.status(400).send({ error: 'No se pudo identificar al usuario.' });
+        }
+    
+        try {
+          // Verificar si el nuevo nombre de usuario ya está en uso
+          const existingUser = await new Promise((resolve, reject) => {
+            db.get('SELECT * FROM users WHERE username = ? AND email != ?', [username, email], (err, row) => {
+              if (err) {
+                console.error('Error al verificar el nombre de usuario existente:', err);
+                return reject(err);
+              }
+              resolve(row);
+            });
+          });
+    
+          if (existingUser) {
+            return reply.status(400).send({ error: 'El nombre de usuario ya está en uso.' });
+          }
+    
+          // Actualizar el nombre de usuario en la base de datos
+          await new Promise((resolve, reject) => {
+            db.run('UPDATE users SET username = ? WHERE email = ?', [username, email], function (err) {
+              if (err) {
+                console.error('Error al actualizar el nombre de usuario:', err);
+                return reject(err);
+              }
+    
+              if (this.changes === 0) {
+                console.log('No se encontró el usuario para actualizar con email:', email);
+                return reject(new Error('No se encontró el usuario para actualizar.'));
+              }
+    
+              resolve();
+            });
+          });
+    
+          reply.send({ 
+            message: 'Nombre de usuario actualizado correctamente.',
+            username: username 
+          });
+    
+        } catch (error) {
+          console.error('Error en el cambio de nombre de usuario:', error);
+          return reply.status(500).send({ error: 'Error en el servidor al cambiar el nombre de usuario.' });
+        }
+      });
 
 }
 

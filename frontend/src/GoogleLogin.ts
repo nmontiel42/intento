@@ -44,7 +44,7 @@ async function handleGoogleLogin(response: any) {
             userName.textContent = data.user.username;
 
             // Usamos una foto por defecto si no existe una imagen de perfil
-            const profilePic = data.user.picture || "public/letra-t.png";
+            const profilePic = data.user.picture || "../public/letra-t.png";
             userProfile.innerHTML = `<img src="${profilePic}" alt="User profile picture" />`;
 			connectWebSocket();
         } else {
@@ -53,8 +53,6 @@ async function handleGoogleLogin(response: any) {
             registerView.style.display = 'none';
             homeView.style.display = 'none';
             usernameView.style.display = 'block';
-
-           // alert("Google Sign-in successful! Please set your username.");
         }
     } catch (error) {
         console.error("Google Login Error:", error);
@@ -67,8 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     usernameForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-
-        console.log("LE HE DADO A GUARDAR");
 
         const username = (document.getElementById('usernameInput') as HTMLInputElement).value;
         const token = localStorage.getItem('googleToken');
@@ -99,11 +95,14 @@ document.addEventListener("DOMContentLoaded", () => {
             userName.textContent = data.user.username;
 
             // Usamos una foto por defecto si no existe una imagen de perfil
-            const profilePic = data.picture || "public/letra-t.png";
+            const profilePic = data.picture || "../public/letra-t.png";
             userProfile.innerHTML = `<img src="${profilePic}" alt="User profile picture" />`;
 			connectWebSocket();
         } else {
-            alert('Error al guardar el nombre de usuario');
+            const lang = localStorage.getItem('lang');
+            if (lang === 'en') alert('The username is already in use');
+            if (lang === 'fr') alert('Le nom d\'utilisateur est déjà utilisé');
+            if (lang === 'es') alert('El nombre de usuario ya esta en uso');
         }
     });
 });

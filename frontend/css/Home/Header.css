@@ -18,13 +18,24 @@ header {
 }
 
 @keyframes pongFlicker {
-    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        text-shadow: 
+
+    0%,
+    19%,
+    21%,
+    23%,
+    25%,
+    54%,
+    56%,
+    100% {
+        text-shadow:
             0 0 10px #f1f3f4,
             0 0 20px #e5e9ed,
             0 0 30px #f0f3f6d2;
     }
-    20%, 24%, 55% {
+
+    20%,
+    24%,
+    55% {
         text-shadow: none;
     }
 }
@@ -56,8 +67,10 @@ header {
 }
 
 #userProfile:hover {
-    transform: translateY(-2px) scale(1.1); /* Aumenta el tamaño y rota ligeramente */
-    box-shadow: 4px 4px 0 #318ED6; /* Añade una sombra difusa */
+    transform: translateY(-2px) scale(1.1);
+    /* Aumenta el tamaño y rota ligeramente */
+    box-shadow: 4px 4px 0 #318ED6;
+    /* Añade una sombra difusa */
 }
 
 #modalContent {
@@ -87,3 +100,17 @@ header {
     }
 }
 
+.fade-transition {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .fade-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+  }

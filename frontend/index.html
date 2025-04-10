@@ -4,10 +4,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self'">
   <title>PONG</title>
   <link rel="stylesheet" href="/dist/output.css" />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="public/letra-t.png" sizes="16x16">
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
 </head>
 
 <body>
@@ -88,8 +91,8 @@
       data-size="large" data-logo_alignment="center">
     </div>
 
-    <button id="goToRegister" class="text-white text-7px mt-5">¿No tienes cuenta? <u
-        class="hover:text-[#BE36CD] cursor-pointer">Regístrate</u></button>
+    <button id="goToRegister" class="text-white text-7px mt-5 hover:text-[#BE36CD] cursor-pointer">¿No tienes cuenta?
+      Regístrate</u></button>
   </div>
 
 
@@ -97,8 +100,8 @@
 
 
   <div id="usernameView" style="display:none;">
-    <h1 class="text-white text-xl mb-2">¡Hola!</h1>
-    <p class="text-white text-xs mb-2 flex flex-row">Introduce un nombre de usuario:</p>
+    <h1 id="usernameWelcome" class="text-white text-xl mb-2">¡Hola!</h1>
+    <p id="usernameText" class="text-white text-xs mb-2 flex flex-row">Introduce un nombre de usuario:</p>
     <form id="usernameForm">
       <input type="text" id="usernameInput" name="usernameInput" placeholder="Tu nombre de usuario" required />
       <button id="submitUsername" type="submit">Guardar</button>
@@ -116,34 +119,161 @@
 
       <!-- Contenedor de iconos centrado -->
       <div id="icons" class="flex flex-row space-x-4 flex-grow justify-center">
-        <p class="hover:cursor-pointer" id="localPlay">Icono 1</p>
-        <p class="hover:cursor-pointer" id="multiPlay">Icono 2</p>
-        <p class="hover:cursor-pointer" id="tourPlay">Icono 3</p>
-        <p class="hover:cursor-pointer" id="realPlay">Icono 4</p>
+        <p class="hover:cursor-pointer" id="localPlay">Local</p>
+        <div id="divider2" class="w-0.5 h-6 bg-white"></div>
+        <p class="hover:cursor-pointer" id="multiPlay">Multi</p>
+        <div id="divider2" class="w-0.5 h-6 bg-white"></div>
+        <p class="hover:cursor-pointer" id="tourPlay">Torneo</p>
+        <div id="divider2" class="w-0.5 h-6 bg-white"></div>
+        <p class="hover:cursor-pointer" id="realPlay">3D</p>
       </div>
 
       <!-- Botón Perfil alineado a la derecha -->
-      <button id="userProfile" class="text-white font-semibold text-2xl w-12 h-12 rounded-full overflow-hidden border-2 border-white hover:cursor-pointer">
+      <button id="userProfile"
+        class="text-white font-semibold text-2xl w-12 h-12 rounded-full overflow-hidden border-2 border-white hover:cursor-pointer">
         <img id="profileImage" src="public/letra-t.png" alt="User profile picture" class="w-full h-full object-cover">
       </button>
-    
-    
 
     </header>
 
     <!-- Menú Modal -->
     <div id="confirmModal" style="display:none;" class="z-10">
-      <div id="modalContent" class="absolute top-16 right-5 bg-white shadow-lg rounded-lg w-45 p-4 z-10">
-        <button id="logoutBtn" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg mb-2 w-full text-xs hover:cursor-pointer hover:scale-105">Cerrar sesión</button>
-        <button id="deleteAccountBtn" class="bg-[#BE36CD] text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105">Eliminar cuenta</button>
-        <button id="optionsBtn" class="bg-[#0b225a] text-white px-4 py-2 rounded-lg w-full text-xs hover:cursor-pointer hover:scale-105">Opciones</button>
+      <div id="modalContent" class="absolute top-16 right-5 bg-white shadow-lg rounded-lg w-45 p-4 z-10 flex flex-col">
+        <button style="display:block; font-size: 0.6rem;" id="logoutBtn"
+          class="bg-[#318ED6] text-white px-4 py-2 rounded-lg mb-2 w-full text-xs hover:cursor-pointer hover:scale-105">Cerrar
+          sesión</button>
+        <button style="display:block; font-size: 0.6rem;" id="deleteAccountBtn"
+          class="bg-[#BE36CD] text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105">Eliminar
+          cuenta</button>
+        <button style="display:block; font-size: 0.6rem;" id="optionsBtn"
+          class="bg-[#0b225a] text-white px-4 py-2 rounded-lg w-full text-xs hover:cursor-pointer hover:scale-105">Opciones</button>
+
+        <!-- Opciones -->
+        <button style="display:none;" id="goingBack"
+          class="text-black px-4 py-2 text-xs hover:cursor-pointer hover:scale-105 self-start mt-[-10px] ml-[-10px]">
+          < </button>
+            <button style="display:none; font-size: 0.6rem;" id="changeUsernameBtn"
+              class="bg-[#318ED6] text-white px-4 py-2 rounded-lg mb-2 w-full text-xs hover:cursor-pointer hover:scale-105">Cambiar
+              nombre de usuario</button>
+            <button style="display:none; font-size: 0.6rem;" id="changeLanguage"
+              class="bg-[#0b225a] text-white px-4 py-2 rounded-lg w-full text-xs hover:cursor-pointer hover:scale-105">Cambiar
+              idioma</button>
+
+            <div id="selectLang" style="display: none;">
+              <button id="goingBackLang"
+                class="text-black px-4 py-2 text-xs hover:cursor-pointer hover:scale-105 self-start mt-[-10px] ml-[-10px]">
+                < </button>
+                  <button
+                    class="bg-[#318ED6] text-white px-4 py-2 rounded-lg mb-2 w-full text-xs hover:cursor-pointer hover:scale-105"
+                    id="esBtn2">ESPAÑOL</button>
+                  <button
+                    class="bg-[#BE36CD] text-white px-4 py-2 rounded-lg w-full text-xs mb-2 hover:cursor-pointer hover:scale-105"
+                    id="enBtn2">INGLES</button>
+                  <button
+                    class="bg-[#0b225a] text-white px-4 py-2 rounded-lg w-full text-xs hover:cursor-pointer hover:scale-105"
+                    id="frBtn2">FRANCES</button>
+            </div>
+
       </div>
     </div>
 
+
+
     <div class="crt mt-16 pt-4">
       <main class="flex justify-center items-center flex-col">
-        <h1 class="text-white">Bienvenido, <span id="userName"></span>!</h1>
-        <p class="text-white">Aquí iría el Pong pero sigue en producción</p>
+
+        <div id="localPlayView" style="display:block;">
+          <h1 class="text-white">Bienvenido, <span id="userName"></span>!</h1>
+          <p class="text-white">Aquí iría el Pong pero sigue en producción</p>
+        </div>
+
+        <div id="multiPlayView" style="display:none;">
+          <p class="text-white">Multiplayer</p>
+        </div>
+
+        <div id="tourPlayView" style="display:none;">
+          <p class="text-white">Torneo</p>
+        </div>
+
+        <div id="realPlayView" style="display:none;" class="text-white">
+          <div id="showAdvert" class="text-white" style="display:none;">
+            <p id="gameTitle" class="text-lg font-semibold text-center text-white bg-gray-900/50 p-6 shadow-lg max-w-xl mx-auto space-y-4 rounded-lg">
+              Esto es un Pong en 3D.
+              <br>
+              La pelota estará en movimiento todo el rato y no se podrá parar, pero sí se podrá activar la puntuación y reiniciar el juego.
+              <br>
+              Para que no se mueva el punto de vista, hay que cliquear fuera del canvas.
+              <br>
+              Si la puntuación se activa, ganará el primero que llegue a 5 puntos.
+              <br>
+              Cuando alguien gana y el juego se reinicia, la puntuacion esta desactivada.
+              <br>
+              <span class="text-[#BE36CD] font-bold">Buena suerte ;)</span>
+              <br>
+            </p>
+            <button id="show3dGame" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105 cursor-pointer">Iniciar juego</button>
+            
+          </div>
+          <div id="show3d" class="text-white flex flex-col items-center" style="display:none;">
+            <canvas id="renderCanvas" style="width:100%; height:400px;"></canvas>
+          
+            <!-- Contenedor para centrar todo -->
+            <div class="w-full flex flex-col items-center mt-4">
+  
+              <!-- Puntuación centrada y bien alineada -->
+              <div id="score" class="flex items-center text-xl font-semibold gap-6">
+                <div class="flex flex-col items-center">
+                  <p id="player1Name" class="text-[#318ED6]">Ping</p>
+                  <p id="player1Score">0</p>
+                </div>
+                <div id="divider2" class="w-0.5 h-6 bg-white"></div>
+                <div class="flex flex-col items-center">
+                  <p id="player2Name" class="text-[#318ED6]">Pong</p>
+                  <p id="player2Score">0</p>
+                </div>
+              </div>
+            
+              <!-- Botones bien alineados y del mismo tamaño -->
+              <div class="flex justify-center gap-4 mt-4 w-full max-w-sm">
+                <button 
+                  id="activateScore" 
+                  class="flex justify-center items-center px-6 py-3 w-1/2 text-sm font-medium text-[#318ED6] border-2 border-[#318ED6] rounded-lg 
+                         transition-all duration-300 hover:bg-[#318ED6] hover:text-white hover:shadow-md"
+                >
+                  ▶
+                </button>
+                <button 
+                  id="reset3dGame" 
+                  class="flex justify-center items-center px-6 py-3 w-1/2 text-sm font-medium text-[#318ED6] border-2 border-[#318ED6] rounded-lg 
+                         transition-all duration-300 hover:bg-[#318ED6] hover:text-white hover:shadow-md"
+                >
+                  ⟳
+                </button>
+              </div>
+            
+            </div>
+            
+          </div>
+          
+          <div id="winView" class="text-white bg-gray-900/50 p-6 rounded-lg shadow-lg text-center" style="display: none;">
+            <div class="flex justify-center items-center gap-2 text-xl font-semibold">
+              <p id="winMsg">¡Ganaste</p>
+              <p id="winnerPlayer" class="text-[#318ED6]"></p>
+              <p>!</p>
+            </div>
+            <img 
+              src="https://media2.giphy.com/media/BK1EfIsdkKZMY/giphy.gif?cid=6c09b952ufxyfabixutnsm8xo2kwfzk49snn8pxii6ozbwzc&ep=v1_gifs_search&rid=giphy.gif&ct=g" 
+              id="winnerImage" 
+              alt="Ganador" 
+              class="w-40 h-40 mx-auto mt-4 rounded-lg shadow-md"
+            />
+            <button 
+              id="closeWin" class="mt-4 rounded-xl">
+              Cerrar
+            </button>
+          </div>
+          
+        </div>
       </main>
     </div>
 
@@ -215,6 +345,18 @@
 
     <!-- Pong -->
 
+
+
+  <div id="changeUsernameView" style="display:none;">
+    <p id="usernameChangeText" class="text-white text-xs mb-2 flex flex-row">Introduce un nuevo nombre de usuario:</p>
+    <form id="changeUsernameForm">
+      <input type="text" id="usernameChangeInput" name="usernameChangeInput" placeholder="Tu nuevo usuario"
+        required />
+      <button id="submitChangeUsername" type="submit">Cambiar</button>
+      <button id="cancelChange">Cancelar</button>
+    </form>
+  </div>
+  </div>
 
   <script src="/dist/output.js"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>

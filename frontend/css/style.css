@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import './Register.css';
 @import './Home/Header.css';
+@import './Home/3dpong.css';
 
 @layer utilities {
     .text-xs-custom {
@@ -91,7 +92,9 @@ body::before {
 
 #registerView,
 #loginView,
-#usernameView {
+#usernameView,
+#changeUsernameView,
+#changePictureView {
     background-color: rgba(11, 34, 90, 0.85);
     border: 3px solid #BE36CD;
     box-shadow:
@@ -113,7 +116,9 @@ body::before {
 
 #registerForm,
 #loginForm,
-#usernameForm {
+#usernameForm,
+#changeUsernameForm,
+#changePictureForm {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -124,7 +129,9 @@ body::before {
 #username,
 #loginEmail,
 #loginPassword,
-#usernameInput {
+#usernameInput,
+#usernameChangeInput,
+#pictureChangeInput {
     background-color: transparent;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -139,7 +146,12 @@ body::before {
 
 #submit,
 #submitLogin,
-#submitUsername {
+#submitUsername,
+#submitChangeUsername,
+#cancelChange,
+#submitChangePicture,
+#cancelPicture,
+#closeWin {
     background-color: #BE36CD;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -160,7 +172,12 @@ body::before {
 
 #submit:hover,
 #submitLogin:hover,
-#submitUsername:hover {
+#submitUsername:hover,
+#submitChangeUsername:hover,
+#cancelChange:hover,
+#submitChangePicture:hover,
+#cancelPicture:hover,
+#closeWin:hover {
     color: #fff;
     box-shadow:
         0 0 10px #BE36CD,

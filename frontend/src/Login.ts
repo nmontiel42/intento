@@ -71,9 +71,20 @@ registerForm.addEventListener('submit', async (event: Event) => {
         alert('Error: el backend no devolvió un token');
         return;
       }
+      const randomAvatarId = Math.floor(Math.random() * 10) + 1;
+      const randomAvatar = `../public/avatars/avatar${randomAvatarId}.png`;
+      
+      // Si el usuario no tiene una imagen, asignar el avatar aleatorio
+      if (!data.picture) {
+        data.picture = randomAvatar;
+      }
 
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+
+      
+      userProfile.innerHTML = `<img src="${data.picture}" alt="User profile picture" />`;
+      
 
       // Actualizamos la imagen de perfil con la foto del usuario o la por defecto
       userProfile.innerHTML = data.picture ? `<img src="${data.picture}" alt="User profile picture" />` : `<img src="public/letra-t.png";" alt="User profile picture" />`;
@@ -83,7 +94,10 @@ registerForm.addEventListener('submit', async (event: Event) => {
       userName.textContent = data.user.username;
 	  connectWebSocket();
     } else {
-      alert('Error en el registro. Intenta nuevamente.');
+      const lang = localStorage.getItem('lang');
+      if (lang === 'en') alert('Error in registration: email or username is already in use');
+      if (lang === 'fr') alert('Erreur d\'inscription: l\'email ou le nom d\'utilisateur est déjà utilisé');
+      if (lang === 'es') alert('Error en el registro: el email o el username ya está en uso');
     }
   } catch (error) {
     console.error('Error al registrar:', error);
@@ -93,14 +107,12 @@ registerForm.addEventListener('submit', async (event: Event) => {
 
 // Manejo del formulario de login
 loginForm.addEventListener('submit', async (event: Event) => {
-  event.preventDefault(); // Evita el envío tradicional del formulario
+  event.preventDefault();
 
-  // Obtenemos los valores de los campos del formulario de login
   const email = (document.getElementById('loginEmail') as HTMLInputElement).value;
   const password = (document.getElementById('loginPassword') as HTMLInputElement).value;
 
   try {
-    // Enviamos la solicitud POST al backend para iniciar sesión
     const response = await fetch('https://localhost:3000/login', {
       method: 'POST',
       headers: {
@@ -112,20 +124,37 @@ loginForm.addEventListener('submit', async (event: Event) => {
     if (response.ok) {
       const data = await response.json();
 
+      // Si no hay foto de perfil, asignar un avatar aleatorio
+      if (!data.picture) {
+        const randomAvatarId = Math.floor(Math.random() * 10) + 1;
+        data.picture = `../public/avatars/avatar${randomAvatarId}.png`;
+      }
+
+      // Guardar en localStorage los datos actualizados incluyendo la imagen
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('user', JSON.stringify({
+        ...data,
+        picture: data.picture
+      }));
+
       // Cambiar a la vista de inicio
       loginView.style.display = 'none';
       homeView.style.display = 'block';
       userName.textContent = data.username;
 
-      // Actualizamos la imagen de perfil
-      userProfile.innerHTML = data.picture ? `<img src="${data.picture}" alt="User profile picture" />` : `<img src="public/letra-t.png";" alt="User profile picture" />`;
-
-      // Guardamos los datos del usuario y el token en localStorage
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data));
+      // IMPORTANTE: Actualizar correctamente la imagen de perfil
+      // Modificar el SRC del elemento img existente en lugar de reemplazar todo el HTML
+      const profileImage = document.getElementById('profileImage') as HTMLImageElement;
+      if (profileImage) {
+        profileImage.src = data.picture || "../public/avatars/avatar1.png";
+      }
 	  connectWebSocket();
     } else {
-      alert('Error en el inicio de sesión. Intenta nuevamente.');
+      // Manejo de errores (sin cambios)
+      const lang = localStorage.getItem('lang');
+      if (lang === 'en') alert('Error in login: The user does not exist or the Email/Password are incorrect');
+      if (lang === 'fr') alert('Erreur de connexion: l\'utilisateur n\'existe pas ou l\'Email/Mot de passe sont incorrects');
+      if (lang === 'es') alert('Error en el inicio de sesión. El usuario no existe o el Email/Contraseña son erroneos.');
     }
   } catch (error) {
     console.error('Error al iniciar sesión:', error);

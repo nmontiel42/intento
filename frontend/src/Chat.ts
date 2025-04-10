@@ -12,6 +12,17 @@ const userListContainer = document.getElementById("userListContainer");
 document.addEventListener("DOMContentLoaded", () => {
     let chatMinimized = false;
     const minimizedContainer = document.getElementById("minimizedChatsContainer") as HTMLElement;
+	// Estado inicial minimizado al cargar
+	chatContainer.classList.remove("h-[80vh]", "md:h-3/5", "lg:h-2/3");
+	chatContainer.classList.add("h-[50px]");
+	chatBox.classList.add("hidden");
+	chatInputContainer.classList.add("hidden");
+	toggleButton.textContent = "+";
+	chatMinimized = true;
+
+	// Ocultar el contenedor de chats minimizados (opcional si aún no hay ninguno)
+	minimizedContainer.classList.add("hidden");
+
     
     // Función para actualizar la posición del contenedor minimizado
     const updateMinimizedContainerPosition = () => {
