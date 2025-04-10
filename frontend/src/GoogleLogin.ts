@@ -46,6 +46,7 @@ async function handleGoogleLogin(response: any) {
             // Usamos una foto por defecto si no existe una imagen de perfil
             const profilePic = data.user.picture || "public/letra-t.png";
             userProfile.innerHTML = `<img src="${profilePic}" alt="User profile picture" />`;
+			connectWebSocket();
         } else {
             // Si el usuario no existe, pedimos que elija un nombre de usuario
             loginView.style.display = 'none';
@@ -53,9 +54,8 @@ async function handleGoogleLogin(response: any) {
             homeView.style.display = 'none';
             usernameView.style.display = 'block';
 
-            alert("Google Sign-in successful! Please set your username.");
+           // alert("Google Sign-in successful! Please set your username.");
         }
-		connectWebSocket();
     } catch (error) {
         console.error("Google Login Error:", error);
         alert("Error al iniciar sesión con Google.");
@@ -101,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Usamos una foto por defecto si no existe una imagen de perfil
             const profilePic = data.picture || "public/letra-t.png";
             userProfile.innerHTML = `<img src="${profilePic}" alt="User profile picture" />`;
+			connectWebSocket();
         } else {
             alert('Error al guardar el nombre de usuario');
         }

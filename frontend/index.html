@@ -148,54 +148,70 @@
     </div>
 
     <!-- Chat -->
-	<div id="liveChatContainer"
-		class="fixed bottom-4 right-4 w-full max-w-lg md:max-w-xl lg:max-w-2xl h-auto md:h-3/5 bg-white shadow-md rounded-lg flex flex-col overflow-hidden">
-		<!-- Encabezado del chat -->
-		<div class="bg-blue-500 text-white p-3 font-semibold flex justify-between items-center">
-			<span class="text-xl">Live Chat</span>
-			<button id="toggleChat" class="text-xl cursor-pointer focus:outline-none">
-				−
-			</button>
+	<div id="chatWrapper" class="relative w-full h-full">
+		<!-- Contenedor de chats minimizados -->
+		<div id="minimizedChatsContainer"
+			class="hidden absolute z-50 left-0 top-0 
+			w-full max-w-lg md:max-w-xl lg:max-w-2xl 
+			flex overflow-x-auto space-x-2 px-2 py-1 
+			bg-red backdrop-blur-sm transition-all duration-300">
 		</div>
-		<!-- Contenedor principal de chat (Usuarios + Mensajes) -->
-		<div class="flex flex-col md:flex-row flex-1 overflow-hidden">
-			<!-- Lista de Usuarios (izquierda) - Oculta en móviles, visible en pantallas medianas y más grandes -->
-			<div id="userListContainer"
-				class="hidden md:block bg-white p-4 w-full md:w-1/3 max-w-xs h-full md:border-r border-gray-800 overflow-y-auto max-h-64 sm:max-h-96">
-				<h3 class="text-xs font-semibold text-gray-800 mb-4 border-b border-gray-800 pb-2">Usuarios</h3>
-				<ul id="userList" class="space-y-2 w-full text-xs">
-				</ul>
+
+		<!-- Contenedor del chat global -->
+		<div id="liveChatContainer"
+			class="z-40 fixed bottom-4 right-4 
+			w-11/12 max-w-lg md:max-w-xl lg:max-w-2xl 
+			bg-white shadow-md rounded-lg 
+			flex flex-col overflow-hidden 
+			h-[80vh] md:h-3/5">
+
+			<!-- Encabezado del chat -->
+			<div class="bg-blue-500 text-white p-3 font-semibold flex justify-between items-center">
+				<span class="text-lg md:text-xl">Live Chat</span>
+				<button id="toggleChat" class="text-lg md:text-xl cursor-pointer focus:outline-none">−</button>
 			</div>
-			<!-- Botón para Toggle la lista en pantallas pequeñas -->
-			<div id="toggleUserListButton" class="md:hidden border-t border-b border-gray-500 bg-blue-300 text-black p-2 text-center">
-				Mostrar Usuarios
-			</div>
-			<!-- Mensajes del chat (derecha) -->
-			<div id="chatContainer" class="relative w-full h-full">
-				<!-- Chat global -->
-				<div id="chatBox" class="flex-1 overflow-y-auto p-3 space-y-3 bg-white max-h-64 md:max-h-full">
-					<!-- Aquí va el chat global -->
+
+			<!-- Contenedor principal de chat -->
+			<div class="flex flex-col md:flex-row flex-1 overflow-hidden">
+				<!-- Lista de Usuarios (izquierda) -->
+				<div id="userListContainer"
+					class="hidden md:block bg-white p-4 w-full md:w-1/3 max-w-xs h-full border-r border-gray-300 overflow-y-auto">
+					<h3 class="text-xs font-semibold text-gray-800 mb-4 border-b border-gray-800 pb-2">Usuarios</h3>
+					<ul id="userList" class="space-y-2 w-full text-xs"></ul>
 				</div>
-	
-				<!-- Contenedor de chats privados (ubicado encima del chat global) -->
-				<div id="privateChatsContainer" class="absolute top-0 right-0 flex flex-col space-y-2">
-					<!-- Los chats privados se añadirán aquí dinámicamente -->
+
+				<!-- Botón para Toggle en móviles -->
+				<button id="toggleUserListButton"
+					class="md:hidden border-t border-b border-gray-500 bg-blue-300 text-black p-2 text-center">
+					Mostrar Usuarios
+				</button>
+
+				<!-- Chat principal -->
+				<div id="chatContainer" class="relative w-full h-full flex flex-col">
+					<div id="chatBox"
+						class="flex-1 overflow-y-auto p-3 space-y-3 bg-white text-sm md:text-base max-h-[60vh]">
+					</div>
+					<!-- Chats privados -->
+					<div id="privateChatsContainer" 
+						class="absolute top-0 right-0 w-full md:w-[350px] h-[70vh] overflow-visible pointer-events-none z-0">
+					</div>
+
 				</div>
 			</div>
-		</div>
-		<!-- Input para enviar mensajes -->
-		<div id="chatInputContainer" class="flex p-2 bg-white">
-			<input type="text" id="chatInput" placeholder="Escribe un mensaje..."
-				class="flex-1 border border-gray-200 rounded-l-lg p-2 outline-none focus:ring-2 focus:ring-blue-400 text-black" />
-			<button id="sendChatBtn"
-				class="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 transition-colors duration-200 focus:outline-none">
-				Enviar
-			</button>
+
+			<!-- Input de mensajes -->
+			<div id="chatInputContainer" class="flex p-2 bg-white">
+				<textarea id="chatInput" placeholder="Escribe un mensaje..."
+			class="flex-1 border border-gray-200 rounded-l-lg p-2 outline-none focus:ring-2 focus:ring-blue-400 text-black text-sm md:text-base resize-none"
+			rows="2"></textarea>
+				<button id="sendChatBtn"
+					class="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 transition duration-200">
+					Enviar
+				</button>
+			</div>
 		</div>
 	</div>
-	<div id="minimizedChatsContainer" class="fixed top-4 left-4 flex flex-col space-y-2 overflow-y-auto max-h-[calc(100vh-96px)] w-auto"></div>
-
-
+	<!-- Fin del chat -->
 
     <!-- Pong -->
 
