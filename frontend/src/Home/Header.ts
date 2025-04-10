@@ -103,12 +103,13 @@ optionsBtn.addEventListener('click', (event) => {
     changeLang.style.display = 'block';
     changeUsername.style.display = 'block';
     goingBack.style.display = 'block';
+    faBtn.style.display = 'block';
 
     // Forzar un reflow para que la transición funcione
     document.body.offsetHeight;
 
     // Aplicar la transición de entrada
-    [changeLang, changeUsername, goingBack].forEach(btn => {
+    [changeLang, changeUsername, goingBack, faBtn].forEach(btn => {
       btn.classList.remove('fade-out');
       btn.classList.add('fade-in');
     });

@@ -203,25 +203,69 @@ export default async function (fastify, options) {
 
 
     fastify.delete('/delete-account', { preHandler: fastify.authenticate }, async (req, reply) => {
-        const email = req.user.email; // Obtener el email del usuario autenticado
-        console.log('Intentando eliminar usuario con email:', email);
-    
-        if (!email) {
-            return reply.status(400).send({ error: 'Email no proporcionado' });
+        try {
+            // Obtener el userID del token - podría estar en diferentes campos según el método de login
+            const userId = req.user.userId;
+            console.log('Token payload:', req.user); // Para depuración
+            console.log('Intentando eliminar usuario con userId:', userId);
+
+            if (!userId) {
+                return reply.status(401).send({ error: 'No se pudo identificar al usuario desde el token' });
+            }
+
+            let user;
+
+            if (String(userId).length > 10) {
+                console.log('Usuario de Google');
+                const email = req.user.email;
+                user = await getUserByEmail(email);
+                console.log('Usuario encontrado por email:', user);
+                if (!user) {
+                    return reply.status(404).send({ error: 'Usuario no encontrado con ese email' });
+                }
+                db.run('DELETE FROM users WHERE email = ?', [email], function (err) {
+                    if (err) {
+                        console.error('Error al eliminar la cuenta:', err);
+                        return reply.status(500).send({ error: 'Error al eliminar la cuenta' });
+                    }
+                    
+                    if (this.changes === 0) {
+                        console.log('No se encontró el usuario para eliminar');
+                        return reply.status(404).send({ error: 'No se pudo eliminar el usuario' });
+                    }
+                    
+                    console.log(`Usuario con email ${email} eliminado correctamente.`);
+                    reply.send({ message: 'Cuenta eliminada correctamente' });
+                });
+            } else {
+                user = await getUserById(userId);
+            
+                if (!user) {
+                    return reply.status(404).send({ error: 'Usuario no encontrado con ese ID' });
+                }
+                
+                console.log('Usuario encontrado:', user);
+                
+                // Eliminar usando el ID (más seguro que el email)
+                db.run('DELETE FROM users WHERE id = ?', [userId], function (err) {
+                    if (err) {
+                        console.error('Error al eliminar la cuenta:', err);
+                        return reply.status(500).send({ error: 'Error al eliminar la cuenta' });
+                    }
+                    
+                    if (this.changes === 0) {
+                        console.log('No se encontró el usuario para eliminar');
+                        return reply.status(404).send({ error: 'No se pudo eliminar el usuario' });
+                    }
+                    
+                    console.log(`Usuario con ID ${userId} (email: ${user.email}) eliminado correctamente.`);
+                    reply.send({ message: 'Cuenta eliminada correctamente' });
+                });
+            }
+        } catch (error) {
+            console.error('Error en delete-account:', error);
+            reply.status(500).send({ error: 'Error interno del servidor' });
         }
-    
-        db.run('DELETE FROM users WHERE email = ?', [email], function (err) {
-            if (err) {
-                console.error('Error al eliminar la cuenta:', err);
-                return reply.status(500).send({ error: 'Error al eliminar la cuenta' });
-            }
-            if (this.changes === 0) {
-                console.log('No se encontró el usuario con email:', email);
-                return reply.status(404).send({ error: 'No se encontró el usuario' });
-            }
-            console.log(`Usuario con email ${email} eliminado correctamente.`);
-            reply.send({ message: 'Cuenta eliminada correctamente' });
-        });
     });
 
     fastify.post('/change-username', { preHandler: fastify.authenticate }, async (request, reply) => {
@@ -294,6 +338,19 @@ function generateRandomPassword(length = 12) {
         password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return password;
+}
+
+async function getUserById(id) {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT * FROM users WHERE id = ?`,
+            [id],
+            (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            }
+        );
+    });
 }
 
 // Función para obtener un usuario por su correo electrónico

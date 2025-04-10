@@ -4,6 +4,7 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import dotenv from 'dotenv';
 import authRoutes from './src/auth.js';
+import twoFactorAuth from './controllers/2faControllers.js'
 import fastifyWebsocket from '@fastify/websocket';
 import https from 'https';
 import fs from 'fs';
@@ -72,6 +73,8 @@ fastify.decorate('authenticate', async (req, res) => {
     res.send(err);
   }
 });
+
+fastify.register(twoFactorAuth);
 
 /*-------------------LIVE CHAT-------------------*/
 

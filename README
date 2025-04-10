@@ -1,5 +1,13 @@
 TO DO:
     -Seguir cambiando idioma (home)
+    -Mirar tabla FA
+
+    2FA:
+        -Ventana 2fa no sale con google
+        -Al darle a disable empieza los 2 procesos (enable y disable)
+        -Al borrar una cuenta que tenia activado el 2fa, al crearla con el mismo correo aunque 
+            en la base de datos sale desactivado, el boton sale activado
+        -Al iniciar sesion con el 2fa activo, no recoge bien la informacion de la cuenta (la foto)
     
 
 WARNINGS Y ERRORES:

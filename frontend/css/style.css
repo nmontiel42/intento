@@ -94,7 +94,8 @@ body::before {
 #loginView,
 #usernameView,
 #changeUsernameView,
-#changePictureView {
+#changePictureView,
+#twoFactorAuthView {
     background-color: rgba(11, 34, 90, 0.85);
     border: 3px solid #BE36CD;
     box-shadow:
@@ -118,7 +119,8 @@ body::before {
 #loginForm,
 #usernameForm,
 #changeUsernameForm,
-#changePictureForm {
+#changePictureForm,
+#twoFactorAuthForm {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -131,7 +133,8 @@ body::before {
 #loginPassword,
 #usernameInput,
 #usernameChangeInput,
-#pictureChangeInput {
+#pictureChangeInput,
+#verificationCode {
     background-color: transparent;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -151,7 +154,8 @@ body::before {
 #cancelChange,
 #submitChangePicture,
 #cancelPicture,
-#closeWin {
+#closeWin,
+#submitVerificationCode {
     background-color: #BE36CD;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -177,7 +181,8 @@ body::before {
 #cancelChange:hover,
 #submitChangePicture:hover,
 #cancelPicture:hover,
-#closeWin:hover {
+#closeWin:hover,
+#submitVerificationCode:hover {
     color: #fff;
     box-shadow:
         0 0 10px #BE36CD,

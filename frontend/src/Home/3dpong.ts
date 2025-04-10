@@ -220,7 +220,7 @@ window.addEventListener("DOMContentLoaded", () => {
   scene.registerBeforeRender(() => {
     // Mover paletas
     movePaddles();
-
+  
     // Actualizar posición de paletas con interpolación
     paddle1.position.y = lerp(
       paddle1.position.y,
@@ -232,34 +232,39 @@ window.addEventListener("DOMContentLoaded", () => {
       paddle2.position.y + state.paddle2Speed,
       0.8
     );
-
+  
     // Limitar movimiento de paletas
     const halfHeight = config.gameHeight / 2 - config.paddleHeight / 2;
     paddle1.position.y = Math.max(-halfHeight, Math.min(halfHeight, paddle1.position.y));
     paddle2.position.y = Math.max(-halfHeight, Math.min(halfHeight, paddle2.position.y));
-
+  
     // Mover pelota
     ball.position.addInPlace(state.ballVelocity);
-
-    // Colisión con bordes verticales
-    if (Math.abs(ball.position.y) >= config.gameHeight / 2 - config.borderThickness / 2) {
+  
+    // Colisión con bordes superior e inferior
+    const halfGameHeight = config.gameHeight / 2 - config.borderThickness / 2;
+    if (ball.position.y >= halfGameHeight) {
+      ball.position.y = halfGameHeight; // Evita que se salga
+      state.ballVelocity.y *= -1;
+    } else if (ball.position.y <= -halfGameHeight) {
+      ball.position.y = -halfGameHeight; // Evita que se salga
       state.ballVelocity.y *= -1;
     }
-
+  
     // Colisión con paletas
     const checkPaddleCollision = (paddle: BABYLON.Mesh, isLeftPaddle: boolean) => {
       const paddleLeft = paddle.position.x - config.paddleWidth / 2;
       const paddleRight = paddle.position.x + config.paddleWidth / 2;
       const paddleTop = paddle.position.y + config.paddleHeight / 2;
       const paddleBottom = paddle.position.y - config.paddleHeight / 2;
-
+  
       const ballInPaddleX = isLeftPaddle
         ? ball.position.x - ball.scaling.x / 2 <= paddleRight && ball.position.x + ball.scaling.x / 2 >= paddleLeft
         : ball.position.x + ball.scaling.x / 2 >= paddleLeft && ball.position.x - ball.scaling.x / 2 <= paddleRight;
-
+  
       const ballInPaddleY = ball.position.y + ball.scaling.y / 2 >= paddleBottom &&
         ball.position.y - ball.scaling.y / 2 <= paddleTop;
-
+  
       if (ballInPaddleX && ballInPaddleY) {
         state.ballVelocity.x *= -1;
         state.ballVelocity.y = (ball.position.y - paddle.position.y) * 0.2;
@@ -267,7 +272,7 @@ window.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => particleSystem.stop(), 200);
       }
     };
-
+  
     checkPaddleCollision(paddle1, true);
     checkPaddleCollision(paddle2, false);
 
@@ -329,6 +334,8 @@ window.addEventListener("DOMContentLoaded", () => {
     isActivated = false;
     state.scorePlayer1 = 0;
     state.scorePlayer2 = 0;
+    player1Score.innerHTML = '0';
+    player2Score.innerHTML = '0';
     ball.position = new BABYLON.Vector3(0, 0, 0);
     state.ballVelocity.x = config.ballSpeed;
     state.ballVelocity.y = config.ballSpeed;

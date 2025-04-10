@@ -5,6 +5,7 @@ const changeLang = document.getElementById('changeLanguage') as HTMLButtonElemen
 /* Change lang */
 const goingBackLang = document.getElementById('goingBackLang') as HTMLButtonElement;
 const langView = document.getElementById('selectLang') as HTMLElement;
+const faBtn = document.getElementById('setup2FABtn') as HTMLButtonElement;
 
 /* Change username */
 const changeUsernameView = document.getElementById('changeUsernameView') as HTMLElement;
@@ -18,7 +19,7 @@ const buttonsToAnimate = [
     document.getElementById('optionsBtn'),
     document.getElementById('goingBack'),
     document.getElementById('changeUsernameBtn'),
-    document.getElementById('ture'),
+    document.getElementById('setup2FABtn'),
     document.getElementById('changeLanguage'),
     document.getElementById('selectLang'),
 ];
@@ -57,7 +58,7 @@ langButtons.forEach(button => {
 
 goingBack.addEventListener('click', () => {
     // Primero, inicia la transición de salida
-    [changeLang, changeUsername, goingBack].forEach(btn => {
+    [changeLang, changeUsername, goingBack, faBtn].forEach(btn => {
         btn.classList.remove('fade-in');
         btn.classList.add('fade-out');
     });
@@ -68,6 +69,7 @@ goingBack.addEventListener('click', () => {
         changeLang.style.display = 'none';
         changeUsername.style.display = 'none';
         goingBack.style.display = 'none';
+        faBtn.style.display = 'none';
 
         // Preparar los botones originales
         logoutBtn.style.display = 'block';
@@ -87,7 +89,7 @@ goingBack.addEventListener('click', () => {
 
 changeLang.addEventListener('click', () => {
     // Primero, inicia la transición de salida para los botones actuales
-    [changeLang, changeUsername, goingBack].forEach(btn => {
+    [changeLang, changeUsername, goingBack, faBtn].forEach(btn => {
         btn.classList.remove('fade-in');
         btn.classList.add('fade-out');
     });
@@ -120,6 +122,7 @@ changeLang.addEventListener('click', () => {
         changeLang.style.display = 'none';
         changeUsername.style.display = 'none';
         goingBack.style.display = 'none';
+        faBtn.style.display = 'none';
 
         // Mostrar la vista de idioma
         langView.style.display = 'block';
@@ -170,12 +173,13 @@ goingBackLang.addEventListener('click', () => {
         changeLang.style.display = 'block';
         changeUsername.style.display = 'block';
         goingBack.style.display = 'block';
+        faBtn.style.display = 'block';
 
         // Forzar un reflow para que la transición funcione
         document.body.offsetHeight;
 
         // Aplicar la transición de entrada
-        [changeLang, changeUsername, goingBack].forEach(btn => {
+        [changeLang, changeUsername, goingBack, faBtn].forEach(btn => {
             btn.classList.remove('fade-out');
             btn.classList.add('fade-in');
         });
