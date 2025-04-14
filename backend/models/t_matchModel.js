@@ -1,20 +1,20 @@
 import db from '../src/database.js';
 
 // Crear un nuevo partido
-export function createMatch({ tournament_id, player1, player2 }) {
+export function createMatch({ tournament_id, player1, player2, round }) {
     return new Promise((resolve, reject) => {
         let sql;
         let params;
         if (player2 === null) {
             sql = `INSERT INTO t_match
-                        (tournament_id, player1, player2, winner, status) 
-                        VALUES (?, ?, NULL, ?, 'completed')`;
-            params = [tournament_id, player1, player1]; // player1 como ganador
+                        (tournament_id, player1, player2, winner, round, status) 
+                        VALUES (?, ?, NULL, ?, ?, 'completed')`;
+            params = [tournament_id, player1, player1, round]; // player1 como ganador
         } else {
             sql = `INSERT INTO t_match 
-                        (tournament_id, player1, player2, status) 
-                        VALUES (?, ?, ?, 'pending')`;
-            params = [tournament_id, player1, player2];
+                        (tournament_id, player1, player2, round, status) 
+                        VALUES (?, ?, ?, ?, 'pending')`;
+            params = [tournament_id, player1, player2, round];
         }
         db.run(sql, params, function(err) {
             if (err) {
@@ -155,13 +155,20 @@ export function deleteMatchesByTournament(tournament_id) {
     });
 }
 
-export function checkWinners(tournament_id) {
+export function checkWinners(tournament_id, round) {
     return new Promise((resolve, reject) => {
-        db.all(`SELECT * FROM t_match WHERE tournament_id = ? AND winner IS NOT NULL`, 
-            [tournament_id], 
+        db.all(
+            `SELECT * FROM t_match 
+             WHERE tournament_id = ? AND round = ? AND winner IS NOT NULL`,
+            [tournament_id, round],
             (err, rows) => {
-                if (err) reject(err);
-                else resolve(rows);
+                if (err) {
+                    console.error('Error en checkWinners:', err);
+                    reject(err);
+                } else {
+                    console.log('Ganadores de la ronda actual:', rows);
+                    resolve(rows);
+                }
             }
         );
     });

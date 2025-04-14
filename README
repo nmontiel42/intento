@@ -1,5 +1,7 @@
 TO DO:
     -Estadisticas torneo (en multi)
+    -Actualizar BBDD torneo con ganador final
+    -Manejar mejor casos con winners impares
 
     JUEGO:
         -Crear tabla de BBDD para el torneo

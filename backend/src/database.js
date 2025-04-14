@@ -66,6 +66,19 @@ db.serialize(() => {
             console.log("Created the t_match table.");
         },
     );
+
+    db.run (
+         `
+         ALTER TABLE t_match ADD COLUMN round INTEGER NOT NULL DEFAULT 1;
+        `,
+        (err) => {
+            if (err) {
+                return console.error("Error adding column to t_match table: ", err.message);
+            }
+            console.log("Added column to t_match table.");
+        },
+    );
+
 });
 
 export default db;

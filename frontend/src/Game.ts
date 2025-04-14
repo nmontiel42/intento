@@ -35,7 +35,7 @@ let player2Score: number = 0;
 // Nombres de los jugadores
 let player1Name = "Player 1";
 let player2Name = "Player 2";
-const winnerScore = 3; // Puntuación para ganar el juego
+const winnerScore = 1; // Puntuación para ganar el juego
 let isTournament: boolean = false;
 let currentMatchId: string;
 let isGameOver:boolean = false;
@@ -46,6 +46,7 @@ let isGamePaused: boolean = true;
 let newGame: boolean = true;
 
 let winners: string[] = [];
+let nextRound: string[] = [];
 
 // Definir un factor de incremento para la velocidad de la pelota
 const inicialBallSpeed = 6;
@@ -173,6 +174,32 @@ if (ball.x + ball.radius > rightPaddle.x - paddleCollisionMargin &&
   }
 }
 
+function resetButtonLogic() {
+  if (isTournament) {
+    resetGameBtn.innerText = "Volver al Torneo";
+    resetGameBtn.onclick = function() {
+      returnToTournament();
+    };
+    resetAll(); // Resetea el juego
+    isGamePaused = true;
+    newGame = true;
+    cancelAnimationFrame(animation); // Pausar el juego
+    drawGame();
+    startGameBtn.innerText = "Iniciar Juego";
+    startGameBtn.style.display = "block";
+  } else {
+    resetGameBtn.innerText = "Reiniciar Juego";
+    resetAll(); // Resetea el juego
+    isGamePaused = true;
+    newGame = true;
+    cancelAnimationFrame(animation); // Pausar el juego
+    drawGame();
+    startGameBtn.innerText = "Iniciar Juego";
+    startGameBtn.style.display = "block";
+  }
+}
+
+// Update the showGameResult function to handle tournament properly
 async function showGameResult() {
   isGamePaused = true;
   winner = player1Score > player2Score ? player1Name : player2Name;
@@ -186,18 +213,23 @@ async function showGameResult() {
   ctx.font = "24px 'Press Start 2P', cursive";
   ctx.fillText(player1Score + " - " + player2Score, canvas.width / 2, canvas.height / 2 + 50);
   ctx.font = "16px 'Press Start 2P', cursive";
+  
   if(isTournament){
     resetGameBtn.innerText = "Volver al Torneo";
+    resetGameBtn.onclick = function() {
+      returnToTournament();
+    };
     startGameBtn.style.display = "none";
 
-    //quiero acceder al boton de matchButton con un  dataset.mathid en concreto
+    // Update match button in the tournament
+    const matchButton = document.querySelector(`button[data-match-id="${currentMatchId}"]`);
+    if (matchButton) {
+      matchButton.innerHTML = `${player1Name} (${player1Score}) vs ${player2Name} (${player2Score})`;
+      (matchButton as HTMLButtonElement).disabled = true; // Deshabilitar el botón
+    }
 
-      const matchButton = document.querySelector(`button[data-match-id="${currentMatchId}"]`);
-      if (matchButton) {
-        matchButton.innerHTML = player1Name + "(" + player1Score + ")" + " vs " + player2Name + "(" + player2Score + ")";
-        (matchButton as HTMLButtonElement).disabled = true; // Deshabilitar el botón
-      }
-
+    try {
+      // Update match winner on the server
       const response = await fetch('https://localhost:3000/updateMatchWinner', {
         method: 'POST',
         headers: {
@@ -213,35 +245,55 @@ async function showGameResult() {
 
       if (!response.ok) {
         console.error('Error al actualizar el torneo:', response.statusText);
+        return;
       }
 
       const data = await response.json();
-      console.log('Partida actualizado:', data);
+      console.log('Partida actualizada:', data);
 
-      console.log('ID Torneo:', tournamentId);
-
-      //Actualizar con el ganador el bracket
+      // Check if we need to advance to the next round
       const response2 = await fetch('https://localhost:3000/checkMatches', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            tournament_id: tournamentId,
+          tournament_id: tournamentId,
         })
       });
-      const data2 = await response2.json();
+      
       if (!response2.ok) {
         console.error('Error obteniendo winners:', response2.statusText);
+        return;
       }
-      winners = data2.winners;
+      
+      const data2 = await response2.json();
+      winners = data2.winners || [];
+      nextRound = data2.nextRound || [];
+      
+      console.log('Next Round:', nextRound);
       console.log('Winners:', winners);
-    
-  }else{
+      
+      // Show a button to continue to the next round
+      ctx.fillText("Presiona 'Volver al Torneo' para continuar", canvas.width / 2, canvas.height / 2 + 100);
+      
+    } catch (error) {
+      console.error('Error en la comunicación con el servidor:', error);
+    }
+  } else {
     resetGameBtn.innerText = "Reiniciar Juego";
     startGameBtn.style.display = "none";
   }
 }
+
+// Add the returnToTournament function to Game.ts
+// Make sure these functions are exposed to the global scope if needed
+(window as any).returnToTournament = function() {
+  gameView.style.display = 'none';
+  tournamentView.style.display = 'block';
+  updateBracket(); // Update the bracket with the latest match results
+};
+
 
 // Función para mostrar la cuenta atrás
 function showCountdown(callback: () => void) {
@@ -313,18 +365,6 @@ function updatePaddlePositions() {
   } else if (leftPaddle.y > canvas.height - leftPaddle.height) {
       leftPaddle.y = canvas.height - leftPaddle.height;
   }
-}
-
-
-function resetButtonLogic(){
-      resetGameBtn.innerText = "Reiniciar Juego";
-      resetAll(); // Resetea el juego
-      isGamePaused = true;
-      newGame = true;
-      cancelAnimationFrame(animation); // Pausar el juego
-      drawGame();
-      startGameBtn.innerText = "Iniciar Juego";
-      startGameBtn.style.display = "block";
 }
 
 // Bucle principal del juego

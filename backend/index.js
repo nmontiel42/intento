@@ -23,7 +23,7 @@ const fastify = Fastify({
 
 // Registro de plugins
 fastify.register(cors, {
-  origin: 'https://localhost:8080',
+  origin: true, //temporalmente true para pruebas, cambiar a la URL de producción
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],

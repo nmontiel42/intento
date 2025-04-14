@@ -47,7 +47,8 @@ export default async function (fastify, options) {
                 const match = await createMatch({ 
                     tournament_id: tournament.id,
                     player1: player1, 
-                    player2: player2 
+                    player2: player2,
+                    round: 1 // Asignar la ronda inicial
                 });
                 
                 matches.push(match);
@@ -74,6 +75,7 @@ export default async function (fastify, options) {
 
 
     fastify.post('/checkMatches', async (request, reply) => {
+        console.log('Llego aqui');
         const { tournament_id } = request.body;
         console.log('ID del torneo: ', tournament_id);
 
@@ -84,13 +86,46 @@ export default async function (fastify, options) {
 
             if (pendingMatches === 0) {
                 // Si no hay partidos pendientes, avanza de ronda (o finaliza si es la ultima)
-                const winners = await checkWinners(tournament_id);
+                const currentRound = await getCurrentRound(tournament_id);
+                const winners = await checkWinners(tournament_id, currentRound);
+                
                 if (winners) {
                     // Crear un array con los ganadores
+                    
                     const winnerArray = winners.map(winner => winner.winner);
-                    console.log('Ganadores: ', winnerArray);
-                    reply.send({ success: true, winners: winnerArray });
-                    return;
+                   
+                    if (winnerArray.length > 1) {
+                        const nextRoundMatches = [];
+                        // Barajar ganadores si quieres aleatoriedad en cada ronda
+                        for (let i = winnerArray.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [winnerArray[i], winnerArray[j]] = [winnerArray[j], winnerArray[i]];
+                        }
+                
+                        for (let i = 0; i < winnerArray.length; i += 2) {
+                            const player1 = winnerArray[i];
+                            const player2 = i + 1 < winnerArray.length ? winnerArray[i + 1] : null;
+                
+                            const match = await createMatch({
+                                tournament_id,
+                                player1,
+                                player2,
+                                round: currentRound + 1 // Incrementar el número de ronda
+                            });
+                
+                            nextRoundMatches.push(match);
+                        }
+                
+                        console.log('Siguiente ronda creada con matches: ', nextRoundMatches);
+                        reply.send({ success: true, winners: winnerArray, nextRound: nextRoundMatches });
+                        winnerArray = []; // Limpiar el array de ganadores para la siguiente ronda
+                        return;
+                    } else {
+                        // Si solo queda un ganador, ha ganado el torneo
+                        console.log('Winner winner chicken dinner');
+                        return;
+                    }
+                
                 } else {
                     console.log('No hay ganador del torneo');
                 }
@@ -149,4 +184,11 @@ export default async function (fastify, options) {
             reply.status(500).send({ error: 'Error al obtener los partidos' });
         }
     });
+    
+    async function getCurrentRound(tournament_id) {
+        const matches = await getMatchesByTournament(tournament_id);
+        if (matches.length === 0) return 1; // Si no hay partidos, es la primera ronda
+        const rounds = matches.map(match => match.round);
+        return Math.max(...rounds); // Devuelve la ronda más alta
+    }
 }
