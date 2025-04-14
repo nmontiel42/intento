@@ -80,6 +80,9 @@ function connectWebSocket()
 	const userData = localStorage.getItem("user");
 	const user = userData ? JSON.parse(userData) : null;
 	const token = user?.token;
+	const blockedUsers: Set<string> = new Set();
+	let blockedUsersInitialized = false;
+
 
 	let socket = new WebSocket(`wss://localhost:3000/chat`);
 
@@ -97,12 +100,26 @@ function connectWebSocket()
 	socket.onmessage = (event) => {
 		try {
 			const data = JSON.parse(event.data);
-		
+
 			if (data.type === "message") {
 				handleIncomingMessage(data);
 			}
+			
+			if (data.type === 'userInit') {
+				blockedUsers.clear();
+				data.blockedUsers.forEach((u: string) => blockedUsers.add(u));
+				blockedUsersInitialized = true;
+			}
 
 			if (data.type === "userList") {
+				if (!blockedUsersInitialized) {
+					// Esperamos a que la lista de bloqueados esté lista
+					setTimeout(() => {
+						const event = new MessageEvent("message", { data: JSON.stringify(data) });
+						socket.onmessage?.(event);
+					}, 100);
+					return;
+				}
 				updateUserList(data);
 			}
 			
@@ -129,7 +146,7 @@ function connectWebSocket()
 	
 				if (chatExists) {
 					// Si el chat existe, mostrar el mensaje de error dentro del chat del remitente
-					displayPrivateMessage(data.from, "El usuario no está disponible", data.to, false, true);
+					displayPrivateMessage(data.from, data.message, data.to, false, true);
 				}
 			}
 		} catch (err) {
@@ -330,7 +347,6 @@ function connectWebSocket()
 		});
 	}
 	
-	
 	// Función para crear el tooltip de usuario
 	function createUserTooltip(username: string | null, currentUser: any, userImage : string) {
 		const tooltip = document.createElement("div");
@@ -378,15 +394,60 @@ function connectWebSocket()
 			});
 			buttonsWrapper.appendChild(messageButton);
 
-			const blockButton = createButton("Bloquear", "bg-red-500", "hover:bg-red-600", `
+			// 🔥 Verificamos si el usuario está en la lista de bloqueados (actualizada desde el servidor)
+			let isBlocked = blockedUsers.has(username!);
+
+			// 🔨 Creamos el botón en base al estado actual
+			const blockButton = createButton(
+				isBlocked ? "Desbloquear" : "Bloquear",
+				isBlocked ? "bg-yellow-500" : "bg-red-500",
+				isBlocked ? "hover:bg-yellow-600" : "hover:bg-red-600",
+				`
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 inline-block mr-1">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M12 3a5 5 0 00-5 5v4H5a2 2 0 00-2 2v6h18v-6a2 2 0 00-2-2h-2V8a5 5 0 00-5-5z" />
 				</svg>
-			`);
+				`
+			);
 
+			// 🎯 El evento también actualiza el estado local y el texto/clases del botón
 			blockButton.addEventListener("click", () => {
-				alert("Bloqueando al usuario");
+				if (isBlocked) {
+					blockedUsers.delete(username!);
+					isBlocked = false;
+					blockButton.innerHTML = `
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 inline-block mr-1">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 3a5 5 0 00-5 5v4H5a2 2 0 00-2 2v6h18v-6a2 2 0 00-2-2h-2V8a5 5 0 00-5-5z" />
+						</svg>
+						Bloquear
+					`;
+					blockButton.classList.replace("bg-yellow-500", "bg-red-500");
+					blockButton.classList.replace("hover:bg-yellow-600", "hover:bg-red-600");
+
+					socket.send(JSON.stringify({
+						type: "unblockUser",
+						from: currentUser,
+						to: username
+					}));
+				} else {
+					blockedUsers.add(username!);
+					isBlocked = true;
+					blockButton.innerHTML = `
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 inline-block mr-1">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 3a5 5 0 00-5 5v4H5a2 2 0 00-2 2v6h18v-6a2 2 0 00-2-2h-2V8a5 5 0 00-5-5z" />
+						</svg>
+						Desbloquear
+					`;
+					blockButton.classList.replace("bg-red-500", "bg-yellow-500");
+					blockButton.classList.replace("hover:bg-red-600", "hover:bg-yellow-600");
+
+					socket.send(JSON.stringify({
+						type: "blockUser",
+						from: currentUser,
+						to: username
+					}));
+				}
 			});
+
 			buttonsWrapper.appendChild(blockButton);
 
 			const inviteButton = createButton("Invitar", "bg-green-500", "hover:bg-green-600", `

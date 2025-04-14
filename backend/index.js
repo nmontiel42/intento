@@ -78,6 +78,7 @@ fastify.decorate('authenticate', async (req, res) => {
 const clients = new Set();
 const wss = new WebSocket.Server({ server: fastify.server });
 const userList = [];
+const userBlocks = {}; // { [username]: ["bloqueado1", "bloqueado2"] }
 
 wss.on('connection', (ws) => {
 	console.log('Cliente conectado');
@@ -93,46 +94,89 @@ wss.on('connection', (ws) => {
 		console.log('Mensaje analizado:', parsedMessage);
   
 		if (parsedMessage.type === 'setUsername') {
+			const username = parsedMessage.username;
+			const blockedUsers = userBlocks[username] || [];
+
 			const user = {
 				ws,
-				username: parsedMessage.username,
+				username,
 				picture: parsedMessage.picture,
+				blockedUsers
 			};
+
 			userList.push(user);
 			console.log(`${parsedMessage.username} se ha conectado`);
 			broadcastUserList();
+			ws.send(JSON.stringify({
+				type: 'userInit',
+				username,
+				blockedUsers
+			}));
+		}
+		else if (parsedMessage.type === 'blockUser') {
+			const { from, to } = parsedMessage;
+			const blocker = userList.find(u => u.username === from);
+			if (blocker && !blocker.blockedUsers.includes(to)) {
+				blocker.blockedUsers.push(to);
+		
+				// Persistencia
+				if (!userBlocks[from]) userBlocks[from] = [];
+				if (!userBlocks[from].includes(to)) userBlocks[from].push(to);
+		
+				console.log(`${from} ha bloqueado a ${to}`);
+			}
+		}
+		else if (parsedMessage.type === 'unblockUser') {
+			const { from, to } = parsedMessage;
+			const blocker = userList.find(u => u.username === from);
+			if (blocker) {
+				blocker.blockedUsers = blocker.blockedUsers.filter(u => u !== to);
+		
+				// Persistencia
+				if (userBlocks[from]) {
+					userBlocks[from] = userBlocks[from].filter(u => u !== to);
+				}
+		
+				console.log(`${from} ha desbloqueado a ${to}`);
+			}
 		}
 		else if (parsedMessage.type === 'privateMessage'){
-			// **Mensaje privado**
 			const { to, from, message } = parsedMessage;
 			const recipient = userList.find(user => user.username === to);
 			const sender = userList.find(user => user.username === from);
-
-			if (recipient && recipient.ws.readyState === WebSocket.OPEN) {
-				// Enviar el mensaje al destinatario
+			const senderBlockedRecipient = sender?.blockedUsers.includes(to);
+			const recipientBlockedSender = recipient?.blockedUsers.includes(from);
+		
+			if (recipient && recipient.ws.readyState === WebSocket.OPEN && !senderBlockedRecipient && !recipientBlockedSender) {
 				recipient.ws.send(JSON.stringify({
 					type: 'privateMessage',
-					from: from,
-					message: message,
-					to: to,
-					openChat: true // Nueva señal para abrir el chat si está cerrado
+					from,
+					message,
+					to,
+					openChat: true
 				}));
-				
-				// Enviar confirmación al remitente
+		
 				if (sender && sender.ws.readyState === WebSocket.OPEN) {
 					sender.ws.send(JSON.stringify({
 						type: 'messageStatus',
 						status: 'delivered',
-						to: to,
-						from: from
+						to,
+						from
 					}));
 				}
 			} else {
-				// Informar al remitente si el destinatario no está disponible
+				let errorMessage = "No se pudo enviar el mensaje.";
+		
+				if (recipientBlockedSender) {
+					errorMessage = `${to} te ha bloqueado.`;
+				} else if (senderBlockedRecipient) {
+					errorMessage = `Tienes bloqueado a ${to}.`;
+				}
+		
 				if (sender && sender.ws.readyState === WebSocket.OPEN) {
 					sender.ws.send(JSON.stringify({
 						type: 'privateMessageError',
-						message: `El usuario ${to} no está disponible.`,
+						message: errorMessage,
 						to: from,
 						from: to
 					}));
@@ -141,7 +185,10 @@ wss.on('connection', (ws) => {
 		}
 		else {
 			for (const client of clients) {
-				if (client.readyState === WebSocket.OPEN) {
+				const targetUser = userList.find(u => u.ws === client);
+				if (targetUser &&
+					!targetUser.blockedUsers.includes(parsedMessage.user) &&
+					!userList.find(u => u.username === parsedMessage.user)?.blockedUsers.includes(targetUser.username)) {
 					client.send(JSON.stringify({
 						type: 'message',
 						user: parsedMessage.user,
