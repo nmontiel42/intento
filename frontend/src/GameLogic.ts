@@ -74,11 +74,13 @@ startGameBtn.addEventListener("click", () => {
 resetGameBtn.addEventListener("click", () => {
     if(!isGameOver){
         resetButtonLogic();
-        //drawGame();
     }else if(isTournament && isGameOver){
         isTournament = false;
         gameView.style.display = 'none';
         tournamentView.style.display = 'block';
+        console.log("peme");
+    } else if (!isTournament && !isGameOver){
+        resetButtonLogic();
     }
 });
 

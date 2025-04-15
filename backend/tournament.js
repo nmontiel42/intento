@@ -92,7 +92,7 @@ export default async function (fastify, options) {
                 if (winners) {
                     // Crear un array con los ganadores
                     
-                    const winnerArray = winners.map(winner => winner.winner);
+                    let winnerArray = winners.map(winner => winner.winner);
                    
                     if (winnerArray.length > 1) {
                         const nextRoundMatches = [];
@@ -122,6 +122,8 @@ export default async function (fastify, options) {
                         return;
                     } else {
                         // Si solo queda un ganador, ha ganado el torneo
+                        //updateTournamentWinner(tournament_id, winnerArray[0]);
+                        reply.send({ success: true, winner: winnerArray[0] });
                         console.log('Winner winner chicken dinner');
                         return;
                     }

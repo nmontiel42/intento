@@ -222,7 +222,12 @@ function generateTournamentTree(
                 const player2 = nextRound[index++] || '';  // Asegurarse de que no haya undefined
 
                 // Formato del texto del botón
-                matchButton.textContent = `${player1} vs ${player2}`;
+                if (player1 === '' || player1 === undefined)
+                    matchButton.textContent = '...';
+                else if (player1 !== '' && player1 !== undefined && player2 === '')
+                    matchButton.textContent = `${player1}`;
+                else
+                    matchButton.textContent = `${player1} vs ${player2}`;
                 matchButton.disabled = true; // Deshabilitar hasta que se determinen los jugadores
 
                 // Añadir el botón a la columna
@@ -251,77 +256,77 @@ function generateTournamentTree(
 function updateBracket(): void {
     // Don't clear the entire bracket
     const tournamentId = localStorage.getItem('currentTournamentId');
-    
+
     // First check if we have a winner for the tournament
     if (winners.length === 1) {
-      // Show tournament winner
-      const winnerElement = document.createElement('div');
-      winnerElement.className = 'tournament-winner';
-      winnerElement.innerHTML = `<h2>¡${winners[0]} ha ganado el torneo!</h2>`;
-      tournamentBracket.appendChild(winnerElement);
-      
-      // Add a button to create a new tournament
-      const newTournamentBtn = document.createElement('button');
-      newTournamentBtn.className = 'new-tournament-btn';
-      newTournamentBtn.textContent = 'Crear nuevo torneo';
-      newTournamentBtn.onclick = resetTournament;
-      tournamentBracket.appendChild(newTournamentBtn);
-      
-      // Show tournament view
-      gameView.style.display = 'none';
-      tournamentView.style.display = 'block';
-      return;
+        // Show tournament winner
+        const winnerElement = document.createElement('div');
+        winnerElement.className = 'tournament-winner';
+        winnerElement.innerHTML = `<h2>¡${winners[0]} ha ganado el torneo!</h2>`;
+        tournamentBracket.appendChild(winnerElement);
+        isTournament = false;
+
+        // Add a button to create a new tournament
+        const newTournamentBtn = document.createElement('button');
+        newTournamentBtn.className = 'new-tournament-btn';
+        newTournamentBtn.textContent = 'Crear nuevo torneo';
+        newTournamentBtn.onclick = resetTournament;
+        tournamentBracket.appendChild(newTournamentBtn);
+
+        // Show tournament view
+        gameView.style.display = 'none';
+        tournamentView.style.display = 'block';
+        return;
     }
-    
+
     // Find all future match buttons
     const futureMatches = document.querySelectorAll('.future-match');
-    
+
     // If we have nextRound matches, update the buttons
     if (nextRound && nextRound.length > 0) {
-      let matchIndex = 0;
-      
-      futureMatches.forEach((matchBtn) => {
-        const matchButton = matchBtn as HTMLButtonElement;
-        if (matchIndex < nextRound.length) {
-          const match = nextRound[matchIndex];
-          const player1 = (match as any).player1;
-          const player2 = (match as any).player2 || '...';
-          
-          matchButton.textContent = `${player1} vs ${player2}`;
-          matchButton.dataset.matchId = (match as any).match_id.toString();
-          
-          // Only enable the button if both players are determined
-          if (player2 !== '...' && player2 !== '') {
-            matchButton.disabled = false;
-            matchButton.classList.remove('future-match');
-            
-            // Add event listener for playing the match
-            matchButton.addEventListener('click', () => {
-              currentMatchId = matchButton.dataset.matchId || '';
-              player1Name = player1;
-              player2Name = player2;
-              isTournament = true;
-              gameView.style.display = 'block';
-              tournamentView.style.display = 'none';
-              resetButtonLogic();
-            });
-          }
-          
-          matchIndex++;
-        }
-      });
+        let matchIndex = 0;
+
+        futureMatches.forEach((matchBtn) => {
+            const matchButton = matchBtn as HTMLButtonElement;
+            if (matchIndex < nextRound.length) {
+                const match = nextRound[matchIndex];
+                const player1 = (match as any).player1;
+                const player2 = (match as any).player2 || '';
+
+                if (player1 === '')
+                    matchButton.textContent = '...';
+                else if (player1 !== '' && player2 === '')
+                    matchButton.textContent = `${player1}`;
+                else
+                    matchButton.textContent = `${player1} vs ${player2}`;
+                matchButton.dataset.matchId = (match as any).match_id.toString();
+
+                // Only enable the button if both players are determined
+                if (player2 === '')
+                    matchButton.disabled = true
+                else
+                    matchButton.disabled = false;
+                matchButton.classList.remove('future-match');
+
+                // Add event listener for playing the match
+                matchButton.addEventListener('click', () => {
+                    currentMatchId = matchButton.dataset.matchId || '';
+                    player1Name = player1;
+                    player2Name = player2;
+                    isTournament = true;
+                    gameView.style.display = 'block';
+                    tournamentView.style.display = 'none';
+                    resetButtonLogic();
+                });
+
+                matchIndex++;
+            }
+        });
     }
-    
-    // Show tournament view
-    gameView.style.display = 'none';
-    tournamentView.style.display = 'block';
-  }
-  
-  // Add function to return to tournament from game
-  function returnToTournament(): void {
-    gameView.style.display = 'none';
-    tournamentView.style.display = 'block';
-  }
+
+
+}
+
 // Modificación de la función de reset
 function resetTournament(): void {
 

@@ -26,6 +26,9 @@ const paddleWidth = 10;
 const paddleHeight = 100;
 const ballRadius = 10;
 
+const user = localStorage.getItem('user');
+const username = user ? JSON.parse(user).username : "Ping";
+
 let leftPaddle: Paddle;
 let rightPaddle: Paddle;
 let ball: Ball;
@@ -33,12 +36,12 @@ let animation: number;
 let player1Score: number = 0;
 let player2Score: number = 0;
 // Nombres de los jugadores
-let player1Name = "Player 1";
-let player2Name = "Player 2";
+let player1Name = username;
+let player2Name = "Pong";
 const winnerScore = 1; // Puntuación para ganar el juego
 let isTournament: boolean = false;
 let currentMatchId: string;
-let isGameOver:boolean = false;
+let isGameOver: boolean = false;
 
 let winner: string = "";
 
@@ -55,27 +58,27 @@ const speedIncrement = 0.01;
 // Inicializar las variables del juego
 function initializeGame() {
   leftPaddle = {
-      width: paddleWidth,
-      height: paddleHeight,
-      x: 0,
-      y: canvas.height / 2 - paddleHeight / 2,
-      dy: 0,
+    width: paddleWidth,
+    height: paddleHeight,
+    x: 0,
+    y: canvas.height / 2 - paddleHeight / 2,
+    dy: 0,
   };
 
   rightPaddle = {
-      width: paddleWidth,
-      height: paddleHeight,
-      x: canvas.width - paddleWidth,
-      y: canvas.height / 2 - paddleHeight / 2,
-      dy: 0,
+    width: paddleWidth,
+    height: paddleHeight,
+    x: canvas.width - paddleWidth,
+    y: canvas.height / 2 - paddleHeight / 2,
+    dy: 0,
   };
 
   ball = {
-      radius: ballRadius,
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      dx: 6,
-      dy: 6,
+    radius: ballRadius,
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    dx: 6,
+    dy: 6,
   };
   gameLoop(); // Comienza el juego
   cancelAnimationFrame(animation); // Pausa el juego
@@ -86,12 +89,17 @@ function drawGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
 
 
-   // Dibujar los nombres de los jugadores
-   ctx.font = "20px 'Press Start 2P', cursive";
-   ctx.fillStyle = "white";
-   ctx.textAlign = "center";
-   ctx.fillText(player1Name, canvas.width / 4, 35); // Posición del nombre del jugador 1
-   ctx.fillText(player2Name, (canvas.width / 4) * 3, 35); // Posición del nombre del jugador 2
+  // Dibujar los nombres de los jugadores
+  ctx.font = "20px 'Press Start 2P', cursive";
+  ctx.fillStyle = "white";
+  ctx.textAlign = "center";
+  
+  if(!isTournament){
+    player1Name = username;
+    player2Name = "Pong";
+  }
+  ctx.fillText(player1Name, canvas.width / 4, 35); // Posición del nombre del jugador 1
+  ctx.fillText(player2Name, (canvas.width / 4) * 3, 35); // Posición del nombre del jugador 2
   // Dibujar marcadores
   ctx.font = "25px 'Press Start 2P', cursive";
   ctx.fillStyle = "white";
@@ -127,13 +135,13 @@ function moveGameObjects() {
 
   // Colisiones con las paredes superior e inferior
   if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
-      ball.dy = -ball.dy; // Invertir dirección de la pelota en el eje Y
+    ball.dy = -ball.dy; // Invertir dirección de la pelota en el eje Y
   }
 
   // Colisiones con las palas
   const paddleCollisionMargin = 6; // Ajuste para mejorar la detección de colisiones
 
-  if (ball.x - ball.radius < leftPaddle.x + leftPaddle.width + paddleCollisionMargin && 
+  if (ball.x - ball.radius < leftPaddle.x + leftPaddle.width + paddleCollisionMargin &&
     ball.x - ball.radius > leftPaddle.x - paddleCollisionMargin &&
     ball.y > leftPaddle.y - paddleCollisionMargin && ball.y < leftPaddle.y + leftPaddle.height + paddleCollisionMargin) {
     ball.dx = -ball.dx; // Invertir dirección de la pelota en el eje X
@@ -144,9 +152,9 @@ function moveGameObjects() {
     ball.dy = 8 * (impactPosition - 0.5); // Ajustar el factor según sea necesario
 
     ball.x = leftPaddle.x + leftPaddle.width + ball.radius; // Ajustar posición de la pelota
-}
+  }
 
-if (ball.x + ball.radius > rightPaddle.x - paddleCollisionMargin && 
+  if (ball.x + ball.radius > rightPaddle.x - paddleCollisionMargin &&
     ball.x + ball.radius < rightPaddle.x + rightPaddle.width + paddleCollisionMargin &&
     ball.y > rightPaddle.y - paddleCollisionMargin && ball.y < rightPaddle.y + rightPaddle.height + paddleCollisionMargin) {
     ball.dx = -ball.dx; // Invertir dirección de la pelota en el eje X
@@ -157,17 +165,17 @@ if (ball.x + ball.radius > rightPaddle.x - paddleCollisionMargin &&
     ball.dy = 8 * (impactPosition - 0.5); // Ajustar el factor según sea necesario
 
     ball.x = rightPaddle.x - ball.radius; // Ajustar posición de la pelota
-}
+  }
 
   // Si la pelota se sale por la izquierda o derecha (final de juego)
-  if (ball.x - ball.radius < 0 ) {
-      player2Score++;
-      resetBall(); // Resetea la posición de la pelota
-  }else if(ball.x + ball.radius > canvas.width){
-      player1Score++;
-      resetBall(); // Resetea la posición de la pelota
+  if (ball.x - ball.radius < 0) {
+    player2Score++;
+    resetBall(); // Resetea la posición de la pelota
+  } else if (ball.x + ball.radius > canvas.width) {
+    player1Score++;
+    resetBall(); // Resetea la posición de la pelota
   }
-  if(player1Score === winnerScore || player2Score === winnerScore){
+  if (player1Score === winnerScore || player2Score === winnerScore) {
     isGameOver = true;
     cancelAnimationFrame(animation); // Detener el bucle del juego
     showGameResult(); // Mostrar el resultado del juego
@@ -175,28 +183,15 @@ if (ball.x + ball.radius > rightPaddle.x - paddleCollisionMargin &&
 }
 
 function resetButtonLogic() {
-  if (isTournament) {
-    resetGameBtn.innerText = "Volver al Torneo";
-    resetGameBtn.onclick = function() {
-      returnToTournament();
-    };
-    resetAll(); // Resetea el juego
-    isGamePaused = true;
-    newGame = true;
-    cancelAnimationFrame(animation); // Pausar el juego
-    drawGame();
-    startGameBtn.innerText = "Iniciar Juego";
-    startGameBtn.style.display = "block";
-  } else {
-    resetGameBtn.innerText = "Reiniciar Juego";
-    resetAll(); // Resetea el juego
-    isGamePaused = true;
-    newGame = true;
-    cancelAnimationFrame(animation); // Pausar el juego
-    drawGame();
-    startGameBtn.innerText = "Iniciar Juego";
-    startGameBtn.style.display = "block";
-  }
+
+  resetGameBtn.innerText = "Reiniciar Juego";
+  resetAll(); // Resetea el juego
+  isGamePaused = true;
+  newGame = true;
+  cancelAnimationFrame(animation); // Pausar el juego
+  drawGame();
+  startGameBtn.innerText = "Iniciar Juego";
+  startGameBtn.style.display = "block";
 }
 
 // Update the showGameResult function to handle tournament properly
@@ -213,11 +208,11 @@ async function showGameResult() {
   ctx.font = "24px 'Press Start 2P', cursive";
   ctx.fillText(player1Score + " - " + player2Score, canvas.width / 2, canvas.height / 2 + 50);
   ctx.font = "16px 'Press Start 2P', cursive";
-  
-  if(isTournament){
+
+  if (isTournament) {
     resetGameBtn.innerText = "Volver al Torneo";
-    resetGameBtn.onclick = function() {
-      returnToTournament();
+    resetGameBtn.onclick = function () {
+      updateBracket();
     };
     startGameBtn.style.display = "none";
 
@@ -261,39 +256,30 @@ async function showGameResult() {
           tournament_id: tournamentId,
         })
       });
-      
+
       if (!response2.ok) {
         console.error('Error obteniendo winners:', response2.statusText);
         return;
       }
-      
+
       const data2 = await response2.json();
       winners = data2.winners || [];
       nextRound = data2.nextRound || [];
-      
+
       console.log('Next Round:', nextRound);
       console.log('Winners:', winners);
-      
-      // Show a button to continue to the next round
-      ctx.fillText("Presiona 'Volver al Torneo' para continuar", canvas.width / 2, canvas.height / 2 + 100);
-      
+
     } catch (error) {
       console.error('Error en la comunicación con el servidor:', error);
     }
   } else {
     resetGameBtn.innerText = "Reiniciar Juego";
+    resetGameBtn.onclick = function () {
+      resetButtonLogic();
+    };
     startGameBtn.style.display = "none";
   }
 }
-
-// Add the returnToTournament function to Game.ts
-// Make sure these functions are exposed to the global scope if needed
-(window as any).returnToTournament = function() {
-  gameView.style.display = 'none';
-  tournamentView.style.display = 'block';
-  updateBracket(); // Update the bracket with the latest match results
-};
-
 
 // Función para mostrar la cuenta atrás
 function showCountdown(callback: () => void) {
@@ -305,29 +291,29 @@ function showCountdown(callback: () => void) {
 
   // Función para dibujar el número de la cuenta atrás
   const drawCountdown = () => {
-      // Limpiar el canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Dibujar el número de la cuenta atrás
-      ctx.font = "48px 'Press Start 2P', cursive";
-      ctx.fillStyle = "white";
-      ctx.textAlign = "center";
-      ctx.fillText(countdown.toString(), canvas.width / 2, canvas.height / 2);
+    // Limpiar el canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Dibujar el número de la cuenta atrás
+    ctx.font = "48px 'Press Start 2P', cursive";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText(countdown.toString(), canvas.width / 2, canvas.height / 2);
   };
 
   // Dibujar el primer número inmediatamente
   drawCountdown();
 
   const countdownInterval = setInterval(() => {
-      countdown--;
-      if (countdown < 0) {
-          clearInterval(countdownInterval);
-          startGameBtn.disabled = false; // Reactivar el botón de inicio del juego
-          resetGameBtn.disabled = false; // Reactivar el botón de reinicio
-          callback(); // Llamar a la función de inicio del juego
-      } else {
-          drawCountdown();
-      }
+    countdown--;
+    if (countdown < 0) {
+      clearInterval(countdownInterval);
+      startGameBtn.disabled = false; // Reactivar el botón de inicio del juego
+      resetGameBtn.disabled = false; // Reactivar el botón de reinicio
+      callback(); // Llamar a la función de inicio del juego
+    } else {
+      drawCountdown();
+    }
   }, 1000);
 }
 
@@ -340,7 +326,7 @@ function resetBall() {
   ball.dy = inicialBallSpeed;
 }
 
-function resetAll(){
+function resetAll() {
   resetBall();
   isGameOver = false;
   leftPaddle.y = canvas.height / 2 - paddleHeight / 2;
@@ -353,29 +339,29 @@ function updatePaddlePositions() {
   // Actualizar posición de la paleta derecha
   rightPaddle.y += rightPaddle.dy;
   if (rightPaddle.y < 0) {
-      rightPaddle.y = 0;
+    rightPaddle.y = 0;
   } else if (rightPaddle.y > canvas.height - rightPaddle.height) {
-      rightPaddle.y = canvas.height - rightPaddle.height;
+    rightPaddle.y = canvas.height - rightPaddle.height;
   }
 
   // Actualizar posición de la paleta izquierda
   leftPaddle.y += leftPaddle.dy;
   if (leftPaddle.y < 0) {
-      leftPaddle.y = 0;
+    leftPaddle.y = 0;
   } else if (leftPaddle.y > canvas.height - leftPaddle.height) {
-      leftPaddle.y = canvas.height - leftPaddle.height;
+    leftPaddle.y = canvas.height - leftPaddle.height;
   }
 }
 
 // Bucle principal del juego
 function gameLoop() {
-    if (isGamePaused) {
-      return;
-    }
-    isGameOver = false;
-    drawGame();
-    moveGameObjects();
-    animation = requestAnimationFrame(gameLoop); // Llama a gameLoop para crear el bucle del juego
+  if (isGamePaused) {
+    return;
+  }
+  isGameOver = false;
+  drawGame();
+  moveGameObjects();
+  animation = requestAnimationFrame(gameLoop); // Llama a gameLoop para crear el bucle del juego
 }
 
 
