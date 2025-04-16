@@ -17,8 +17,8 @@ export default async function (fastify, options) {
         const username = request.user.user;
 
         try {
-            const userObj = await getUserIdByName(username);
-            const created_by = userObj ? userObj.id : null;
+            const userObj = await getUserIdByName(username) || request.user.userId;
+            const created_by = userObj.id || userObj;
 
             console.log('Nombre de usuario: ', username);
             console.log('ID del usuario encontrado: ', created_by);
@@ -121,10 +121,11 @@ export default async function (fastify, options) {
                         winnerArray = []; // Limpiar el array de ganadores para la siguiente ronda
                         return;
                     } else {
-                        // Si solo queda un ganador, ha ganado el torneo
-                        //updateTournamentWinner(tournament_id, winnerArray[0]);
-                        reply.send({ success: true, winner: winnerArray[0] });
-                        console.log('Winner winner chicken dinner');
+                        // Si solo queda un ganador, sacamos el ganador del array
+                        const winner = winnerArray[0];
+                        updateTournamentWinner(winner, tournament_id);
+                        //reply.send({ success: true, winner: winner });
+                        console.log('Winner of the tournament: ', winner);
                         return;
                     }
                 

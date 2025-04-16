@@ -19,6 +19,7 @@ logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('user');
 
     // Volver a la vista de login o registro
+    
     homeView.style.display = 'none';
     loginView.style.display = 'block';
     registerView.style.display = 'none';

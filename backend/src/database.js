@@ -57,6 +57,7 @@ db.serialize(() => {
         player2_score INTEGER DEFAULT 0,
         winner VARCHAR(255),
         status VARCHAR(20) DEFAULT 'pending',
+        round INTEGER NOT NULL DEFAULT 1,
         FOREIGN KEY (tournament_id) REFERENCES tournament(id)
         )`,
         (err) => {
@@ -64,18 +65,6 @@ db.serialize(() => {
             return console.error("Error creating the t_match table: ", err.message);
             }
             console.log("Created the t_match table.");
-        },
-    );
-
-    db.run (
-         `
-         ALTER TABLE t_match ADD COLUMN round INTEGER NOT NULL DEFAULT 1;
-        `,
-        (err) => {
-            if (err) {
-                return console.error("Error adding column to t_match table: ", err.message);
-            }
-            console.log("Added column to t_match table.");
         },
     );
 

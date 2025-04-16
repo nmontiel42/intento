@@ -59,11 +59,10 @@ export function getTournamentsByUser(userId) {
 }
 
 // Actualizar el ganador de un torneo
-export function updateTournamentWinner(id, winner) {
+export function updateTournamentWinner(winner, id) {
     return new Promise((resolve, reject) => {
-        const now = new Date().toISOString();
         db.run(`UPDATE tournament SET winner = ? WHERE id = ?`, 
-            [winner, now, id], 
+            [winner, id], 
             function(err) {
                 if (err) reject(err);
                 else resolve({ id, changes: this.changes });
