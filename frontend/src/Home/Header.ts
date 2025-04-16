@@ -121,6 +121,8 @@ localPlay.addEventListener('click', () => {
   tourPlayView.style.display = 'none';
   realPlayView.style.display = 'none';
   show3d.style.display = 'none';
+  tournamentView.style.display = 'none';
+  resetButtonLogic();
 });
 
 multiPlay.addEventListener('click', () => {
@@ -129,6 +131,7 @@ multiPlay.addEventListener('click', () => {
   tourPlayView.style.display = 'none';
   realPlayView.style.display = 'none';
   show3d.style.display = 'none';
+  tournamentView.style.display = 'none';
 });
 
 tourPlay.addEventListener('click', () => {
@@ -138,9 +141,11 @@ tourPlay.addEventListener('click', () => {
   realPlayView.style.display = 'none';
   show3d.style.display = 'none';
   isActivated = false;
-  player1Score.innerHTML = '0';
-  player2Score.innerHTML = '0';
+  player1Score3d.innerHTML = '0';
+  player2Score3d.innerHTML = '0';
   activateScore.innerText = '▶';
+  tournamentView.style.display = 'block';
+  resetButtonLogic();
 });
 
 realPlay.addEventListener('click', () => {
@@ -150,4 +155,5 @@ realPlay.addEventListener('click', () => {
   realPlayView.style.display = 'block';
   showAdvert.style.display = 'block';
   show3d.style.display = 'none';
+  tournamentView.style.display = 'none';
 });

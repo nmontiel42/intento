@@ -5,8 +5,8 @@ const homeView = document.getElementById('homeView') as HTMLElement;
 const usernameView = document.getElementById('usernameView') as HTMLElement;
 
 // Seleccionamos el elemento para mostrar el nombre de usuario
-/* const userName = document.getElementById('userName') as HTMLElement;
- */
+const userName = document.getElementById('userName') as HTMLElement;
+ 
 // Seleccionamos los formularios
 const registerForm = document.getElementById('registerForm') as HTMLFormElement;
 const loginForm = document.getElementById('loginForm') as HTMLFormElement;

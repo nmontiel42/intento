@@ -3,7 +3,7 @@ const tournamentForm = document.getElementById('tournamentForm') as HTMLFormElem
 const playersInput = document.getElementById('playersInput') as HTMLDivElement;
 const generateTournamentBtn = document.getElementById('generateTournamentBtn') as HTMLButtonElement;
 const tournamentBracket = document.getElementById('tournamentBracket') as HTMLDivElement;
-const gameView = document.getElementById('gameView') as HTMLDivElement;
+//const gameView = document.getElementById('gameView') as HTMLDivElement;
 const tournamentView = document.getElementById('tournamentView') as HTMLDivElement;
 
 let tournamentId: string;
@@ -190,7 +190,7 @@ function generateTournamentTree(
                     player1Name = player1;
                     player2Name = player2;
                     isTournament = true;
-                    gameView.style.display = 'block';
+                    localPlayView.style.display = 'block';
                     tournamentView.style.display = 'none';
                     resetButtonLogic();
                 });
@@ -274,7 +274,7 @@ function updateBracket(): void {
         tournamentBracket.appendChild(newTournamentBtn);
 
         // Show tournament view
-        gameView.style.display = 'none';
+        localPlayView.style.display = 'none';
         tournamentView.style.display = 'block';
         return;
     }
@@ -314,7 +314,7 @@ function updateBracket(): void {
                     player1Name = player1;
                     player2Name = player2;
                     isTournament = true;
-                    gameView.style.display = 'block';
+                    localPlayView.style.display = 'block';
                     tournamentView.style.display = 'none';
                     resetButtonLogic();
                 });

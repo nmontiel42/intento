@@ -5,7 +5,7 @@ import {
     createMatch, getMatchesByTournament, updateMatchResult, getAllMatches, countPendingMatches, checkWinners
 } from './models/t_matchModel.js';
 
-import { getUserIdByName } from './auth.js';
+import { getUserIdByName, getUserIdByEmail } from './src/auth.js';
 
 export default async function (fastify, options) {
     // Crear un nuevo torneo
@@ -15,11 +15,22 @@ export default async function (fastify, options) {
 
         const { name, players } = request.body;
         const username = request.user.user;
+        const email = request.user.email;
 
+        let created_by;    
+        let userObj;
         try {
-            const userObj = await getUserIdByName(username) || request.user.userId;
-            const created_by = userObj.id || userObj;
+            if (username)
+                userObj = await getUserIdByName(username);
+            else if (email)
+                userObj = await getUserIdByEmail(email);
+            else
+                userObj = request.user.userId;
 
+            if (userObj.id)
+                created_by = userObj.id;
+            else
+                created_by = userObj;
             console.log('Nombre de usuario: ', username);
             console.log('ID del usuario encontrado: ', created_by);
 

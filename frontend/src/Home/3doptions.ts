@@ -6,8 +6,8 @@ const reset3dGame = document.getElementById('reset3dGame') as HTMLButtonElement;
 const winView = document.getElementById('winView') as HTMLDivElement;
 const closeWin = document.getElementById('closeWin') as HTMLButtonElement;
 const winnerPlayer = document.getElementById('winnerPlayer') as HTMLDivElement;
-const player1Score = document.getElementById('player1Score') as HTMLDivElement;
-const player2Score = document.getElementById('player2Score') as HTMLDivElement;
+const player1Score3d = document.getElementById('player1Score') as HTMLDivElement;
+const player2Score3d = document.getElementById('player2Score') as HTMLDivElement;
 const lang = localStorage.getItem('lang') || 'es';
 
 let isActivated = false;

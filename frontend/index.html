@@ -178,30 +178,24 @@
     </div>
 
 
-
-
-
-     <div class="crt mt-16 pt-4">
+    <div class="crt mt-16 pt-4">
       <main class="flex justify-center items-center flex-col">
 
         <div id="localPlayView" style="display:block;">
-          <div id="gameView" >
-      <h1>¡Bienvenido a PONG!</h1>
 
-      <!-- Área del juego -->
-      <div id="gameArea">
-        <div id="pongCanvasContainer">
-          <canvas id="pongCanvas" width="800" height="400"></canvas>
-        </div>
-      </div>
+            <!-- Área del juego -->
+            <div id="gameArea">
+              <div id="pongCanvasContainer">
+                <canvas id="pongCanvas" width="800" height="400"></canvas>
+              </div>
+            </div>
 
-      <!-- Botones de control del juego -->
-      <div id="gameControls">
-        <button id="startGameBtn">Iniciar Juego</button>
-        <button id="resetGameBtn">Reiniciar Juego</button>
-      </div>
-        
-      </div>
+            <!-- Botones de control del juego -->
+            <div id="gameControls">
+              <button id="startGameBtn">Iniciar Juego</button>
+              <button id="resetGameBtn">Reiniciar Juego</button>
+            </div>
+
         </div>
 
         <div id="multiPlayView" style="display:none;">
@@ -209,15 +203,37 @@
         </div>
 
         <div id="tourPlayView" style="display:none;">
-          <p class="text-white">Torneo</p>
+          <div id="tournamentView" style="display: none;">
+            <h2>Crear Torneo</h2>
+            <form id="tournamentForm">
+              <div class="form-group">
+                <label for="numPlayers">Número de Jugadores:</label>
+                <select id="numPlayers" name="numPlayers" required>
+                  <option value="0" disabled selected>0</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                </select>
+              </div>
+            </form>
+            <div id="playersInput"></div>
+            <button id="generateTournamentBtn">Crear Torneo</button>
+            <div id="tournamentBracket"></div>
+          </div>
         </div>
 
         <div id="realPlayView" style="display:none;" class="text-white">
           <div id="showAdvert" class="text-white" style="display:none;">
-            <p id="gameTitle" class="text-lg font-semibold text-center text-white bg-gray-900/50 p-6 shadow-lg max-w-xl mx-auto space-y-4 rounded-lg">
+            <p id="gameTitle"
+              class="text-lg font-semibold text-center text-white bg-gray-900/50 p-6 shadow-lg max-w-xl mx-auto space-y-4 rounded-lg">
               Esto es un Pong en 3D.
               <br>
-              La pelota estará en movimiento todo el rato y no se podrá parar, pero sí se podrá activar la puntuación y reiniciar el juego.
+              La pelota estará en movimiento todo el rato y no se podrá parar, pero sí se podrá activar la puntuación y
+              reiniciar el juego.
               <br>
               Para que no se mueva el punto de vista, hay que cliquear fuera del canvas.
               <br>
@@ -228,15 +244,17 @@
               <span class="text-[#BE36CD] font-bold">Buena suerte ;)</span>
               <br>
             </p>
-            <button id="show3dGame" class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105 cursor-pointer">Iniciar juego</button>
-            
+            <button id="show3dGame"
+              class="bg-[#318ED6] text-white px-4 py-2 rounded-lg w-full text-xs mt-2 hover:scale-105 cursor-pointer">Iniciar
+              juego</button>
+
           </div>
           <div id="show3d" class="text-white flex flex-col items-center" style="display:none;">
             <canvas id="renderCanvas" style="width:100%; height:400px;"></canvas>
-          
+
             <!-- Contenedor para centrar todo -->
             <div class="w-full flex flex-col items-center mt-4">
-  
+
               <!-- Puntuación centrada y bien alineada -->
               <div id="score" class="flex items-center text-xl font-semibold gap-6">
                 <div class="flex flex-col items-center">
@@ -249,107 +267,50 @@
                   <p id="player2Score">0</p>
                 </div>
               </div>
-            
+
               <!-- Botones bien alineados y del mismo tamaño -->
               <div class="flex justify-center gap-4 mt-4 w-full max-w-sm">
-                <button 
-                  id="activateScore" 
-                  class="flex justify-center items-center px-6 py-3 w-1/2 text-sm font-medium text-[#318ED6] border-2 border-[#318ED6] rounded-lg 
-                         transition-all duration-300 hover:bg-[#318ED6] hover:text-white hover:shadow-md"
-                >
+                <button id="activateScore" class="flex justify-center items-center px-6 py-3 w-1/2 text-sm font-medium text-[#318ED6] border-2 border-[#318ED6] rounded-lg 
+                         transition-all duration-300 hover:bg-[#318ED6] hover:text-white hover:shadow-md">
                   ▶
                 </button>
-                <button 
-                  id="reset3dGame" 
-                  class="flex justify-center items-center px-6 py-3 w-1/2 text-sm font-medium text-[#318ED6] border-2 border-[#318ED6] rounded-lg 
-                         transition-all duration-300 hover:bg-[#318ED6] hover:text-white hover:shadow-md"
-                >
+                <button id="reset3dGame" class="flex justify-center items-center px-6 py-3 w-1/2 text-sm font-medium text-[#318ED6] border-2 border-[#318ED6] rounded-lg 
+                         transition-all duration-300 hover:bg-[#318ED6] hover:text-white hover:shadow-md">
                   ⟳
                 </button>
               </div>
-            
+
             </div>
-            
+
           </div>
-          
-          <div id="winView" class="text-white bg-gray-900/50 p-6 rounded-lg shadow-lg text-center" style="display: none;">
+
+          <div id="winView" class="text-white bg-gray-900/50 p-6 rounded-lg shadow-lg text-center"
+            style="display: none;">
             <div class="flex justify-center items-center gap-2 text-xl font-semibold">
               <p id="winMsg">¡Ganaste</p>
               <p id="winnerPlayer" class="text-[#318ED6]"></p>
               <p>!</p>
             </div>
-            <img 
-              src="https://media2.giphy.com/media/BK1EfIsdkKZMY/giphy.gif?cid=6c09b952ufxyfabixutnsm8xo2kwfzk49snn8pxii6ozbwzc&ep=v1_gifs_search&rid=giphy.gif&ct=g" 
-              id="winnerImage" 
-              alt="Ganador" 
-              class="w-40 h-40 mx-auto mt-4 rounded-lg shadow-md"
-            />
-            <button 
-              id="closeWin" class="mt-4 rounded-xl">
+            <img
+              src="https://media2.giphy.com/media/BK1EfIsdkKZMY/giphy.gif?cid=6c09b952ufxyfabixutnsm8xo2kwfzk49snn8pxii6ozbwzc&ep=v1_gifs_search&rid=giphy.gif&ct=g"
+              id="winnerImage" alt="Ganador" class="w-40 h-40 mx-auto mt-4 rounded-lg shadow-md" />
+            <button id="closeWin" class="mt-4 rounded-xl">
               Cerrar
             </button>
           </div>
-          
+
         </div>
       </main>
     </div>
 
-    <!-- Chat -->
-
-    <!-- <div id="liveChatContainer"
-    class="fixed bottom-0 right-0 w-80 bg-white shadow-lg flex flex-col border border-gray-300 transition-transform transform">
-    <div class="bg-blue-600 text-white p-3 font-semibold flex justify-between items-center" id="chatHeader">
-      <span class="text-white text-xl">Live Chat</span>
-      <button id="toggleChat" class="text-white text-xl cursor-pointer">−</button>
-    </div>
-    <div id="chatBox" class="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-100">
-    </div>
-    <div id="chatInputContainer" class="flex border-t border-gray-300 p-2">
-      <input type="text" id="chatInput" placeholder="Escribe un mensaje..."
-        class="flex-1 border border-gray-300 rounded-l-lg p-2 outline-none focus:ring-2 focus:ring-blue-500" />
-      <button id="sendChatBtn" class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700">
-        Enviar
-      </button>
-    </div>
-  </div> -->
-
-    <!-- Pong -->
-     <!-- Vista del juego Pong -->
-     
-
-    <!-- Torneos -->
-    <div id="tournamentView" style="display: none;">
-      <h2>Crear Torneo</h2>
-      <form id="tournamentForm">
-        <div class="form-group">
-          <label for="numPlayers">Número de Jugadores:</label>
-          <select id="numPlayers" name="numPlayers" required>
-            <option value="0" disabled selected>0</option>
-            <option value="2" >2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-          </select>
-        </div>
-      </form>
-      <div id="playersInput"></div>
-      <button id="generateTournamentBtn" >Crear Torneo</button>
-      <div id="tournamentBracket"></div>
-    </div>
   </div>
 
-    
 
-  </div>
 
   <div id="changeUsernameView" style="display:none;">
     <p id="usernameChangeText" class="text-white text-xs mb-2 flex flex-row">Introduce un nuevo nombre de usuario:</p>
     <form id="changeUsernameForm">
-      <input type="text" id="usernameChangeInput" name="usernameChangeInput" placeholder="Tu nuevo usuario"
-        required />
+      <input type="text" id="usernameChangeInput" name="usernameChangeInput" placeholder="Tu nuevo usuario" required />
       <button id="submitChangeUsername" type="submit">Cambiar</button>
       <button id="cancelChange">Cancelar</button>
     </form>

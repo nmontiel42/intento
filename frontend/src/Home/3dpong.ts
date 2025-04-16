@@ -278,8 +278,8 @@ window.addEventListener("DOMContentLoaded", () => {
       state.ballVelocity.x = -config.ballSpeed;
       if (isActivated) {
         state.scorePlayer2++;
-        player1Score.innerText = state.scorePlayer1.toString();
-        player2Score.innerText = state.scorePlayer2.toString();
+        player1Score3d.innerText = state.scorePlayer1.toString();
+        player2Score3d.innerText = state.scorePlayer2.toString();
         console.log("Player 2 score: ", state.scorePlayer1);
       }
     }
@@ -289,8 +289,8 @@ window.addEventListener("DOMContentLoaded", () => {
       state.ballVelocity.x = config.ballSpeed;
       if (isActivated) {
         state.scorePlayer1++;
-        player2Score.innerText = state.scorePlayer2.toString();
-        player1Score.innerText = state.scorePlayer1.toString();
+        player2Score3d.innerText = state.scorePlayer2.toString();
+        player1Score3d.innerText = state.scorePlayer1.toString();
         console.log("Player 1 score: ", state.scorePlayer2);
       }
     }
@@ -308,8 +308,8 @@ window.addEventListener("DOMContentLoaded", () => {
       isActivated = false;
       state.scorePlayer1 = 0;
       state.scorePlayer2 = 0;
-      player1Score.innerHTML = '0';
-      player2Score.innerHTML = '0';
+      player1Score3d.innerHTML = '0';
+      player2Score3d.innerHTML = '0';
       ball.position = new BABYLON.Vector3(0, 0, 0);
       state.ballVelocity.x = config.ballSpeed;
       state.ballVelocity.y = config.ballSpeed;

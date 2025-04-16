@@ -19,7 +19,7 @@ interface Ball {
 }
 
 // Definir variables globales para el canvas y los elementos del juego
-const canvas = document.getElementById("pongCanvas") as HTMLCanvasElement;
+const canvas = document.getElementById("pongCanvas") as unknown as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 const paddleWidth = 10;
