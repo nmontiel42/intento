@@ -28,6 +28,7 @@ const ballRadius = 10;
 
 const user = localStorage.getItem('user');
 const username = user ? JSON.parse(user).username : "Ping";
+console.log("Username:", username);
 
 let leftPaddle: Paddle;
 let rightPaddle: Paddle;
@@ -35,8 +36,7 @@ let ball: Ball;
 let animation: number;
 let player1Score: number = 0;
 let player2Score: number = 0;
-// Nombres de los jugadores
-let player1Name = username;
+let player1Name = "Ping";
 let player2Name = "Pong";
 const winnerScore = 1; // Puntuación para ganar el juego
 let isTournament: boolean = false;
@@ -95,7 +95,7 @@ function drawGame() {
   ctx.textAlign = "center";
   
   if(!isTournament){
-    player1Name = username;
+    player1Name = "Ping";
     player2Name = "Pong";
   }
   ctx.fillText(player1Name, canvas.width / 4, 35); // Posición del nombre del jugador 1
@@ -268,6 +268,14 @@ async function showGameResult() {
 
       console.log('Next Round:', nextRound);
       console.log('Winners:', winners);
+
+      if (winner.length === 1)
+      {
+        const tourWinner = document.getElementById('tourWinner') as HTMLDivElement;
+        const tournamentWinnerView = document.getElementById('tournamentWinnerView') as HTMLDivElement;
+        tourWinner.innerText = `${winner}`;
+        tournamentWinnerView.style.display = "block";
+      }
 
     } catch (error) {
       console.error('Error en la comunicación con el servidor:', error);

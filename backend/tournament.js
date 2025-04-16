@@ -135,7 +135,7 @@ export default async function (fastify, options) {
                         // Si solo queda un ganador, sacamos el ganador del array
                         const winner = winnerArray[0];
                         updateTournamentWinner(winner, tournament_id);
-                        //reply.send({ success: true, winner: winner });
+                        reply.send({ success: true, winner: winner });
                         console.log('Winner of the tournament: ', winner);
                         return;
                     }

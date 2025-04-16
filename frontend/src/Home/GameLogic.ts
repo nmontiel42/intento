@@ -78,7 +78,6 @@ resetGameBtn.addEventListener("click", () => {
         isTournament = false;
         localPlayView.style.display = 'none';
         tournamentView.style.display = 'block';
-        console.log("peme");
     } else if (!isTournament && !isGameOver){
         resetButtonLogic();
     }
