@@ -5,8 +5,8 @@ const homeView = document.getElementById('homeView') as HTMLElement;
 const usernameView = document.getElementById('usernameView') as HTMLElement;
 
 // Seleccionamos el elemento para mostrar el nombre de usuario
-const userName = document.getElementById('userName') as HTMLElement;
-
+/* const userName = document.getElementById('userName') as HTMLElement;
+ */
 // Seleccionamos los formularios
 const registerForm = document.getElementById('registerForm') as HTMLFormElement;
 const loginForm = document.getElementById('loginForm') as HTMLFormElement;
@@ -91,7 +91,7 @@ registerForm.addEventListener('submit', async (event: Event) => {
 
       registerView.style.display = 'none';
       homeView.style.display = 'block';
-      userName.textContent = data.user.username;
+      //userName.textContent = data.user.username;
     } else {
       const lang = localStorage.getItem('lang');
       if (lang === 'en') alert('Error in registration: email or username is already in use');
@@ -139,7 +139,7 @@ loginForm.addEventListener('submit', async (event: Event) => {
       // Cambiar a la vista de inicio
       loginView.style.display = 'none';
       homeView.style.display = 'block';
-      userName.textContent = data.username;
+      //userName.textContent = data.username;
 
       // IMPORTANTE: Actualizar correctamente la imagen de perfil
       // Modificar el SRC del elemento img existente en lugar de reemplazar todo el HTML

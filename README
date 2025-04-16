@@ -1,6 +1,24 @@
 TO DO:
-    -Seguir cambiando idioma (home)
-    
+    -Estadisticas torneo (en multi)
+    -Al terminar torneo popup con el ganador
+    -Al cambiar de vista con la cuenta atras, pausarla o pararla
+
+    JUEGO:
+        -Crear tabla de BBDD para el torneo
+        -Desactivar partida ya iniciada
+        -MatchMaking:
+           
+        -Multiplayer:
+            
+        
+        
+
+    FUNCIONES FRONT:
+        -Cambiar username
+        -Establecer foto de perfil
+
+    MAYBE:
+        -Reset password
 
 WARNINGS Y ERRORES:
 

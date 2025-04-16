@@ -6,7 +6,7 @@ import { createUser } from '../models/userModel.js'; // Importa la función para
  * @param {Object} data - Información del usuario (username, email, password)
  * @returns {Object} - Usuario creado y JWT
  */
-export async function registerUser(data) {
+/* export async function registerUser(data) {
   // Llama a la función que crea el usuario en la base de datos
   const user = await createUser(data);
 
@@ -20,4 +20,4 @@ export async function registerUser(data) {
 }
 
   
-  
+   */

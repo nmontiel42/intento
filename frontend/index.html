@@ -179,12 +179,29 @@
 
 
 
-    <div class="crt mt-16 pt-4">
+
+
+     <div class="crt mt-16 pt-4">
       <main class="flex justify-center items-center flex-col">
 
         <div id="localPlayView" style="display:block;">
-          <h1 class="text-white">Bienvenido, <span id="userName"></span>!</h1>
-          <p class="text-white">Aquí iría el Pong pero sigue en producción</p>
+          <div id="gameView" >
+      <h1>¡Bienvenido a PONG!</h1>
+
+      <!-- Área del juego -->
+      <div id="gameArea">
+        <div id="pongCanvasContainer">
+          <canvas id="pongCanvas" width="800" height="400"></canvas>
+        </div>
+      </div>
+
+      <!-- Botones de control del juego -->
+      <div id="gameControls">
+        <button id="startGameBtn">Iniciar Juego</button>
+        <button id="resetGameBtn">Reiniciar Juego</button>
+      </div>
+        
+      </div>
         </div>
 
         <div id="multiPlayView" style="display:none;">
@@ -297,7 +314,34 @@
   </div> -->
 
     <!-- Pong -->
+     <!-- Vista del juego Pong -->
+     
 
+    <!-- Torneos -->
+    <div id="tournamentView" style="display: none;">
+      <h2>Crear Torneo</h2>
+      <form id="tournamentForm">
+        <div class="form-group">
+          <label for="numPlayers">Número de Jugadores:</label>
+          <select id="numPlayers" name="numPlayers" required>
+            <option value="0" disabled selected>0</option>
+            <option value="2" >2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+        </div>
+      </form>
+      <div id="playersInput"></div>
+      <button id="generateTournamentBtn" >Crear Torneo</button>
+      <div id="tournamentBracket"></div>
+    </div>
+  </div>
+
+    
 
   </div>
 

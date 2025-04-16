@@ -1,0 +1,83 @@
+/* Estilo para la vista del torneo */
+#tournamentView {
+    margin-top: 20px;
+    text-align: center;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+}
+
+/* Estilo para el formulario de torneo */
+#tournamentForm {
+    margin-top: 20px;
+}
+
+#tournamentForm .form-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#tournamentForm label {
+    margin-right: 10px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+#tournamentForm select {
+    padding: 5px;
+    font-size: 14px;
+    border: 2px solid #BE36CD;
+    background-color: rgba(11, 34, 90, 0.85);
+    color: white;
+    border-radius: 5px;
+}
+
+
+/* Estilo para la entrada de nombres de jugadores */
+#playersInput {
+    margin-top: 20px;
+}
+
+#playersInput input {
+    display: block;
+    margin: 5px auto;
+    padding: 5px;
+    font-size: 14px;
+    text-align: center;
+    border: 2px solid #BE36CD;
+    background-color: rgba(11, 34, 90, 0.85);
+    color: white;
+    border-radius: 5px;
+}
+
+/* Estilos para el torneo */
+
+#numPlayers {
+    margin-left: 10px;
+}
+
+#generateTournamentBtn, #tournamentBracket button {
+    margin: 20px;
+}
+
+
+/* Estilos para el torneo */
+.tournament-bracket {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 30px;
+    overflow-x: auto;
+    width: 100%;
+}
+
+
+.tournament-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 20px 40px;
+}
+

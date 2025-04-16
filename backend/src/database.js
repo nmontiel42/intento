@@ -25,6 +25,49 @@ db.serialize(() => {
             console.log("Created the users table.");
         },
     );
+
+    // Crear tabla de torneos
+    db.run(
+        `
+        CREATE TABLE IF NOT EXISTS tournament (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name VARCHAR(255) NOT NULL,
+        num_players INTEGER NOT NULL,
+        winner VARCHAR(255),
+        created_by INTEGER,
+        FOREIGN KEY (created_by) REFERENCES users(id)
+        )`,
+        (err) => {
+            if (err) {
+            return console.error("Error creating the tournament table: ", err.message);
+            }
+            console.log("Created the tournament table.");
+        },
+    );
+    
+    // Crear tabla de partidos
+    db.run(
+        `
+        CREATE TABLE IF NOT EXISTS t_match (
+        match_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tournament_id INTEGER NOT NULL,
+        player1 VARCHAR(255) NOT NULL,
+        player2 VARCHAR(255),
+        player1_score INTEGER DEFAULT 0,
+        player2_score INTEGER DEFAULT 0,
+        winner VARCHAR(255),
+        status VARCHAR(20) DEFAULT 'pending',
+        round INTEGER NOT NULL DEFAULT 1,
+        FOREIGN KEY (tournament_id) REFERENCES tournament(id)
+        )`,
+        (err) => {
+            if (err) {
+            return console.error("Error creating the t_match table: ", err.message);
+            }
+            console.log("Created the t_match table.");
+        },
+    );
+
 });
 
 export default db;

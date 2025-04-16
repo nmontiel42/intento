@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import './Register.css';
+@import './Game.css';
+@import './Tournament.css';
 @import './Home/Header.css';
 @import './Home/3dpong.css';
 
@@ -151,7 +153,11 @@ body::before {
 #cancelChange,
 #submitChangePicture,
 #cancelPicture,
-#closeWin {
+#closeWin,
+#startGameBtn,
+#resetGameBtn,
+#generateTournamentBtn,
+#tournamentBracket button  {
     background-color: #BE36CD;
     border: 2px solid #BE36CD;
     color: #D2D2EA;
@@ -173,11 +179,16 @@ body::before {
 #submit:hover,
 #submitLogin:hover,
 #submitUsername:hover,
+#startGameBtn:hover,
+#resetGameBtn:hover,
+#generateTournamentBtn:hover,
+#tournamentBracket button:hover,
 #submitChangeUsername:hover,
 #cancelChange:hover,
 #submitChangePicture:hover,
 #cancelPicture:hover,
-#closeWin:hover {
+#closeWin:hover
+ {
     color: #fff;
     box-shadow:
         0 0 10px #BE36CD,

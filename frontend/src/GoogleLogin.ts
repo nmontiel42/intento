@@ -38,7 +38,7 @@ async function handleGoogleLogin(response: any) {
             usernameView.style.display = 'none';
 
             // Actualizar el nombre de usuario y la imagen de perfil
-            userName.textContent = data.user.username;
+            //userName.textContent = data.user.username;
 
             // Usamos una foto por defecto si no existe una imagen de perfil
             const profilePic = data.user.picture || "../public/letra-t.png";
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
             homeView.style.display = 'block';
 
             // Actualizar el nombre de usuario y la imagen de perfil
-            userName.textContent = data.user.username;
+            //userName.textContent = data.user.username;
 
             // Usamos una foto por defecto si no existe una imagen de perfil
             const profilePic = data.picture || "../public/letra-t.png";

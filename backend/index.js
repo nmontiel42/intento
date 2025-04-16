@@ -7,6 +7,8 @@ import authRoutes from './src/auth.js';
 import fastifyWebsocket from '@fastify/websocket';
 import https from 'https';
 import fs from 'fs';
+import tournamentRoutes from './tournament.js';
+
 
 dotenv.config();
 //console.log('JWT_SECRET:', process.env.JWT_SECRET);
@@ -21,7 +23,7 @@ const fastify = Fastify({
 
 // Registro de plugins
 fastify.register(cors, {
-  origin: 'https://localhost:8080',
+  origin: true, //temporalmente true para pruebas, cambiar a la URL de producción
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -57,6 +59,8 @@ fastify.addHook('onSend', (request, reply, payload, done) => {
 
 
 fastify.register(authRoutes);
+
+fastify.register(tournamentRoutes);
 
 // Decorador para verificar el JWT
 fastify.decorate('authenticate', async (req, res) => {
